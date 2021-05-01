@@ -1,0 +1,29 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource prefix="icons/oxygen">
+	<file alias="index.theme">icons/oxygen/index.theme</file>
+
+	<file alias="16x16/apps/accessories-text-editor">icons/oxygen/accessories-text-editor.png</file>
+	<file alias="16x16/actions/document-save">icons/oxygen/document-save.png</file>
+	<file alias="16x16/actions/document-save-all">icons/oxygen/document-save-all.png</file>
+	<file alias="16x16/actions/document-save-as">icons/oxygen/document-save-as.png</file>
+	<file alias="16x16/places/folder.png">icons/oxygen/folder.png</file>
+	<file alias="16x16/document-edit.png">icons/oxygen/document-edit.png</file>
+	<file alias="16x16/edit-clear.png">icons/oxygen/edit-clear.png</file>
+	<file alias="16x16/go-jump.png">icons/oxygen/go-jump.png</file>
+	<file alias="16x16/go-next.png">icons/oxygen/go-next.png</file>
+	<file alias="16x16/go-previous.png">icons/oxygen/go-previous.png</file>
+	<file alias="16x16/actions/list-add.png">icons/oxygen/list-add.png</file>
+	<file alias="16x16/actions/list-remove.png">icons/oxygen/list-remove.png</file>
+	<file alias="16x16/media-playback-pause.png">icons/oxygen/media-playback-pause.png</file>
+	<file alias="16x16/actions/media-playback-start.png">icons/oxygen/media-playback-start.png</file>
+	<file alias="16x16/media-playback-stop.png">icons/oxygen/media-playback-stop.png</file>
+	<file alias="16x16/media-skip-backward.png">icons/oxygen/media-skip-backward.png</file>
+	<file alias="16x16/media-skip-forward.png">icons/oxygen/media-skip-forward.png</file>
+	<file alias="16x16/zoom-in.png">icons/oxygen/zoom-in.png</file>
+	<file alias="16x16/zoom-original.png">icons/oxygen/zoom-original.png</file>
+	<file alias="16x16/zoom-out.png">icons/oxygen/zoom-out.png</file>
+	<file alias="16x16/zoom-fit-best.png">icons/oxygen/zoom-fit-best.png</file>
+	<file alias="16x16/view-refresh.png">icons/oxygen/view-refresh.png</file>
+
+</qresource>
+</RCC>

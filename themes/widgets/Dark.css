@@ -1,0 +1,77 @@
+QWidget {
+	color:#eaeaea;
+	background-color: #535353;
+}
+
+QTreeView {
+	background-color : #2E2E2E;
+}
+
+QLineEdit, QTreeView, QPlainTextEdit, QListView, QGraphicsView{
+	border-radius : 4px;
+	border: 2px solid #2E2E2E;
+	
+}
+
+QLineEdit {
+	background-color : #2E2E2E;
+}
+
+
+QPushButton {
+   background: #2E2E2E;
+}
+
+QPushButton:pressed {
+    background-color: #E9E9E9;
+    border-style: inset;
+}
+
+
+
+
+QMenuBar {
+    background : #2E2E2E;
+}
+
+QMenuBar::item {
+    spacing: 12px; /* spacing between menu bar items */
+    padding: 1px 10px;
+    background: transparent;
+    border-radius: 4px;
+}
+
+QMenuBar::item:selected { /* when selected using mouse or keyboard */
+    background: #a8a8a8;
+}
+
+QMenuBar::item:pressed {
+    background: #888888;
+}
+
+
+QTabBar::tab:top, QTabBar::tab:bottom {
+    background: #2E2E2E;
+    border: 2px solid black;
+    border-bottom-color: #2E2E2E; /* same as the pane color */
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 2px;
+}
+
+QTabBar::tab:left, QTabBar::tab:right {
+    background:#2E2E2E;
+    border: 2px solid black;
+    border-right-color: #2E2E2E; /* same as the pane color */
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 50px 6px;
+    margin : 20px 1px;
+}
+
+
+
+/*QTabBar {
+    background-color : #2E2E2E;
+    border-color: gray;
+}*/

@@ -1,0 +1,64 @@
+name	XXX
+health	100
+speed	10
+type	enemy
+nolife   1
+grabback  1
+dust   dust
+throw  6.8  3.5
+projectilehit  enemy npc obstacle
+gfxshadow  1
+jugglepoints    5
+offscreenkill 99999
+
+animationscript @script
+	#include "data/scripts/mainlib.c"
+	
+	void cooldownAttacks(){
+	
+		if(! recoverFear()) return;
+		
+		void vSelf = getlocalvar("self");
+		float cdf = getCDF(vSelf);
+		
+		if(isInRage(vSelf)){
+			wotFull("ANI_follow10", 50, 120, -12, 12, 20*cdf, randRange(0, 3)); // Side Kick
+			
+			wotFull("ANI_follow11", 80, 160, -12, 12, 30*cdf, randRange(0, 6)); // Back Kick
+			
+			wotFull("ANI_follow12", 130, 260, -30, 30, 15*cdf, randRange(0, 12)); // Charging Punch
+		
+		}
+
+	}
+@end_script
+ondoattackscript data/scripts/com/ondoattack_endure.c
+didhitscript data/scripts/didhit.c
+onpainscript data/scripts/painscript.c
+onfallscript data/scripts/fallscript.c
+onspawnscript @script
+	#import "data/scripts/spawn/common.c"
+	void main(){
+		void vSelf = getlocalvar("self");
+		changeentityproperty(vSelf, "type", getentityproperty(vSelf, "type") + 2048);
+		setentityvar(vSelf, "baseAIMOVE", getentityproperty(vSelf, "aimove"));
+		standardInit();
+	}
+@end_script
+
+@script
+	aniUpdate();
+@end_script
+
+
+palette data/chars/todo
+
+hostile player npc 4096 32768
+candamage player npc 4096 obstacle 32768
+aggression 70
+#nomove 1
+cantgrab 1
+aimove chase
+aimove wander
+
+bflash blockFlash

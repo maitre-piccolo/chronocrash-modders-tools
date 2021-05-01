@@ -1,0 +1,7551 @@
+anim idle
+	delay 6
+	offset 44 123
+	frame data/chars/valdoll/3.gif
+	offset 44 125
+	frame data/chars/valdoll/4.gif
+	offset 38 125
+	frame data/chars/valdoll/5.gif
+	offset 37 125
+	frame data/chars/valdoll/6.gif
+	offset 37 128
+	frame data/chars/valdoll/7.gif
+	offset 37 126
+	frame data/chars/valdoll/8.gif
+	offset 40 126
+	frame data/chars/valdoll/9.gif
+	offset 42 125
+	frame data/chars/valdoll/10.gif
+	offset 44 123
+	frame data/chars/valdoll/11.gif
+	offset 44 123
+	frame data/chars/valdoll/12.gif
+	offset 38 121
+	frame data/chars/valdoll/13.gif
+	offset 37 119
+	frame data/chars/valdoll/14.gif
+	offset 37 120
+	frame data/chars/valdoll/15.gif
+	offset 37 120
+	frame data/chars/valdoll/16.gif
+	offset 40 122
+	frame data/chars/valdoll/17.gif
+	offset 42 123
+	frame data/chars/valdoll/18.gif
+
+
+anim freespecial5
+	delay 4
+	offset 60 123
+	frame data/chars/valdoll/19.gif
+	offset 64 123
+	frame data/chars/valdoll/20.gif
+	offset 65 123
+	frame data/chars/valdoll/21.gif
+	offset 60 123
+	frame data/chars/valdoll/22.gif
+	offset 56 123
+	frame data/chars/valdoll/23.gif
+
+
+anim freespecial6
+	delay 4
+	offset 60 123
+	frame data/chars/valdoll/19.gif
+	offset 64 123
+	frame data/chars/valdoll/20.gif
+	offset 65 123
+	frame data/chars/valdoll/21.gif
+	offset 60 123
+	frame data/chars/valdoll/22.gif
+	offset 56 123
+	frame data/chars/valdoll/23.gif
+
+
+anim crouch
+	delay 2
+	offset 44 123
+	frame data/chars/valdoll/3.gif
+
+
+anim freespecial11
+	delay 6
+	offset 44 123
+	frame data/chars/valdoll/3.gif
+	offset 44 125
+	frame data/chars/valdoll/4.gif
+	offset 38 125
+	frame data/chars/valdoll/5.gif
+	offset 37 125
+	frame data/chars/valdoll/6.gif
+	offset 37 128
+	frame data/chars/valdoll/7.gif
+	offset 37 126
+	frame data/chars/valdoll/8.gif
+	offset 40 126
+	frame data/chars/valdoll/9.gif
+	offset 42 125
+	frame data/chars/valdoll/10.gif
+	offset 44 123
+	frame data/chars/valdoll/11.gif
+	offset 44 123
+	frame data/chars/valdoll/12.gif
+	offset 38 121
+	frame data/chars/valdoll/13.gif
+	offset 37 119
+	frame data/chars/valdoll/14.gif
+	offset 37 120
+	frame data/chars/valdoll/15.gif
+	offset 37 120
+	frame data/chars/valdoll/16.gif
+	offset 40 122
+	frame data/chars/valdoll/17.gif
+	offset 42 123
+	frame data/chars/valdoll/18.gif
+
+
+anim freespecial12
+	delay 2
+	offset 44 123
+	frame data/chars/valdoll/3.gif
+
+
+anim freespecial12301
+
+
+anim freespecial43022
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/518.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/519.gif
+	delay 2
+	offset 54 110
+	frame data/chars/valdoll/524.gif
+	delay 10
+	offset 52 108
+	frame data/chars/valdoll/525.gif
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/522.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/523.gif
+
+
+anim freespecial43023
+	delay 4
+	offset 94 103
+	frame data/chars/valdoll/526.gif
+	delay 5
+	offset 128 118
+	frame data/chars/valdoll/527.gif
+	delay 4
+	offset 117 112
+	frame data/chars/valdoll/528.gif
+	offset 128 79
+	frame data/chars/valdoll/529.gif
+	offset 62 127
+	frame data/chars/valdoll/530.gif
+	delay 10
+	offset 63 124
+	frame data/chars/valdoll/531.gif
+	delay 6
+	offset 69 102
+	frame data/chars/valdoll/532.gif
+	delay 5
+	offset 104 96
+	frame data/chars/valdoll/533.gif
+
+
+anim walk
+	delay 6
+	offset 47 122
+	frame data/chars/valdoll/24.gif
+	offset 52 120
+	frame data/chars/valdoll/25.gif
+	offset 51 122
+	frame data/chars/valdoll/26.gif
+	offset 46 121
+	frame data/chars/valdoll/27.gif
+	offset 42 120
+	frame data/chars/valdoll/28.gif
+	offset 47 120
+	frame data/chars/valdoll/29.gif
+	offset 46 119
+	frame data/chars/valdoll/30.gif
+
+
+anim freespecial21
+	delay 6
+	offset 34 122
+	frame data/chars/valdoll/31.gif
+	offset 30 121
+	frame data/chars/valdoll/32.gif
+	offset 30 121
+	frame data/chars/valdoll/33.gif
+	offset 30 121
+	frame data/chars/valdoll/34.gif
+	offset 30 121
+	frame data/chars/valdoll/35.gif
+	offset 30 121
+	frame data/chars/valdoll/36.gif
+	offset 30 121
+	frame data/chars/valdoll/37.gif
+
+
+anim freespecial12310
+	delay 6
+	offset 71 115
+	frame data/chars/valdoll/456.gif
+	delay 8
+	offset 53 120
+	frame data/chars/valdoll/457.gif
+	delay 6
+	offset 44 116
+	frame data/chars/valdoll/458.gif
+	delay 8
+	offset 43 112
+	frame data/chars/valdoll/459.gif
+	delay 6
+	offset 49 112
+	frame data/chars/valdoll/460.gif
+	delay 8
+	offset 81 111
+	frame data/chars/valdoll/461.gif
+	delay 6
+	offset 103 119
+	frame data/chars/valdoll/462.gif
+	delay 8
+	offset 88 120
+	frame data/chars/valdoll/463.gif
+	delay 6
+	offset 78 115
+	frame data/chars/valdoll/464.gif
+	delay 8
+	offset 68 116
+	frame data/chars/valdoll/465.gif
+
+
+anim freespecial43035
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/534.gif
+	offset 152 -2
+	frame data/chars/valdoll/535.gif
+	offset 141 3
+	frame data/chars/valdoll/536.gif
+	offset 152 6
+	frame data/chars/valdoll/537.gif
+	offset 153 1
+	frame data/chars/valdoll/534.gif
+	offset 152 -2
+	frame data/chars/valdoll/535.gif
+	offset 141 3
+	frame data/chars/valdoll/536.gif
+	offset 152 6
+	frame data/chars/valdoll/537.gif
+
+
+anim freespecial43045
+	delay 4
+	offset 113 116
+	frame data/chars/valdoll/539.gif
+	offset 126 108
+	frame data/chars/valdoll/540.gif
+	offset 135 114
+	frame data/chars/valdoll/541.gif
+	delay 22
+	offset 135 114
+	frame data/chars/valdoll/542.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/543.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/544.gif
+
+
+anim freespecial43046
+	delay 6
+	offset 137 119
+	frame data/chars/valdoll/545.gif
+	delay 4
+	offset 139 111
+	frame data/chars/valdoll/546.gif
+	offset 151 114
+	frame data/chars/valdoll/547.gif
+	delay 22
+	offset 151 114
+	frame data/chars/valdoll/548.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/543.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/544.gif
+
+
+anim jumpdelay
+	delay 6
+	offset 55 123
+	frame data/chars/valdoll/38.gif
+	offset 44 121
+	frame data/chars/valdoll/39.gif
+
+
+anim freespecial41
+	delay 6
+	offset 42 121
+	frame data/chars/valdoll/40.gif
+	offset 42 121
+	frame data/chars/valdoll/41.gif
+	offset 49 121
+	frame data/chars/valdoll/42.gif
+
+
+anim freespecial42
+	delay 6
+	offset 42 121
+	frame data/chars/valdoll/40.gif
+	offset 42 121
+	frame data/chars/valdoll/41.gif
+	offset 49 121
+	frame data/chars/valdoll/42.gif
+
+
+anim freespecial43
+	delay 6
+	offset 42 121
+	frame data/chars/valdoll/40.gif
+	offset 42 121
+	frame data/chars/valdoll/41.gif
+	offset 49 121
+	frame data/chars/valdoll/42.gif
+
+
+anim freespecial44
+	delay 6
+	offset 44 121
+	frame data/chars/valdoll/39.gif
+	offset 55 123
+	frame data/chars/valdoll/38.gif
+	offset 70 124
+	frame data/chars/valdoll/43.gif
+	offset 67 126
+	frame data/chars/valdoll/44.gif
+	offset 70 123
+	frame data/chars/valdoll/45.gif
+
+
+anim freespecial45
+	delay 6
+	offset 44 121
+	frame data/chars/valdoll/39.gif
+	offset 55 123
+	frame data/chars/valdoll/38.gif
+	offset 70 124
+	frame data/chars/valdoll/43.gif
+	offset 67 126
+	frame data/chars/valdoll/44.gif
+	offset 70 123
+	frame data/chars/valdoll/45.gif
+
+
+anim freespecial46
+	delay 6
+	offset 44 121
+	frame data/chars/valdoll/39.gif
+	offset 55 123
+	frame data/chars/valdoll/38.gif
+	offset 70 124
+	frame data/chars/valdoll/43.gif
+	offset 67 126
+	frame data/chars/valdoll/44.gif
+	offset 70 123
+	frame data/chars/valdoll/45.gif
+
+
+anim freespecial47
+	delay 6
+	offset 55 123
+	frame data/chars/valdoll/38.gif
+	offset 44 121
+	frame data/chars/valdoll/39.gif
+
+
+anim freespecial43056
+
+
+anim freespecial43057
+
+
+anim freespecial43061
+	delay 10
+	offset -47 61
+	frame data/chars/valdoll/606.gif
+	offset -50 60
+	frame data/chars/valdoll/607.gif
+	offset -30 64
+	frame data/chars/valdoll/608.gif
+	offset -60 68
+	frame data/chars/valdoll/609.gif
+	offset -63 55
+	frame data/chars/valdoll/610.gif
+	offset -61 58
+	frame data/chars/valdoll/611.gif
+	delay 5
+	offset -72 59
+	frame data/chars/valdoll/612.gif
+
+
+anim freespecial10300
+	delay 6
+	offset 101 106
+	frame data/chars/valdoll/218.gif
+	offset 95 103
+	frame data/chars/valdoll/219.gif
+	offset 80 92
+	frame data/chars/valdoll/220.gif
+	delay 42
+	offset 88 97
+	frame data/chars/valdoll/221.gif
+
+
+anim freespecial10301
+
+
+anim freespecial41022
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/318.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/319.gif
+	delay 2
+	offset 54 110
+	frame data/chars/valdoll/324.gif
+	delay 10
+	offset 52 108
+	frame data/chars/valdoll/325.gif
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/322.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/323.gif
+
+
+anim freespecial41023
+	delay 4
+	offset 94 103
+	frame data/chars/valdoll/326.gif
+	delay 5
+	offset 128 118
+	frame data/chars/valdoll/327.gif
+	delay 4
+	offset 117 112
+	frame data/chars/valdoll/328.gif
+	offset 128 79
+	frame data/chars/valdoll/329.gif
+	offset 62 127
+	frame data/chars/valdoll/330.gif
+	delay 10
+	offset 63 124
+	frame data/chars/valdoll/331.gif
+	delay 6
+	offset 69 102
+	frame data/chars/valdoll/332.gif
+	delay 5
+	offset 104 96
+	frame data/chars/valdoll/333.gif
+
+
+anim freespecial10310
+	delay 6
+	offset 53 120
+	frame data/chars/valdoll/256.gif
+	delay 8
+	offset 44 116
+	frame data/chars/valdoll/257.gif
+	delay 6
+	offset 43 112
+	frame data/chars/valdoll/258.gif
+	delay 8
+	offset 49 112
+	frame data/chars/valdoll/259.gif
+	delay 6
+	offset 81 111
+	frame data/chars/valdoll/260.gif
+	delay 8
+	offset 103 119
+	frame data/chars/valdoll/261.gif
+	delay 6
+	offset 88 120
+	frame data/chars/valdoll/262.gif
+	delay 8
+	offset 78 115
+	frame data/chars/valdoll/263.gif
+	delay 6
+	offset 68 116
+	frame data/chars/valdoll/264.gif
+	delay 8
+	offset 71 115
+	frame data/chars/valdoll/265.gif
+
+
+anim freespecial12300
+	delay 6
+	offset 101 106
+	frame data/chars/valdoll/418.gif
+	offset 95 103
+	frame data/chars/valdoll/419.gif
+	offset 80 92
+	frame data/chars/valdoll/420.gif
+	delay 42
+	offset 88 97
+	frame data/chars/valdoll/421.gif
+
+
+anim freespecial41035
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/334.gif
+	offset 152 -2
+	frame data/chars/valdoll/335.gif
+	offset 141 3
+	frame data/chars/valdoll/336.gif
+	offset 152 6
+	frame data/chars/valdoll/337.gif
+	offset 153 1
+	frame data/chars/valdoll/334.gif
+	offset 152 -2
+	frame data/chars/valdoll/335.gif
+	offset 141 3
+	frame data/chars/valdoll/336.gif
+	offset 152 6
+	frame data/chars/valdoll/337.gif
+
+
+anim freespecial43021
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/518.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/519.gif
+	delay 4
+	offset 80 92
+	frame data/chars/valdoll/520.gif
+	delay 10
+	offset 88 97
+	frame data/chars/valdoll/521.gif
+	offset 97 93
+	frame data/chars/valdoll/522.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/523.gif
+
+
+anim freespecial41045
+	delay 4
+	offset 113 116
+	frame data/chars/valdoll/339.gif
+	offset 126 108
+	frame data/chars/valdoll/340.gif
+	offset 135 114
+	frame data/chars/valdoll/341.gif
+	delay 22
+	offset 135 114
+	frame data/chars/valdoll/342.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/343.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/344.gif
+
+
+anim freespecial41046
+	delay 6
+	offset 137 119
+	frame data/chars/valdoll/345.gif
+	delay 4
+	offset 139 111
+	frame data/chars/valdoll/346.gif
+	offset 151 114
+	frame data/chars/valdoll/347.gif
+	delay 22
+	offset 151 114
+	frame data/chars/valdoll/348.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/343.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/344.gif
+
+
+anim freespecial41051
+	delay 4
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -59 49
+	frame data/chars/valdoll/591.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -54 55
+	frame data/chars/valdoll/592.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -62 44
+	frame data/chars/valdoll/593.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -57 49
+	frame data/chars/valdoll/594.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -63 50
+	frame data/chars/valdoll/595.gif
+	delay 6
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	delay 4
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -59 49
+	frame data/chars/valdoll/591.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -54 55
+	frame data/chars/valdoll/592.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -62 44
+	frame data/chars/valdoll/593.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -57 49
+	frame data/chars/valdoll/594.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -63 50
+	frame data/chars/valdoll/595.gif
+	delay 6
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	delay 2
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+
+
+anim freespecial41052
+
+
+anim freespecial100
+	delay 18
+	offset 44 123
+	frame data/chars/valdoll/3.gif
+
+
+anim freespecial101
+	delay 16
+	offset 44 123
+	frame data/chars/valdoll/3.gif
+
+
+anim freespecial102
+	delay 4
+	offset 23 114
+	frame data/chars/valdoll/613.gif
+	offset 27 114
+	frame data/chars/valdoll/614.gif
+	offset 22 114
+	frame data/chars/valdoll/615.gif
+	offset 32 97
+	frame data/chars/valdoll/616.gif
+	offset -6 110
+	frame data/chars/valdoll/617.gif
+	offset 6 86
+	frame data/chars/valdoll/618.gif
+
+
+anim freespecial103
+	delay 4
+	offset 23 114
+	frame data/chars/valdoll/613.gif
+	offset 27 114
+	frame data/chars/valdoll/614.gif
+	offset 22 114
+	frame data/chars/valdoll/615.gif
+	offset 32 97
+	frame data/chars/valdoll/616.gif
+	offset -6 110
+	frame data/chars/valdoll/617.gif
+	delay 8
+	offset 6 86
+	frame data/chars/valdoll/618.gif
+
+
+anim freespecial105
+	delay 18
+	offset 44 123
+	frame data/chars/valdoll/3.gif
+
+
+anim freespecial106
+	delay 16
+	offset 44 123
+	frame data/chars/valdoll/3.gif
+
+
+anim freespecial107
+	delay 4
+	offset 79 114
+	frame data/chars/valdoll/613.gif
+	offset 83 114
+	frame data/chars/valdoll/614.gif
+	offset 78 114
+	frame data/chars/valdoll/615.gif
+	offset 88 97
+	frame data/chars/valdoll/616.gif
+	offset 50 110
+	frame data/chars/valdoll/617.gif
+	offset 62 86
+	frame data/chars/valdoll/618.gif
+
+
+anim freespecial108
+	delay 4
+	offset 79 114
+	frame data/chars/valdoll/613.gif
+	offset 83 114
+	frame data/chars/valdoll/614.gif
+	offset 78 114
+	frame data/chars/valdoll/615.gif
+	offset 88 97
+	frame data/chars/valdoll/616.gif
+	offset 50 110
+	frame data/chars/valdoll/617.gif
+	delay 8
+	offset 62 86
+	frame data/chars/valdoll/618.gif
+
+
+anim freespecial112
+	delay 4
+	offset 23 114
+	frame data/chars/valdoll/613.gif
+	offset 27 114
+	frame data/chars/valdoll/614.gif
+	offset 22 114
+	frame data/chars/valdoll/615.gif
+	offset 32 97
+	frame data/chars/valdoll/616.gif
+	offset -6 110
+	frame data/chars/valdoll/617.gif
+	offset 6 86
+	frame data/chars/valdoll/618.gif
+
+
+anim freespecial113
+	delay 4
+	offset 23 114
+	frame data/chars/valdoll/613.gif
+	offset 27 114
+	frame data/chars/valdoll/614.gif
+	offset 22 114
+	frame data/chars/valdoll/615.gif
+	offset 32 97
+	frame data/chars/valdoll/616.gif
+	offset -6 110
+	frame data/chars/valdoll/617.gif
+	delay 8
+	offset 6 86
+	frame data/chars/valdoll/618.gif
+
+
+anim freespecial117
+	delay 4
+	offset 79 114
+	frame data/chars/valdoll/613.gif
+	offset 83 114
+	frame data/chars/valdoll/614.gif
+	offset 78 114
+	frame data/chars/valdoll/615.gif
+	offset 88 97
+	frame data/chars/valdoll/616.gif
+	offset 50 110
+	frame data/chars/valdoll/617.gif
+	offset 62 86
+	frame data/chars/valdoll/618.gif
+
+
+anim freespecial118
+	delay 4
+	offset 79 114
+	frame data/chars/valdoll/613.gif
+	offset 83 114
+	frame data/chars/valdoll/614.gif
+	offset 78 114
+	frame data/chars/valdoll/615.gif
+	offset 88 97
+	frame data/chars/valdoll/616.gif
+	offset 50 110
+	frame data/chars/valdoll/617.gif
+	delay 8
+	offset 62 86
+	frame data/chars/valdoll/618.gif
+
+
+anim block120
+	delay 4
+	offset 51 124
+	frame data/chars/valdoll/46.gif
+
+
+anim block121
+	delay 4
+	offset 51 124
+	frame data/chars/valdoll/46.gif
+
+
+anim block122
+	delay 4
+	offset 51 124
+	frame data/chars/valdoll/46.gif
+
+
+anim block125
+	delay 2
+	offset -6 118
+	frame data/chars/valdoll/48.gif
+	offset -4 116
+	frame data/chars/valdoll/49.gif
+	offset 2 118
+	frame data/chars/valdoll/50.gif
+
+
+anim block126
+	delay 2
+	offset -6 118
+	frame data/chars/valdoll/48.gif
+	offset -4 116
+	frame data/chars/valdoll/49.gif
+	offset 2 118
+	frame data/chars/valdoll/50.gif
+
+
+anim block130
+	delay -1000
+	offset 50 122
+	frame data/chars/valdoll/47.gif
+
+
+anim block131
+	delay -1000
+	offset 50 122
+	frame data/chars/valdoll/47.gif
+
+
+anim block132
+	delay -1000
+	offset 50 122
+	frame data/chars/valdoll/47.gif
+
+
+anim freespecial43030
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/534.gif
+	offset 152 -2
+	frame data/chars/valdoll/535.gif
+	offset 141 3
+	frame data/chars/valdoll/536.gif
+	offset 152 6
+	frame data/chars/valdoll/537.gif
+	offset 153 1
+	frame data/chars/valdoll/534.gif
+	offset 152 -2
+	frame data/chars/valdoll/535.gif
+	offset 141 3
+	frame data/chars/valdoll/536.gif
+	offset 152 6
+	frame data/chars/valdoll/537.gif
+
+
+anim block140
+	delay 6
+	offset 50 122
+	frame data/chars/valdoll/47.gif
+
+
+anim block141
+	delay 6
+	offset 50 122
+	frame data/chars/valdoll/47.gif
+
+
+anim block142
+	delay 6
+	offset 50 122
+	frame data/chars/valdoll/47.gif
+
+
+anim block150
+	delay 6
+	offset 51 124
+	frame data/chars/valdoll/46.gif
+	offset 50 122
+	frame data/chars/valdoll/47.gif
+
+
+anim block151
+	delay 6
+	offset 51 124
+	frame data/chars/valdoll/46.gif
+	offset 50 122
+	frame data/chars/valdoll/47.gif
+
+
+anim block152
+	delay 6
+	offset 51 124
+	frame data/chars/valdoll/46.gif
+	offset 50 122
+	frame data/chars/valdoll/47.gif
+
+
+anim freespecial170
+	delay 10
+	offset 61 96
+	frame data/chars/valdoll/171.gif
+	delay 4
+	offset 61 98
+	frame data/chars/valdoll/172.gif
+	offset 61 99
+	frame data/chars/valdoll/173.gif
+	delay 10
+	offset 61 96
+	frame data/chars/valdoll/174.gif
+	offset 61 99
+	frame data/chars/valdoll/173.gif
+	offset 61 98
+	frame data/chars/valdoll/172.gif
+	offset 61 96
+	frame data/chars/valdoll/171.gif
+	delay 4
+	offset 61 98
+	frame data/chars/valdoll/172.gif
+	offset 61 99
+	frame data/chars/valdoll/173.gif
+	delay 10
+	offset 61 96
+	frame data/chars/valdoll/174.gif
+	offset 61 99
+	frame data/chars/valdoll/173.gif
+	offset 61 98
+	frame data/chars/valdoll/172.gif
+	delay -1000
+	offset 61 96
+	frame data/chars/valdoll/171.gif
+
+
+anim freespecial180
+	delay 6
+	offset 40 124
+	frame data/chars/valdoll/51.gif
+	offset 42 128
+	frame data/chars/valdoll/52.gif
+	offset 45 127
+	frame data/chars/valdoll/53.gif
+	offset 42 128
+	frame data/chars/valdoll/52.gif
+	offset 45 127
+	frame data/chars/valdoll/53.gif
+	offset 42 128
+	frame data/chars/valdoll/52.gif
+	offset 45 127
+	frame data/chars/valdoll/53.gif
+	offset 36 122
+	frame data/chars/valdoll/51.gif
+	offset 82 127
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	delay 5
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+
+
+anim freespecial181
+	delay 6
+	offset 55 123
+	frame data/chars/valdoll/38.gif
+	offset 70 124
+	frame data/chars/valdoll/43.gif
+	offset 67 126
+	frame data/chars/valdoll/44.gif
+	offset 70 123
+	frame data/chars/valdoll/45.gif
+
+
+anim freespecial190
+	delay 6
+	offset 40 124
+	frame data/chars/valdoll/51.gif
+	offset 42 128
+	frame data/chars/valdoll/52.gif
+	offset 45 127
+	frame data/chars/valdoll/53.gif
+	offset 42 128
+	frame data/chars/valdoll/52.gif
+	offset 45 127
+	frame data/chars/valdoll/53.gif
+	offset 42 128
+	frame data/chars/valdoll/52.gif
+	offset 45 127
+	frame data/chars/valdoll/53.gif
+	offset 36 122
+	frame data/chars/valdoll/51.gif
+	offset 82 127
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	delay 5
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+
+
+anim freespecial193
+	delay 378
+	offset 24 52
+	frame data/chars/valdoll/54.gif
+
+
+anim freespecial195
+	delay 6
+	offset 40 124
+	frame data/chars/valdoll/51.gif
+	offset 42 128
+	frame data/chars/valdoll/52.gif
+	offset 45 127
+	frame data/chars/valdoll/53.gif
+	offset 40 124
+	frame data/chars/valdoll/51.gif
+
+
+anim freespecial200
+	delay 5
+	offset 43 123
+	frame data/chars/valdoll/55.gif
+	delay 2
+	offset 58 128
+	frame data/chars/valdoll/56.gif
+	delay 6
+	offset 58 128
+	frame data/chars/valdoll/56.gif
+	offset 53 127
+	frame data/chars/valdoll/57.gif
+	offset 56 124
+	frame data/chars/valdoll/58.gif
+
+
+anim freespecial201
+	delay 6
+	offset 43 123
+	frame data/chars/valdoll/55.gif
+
+
+anim freespecial12500
+	delay 22
+	offset 100 104
+	frame data/chars/valdoll/466.gif
+	delay -1000
+	offset 100 104
+	frame data/chars/valdoll/466.gif
+
+
+anim freespecial12501
+	delay 28
+	offset 105 114
+	frame data/chars/valdoll/467.gif
+	delay -1000
+	offset 105 114
+	frame data/chars/valdoll/467.gif
+
+
+anim freespecial12502
+	delay 33
+	offset 105 114
+	frame data/chars/valdoll/467.gif
+	delay -1000
+	offset 105 114
+	frame data/chars/valdoll/467.gif
+
+
+anim freespecial12510
+	delay 22
+	offset 90 110
+	frame data/chars/valdoll/468.gif
+	delay -1000
+	offset 90 110
+	frame data/chars/valdoll/468.gif
+
+
+anim freespecial12511
+	delay 28
+	offset 83 127
+	frame data/chars/valdoll/469.gif
+	delay -1000
+	offset 83 127
+	frame data/chars/valdoll/469.gif
+
+
+anim freespecial12512
+	delay 33
+	offset 83 127
+	frame data/chars/valdoll/469.gif
+	delay -1000
+	offset 83 127
+	frame data/chars/valdoll/469.gif
+
+
+anim freespecial33000
+
+
+anim freespecial33001
+	delay 6
+	offset 28 41
+	frame data/chars/valdoll/1271.gif
+	offset 28 41
+	frame data/chars/valdoll/1272.gif
+	offset 28 41
+	frame data/chars/valdoll/1273.gif
+	offset 28 41
+	frame data/chars/valdoll/1272.gif
+
+
+anim freespecial21202
+	delay 13
+	offset 9 7
+	frame data/chars/valdoll/710.gif
+	offset 10 9
+	frame data/chars/valdoll/711.gif
+	offset 10 11
+	frame data/chars/valdoll/712.gif
+	offset 11 12
+	frame data/chars/valdoll/713.gif
+	delay 14
+	offset 11 13
+	frame data/chars/valdoll/714.gif
+
+
+anim freespecial3002
+	delay -1000
+	offset 74 48
+	frame data/chars/valdoll/155.gif
+
+
+anim freespecial12530
+	delay 6
+	offset 95 109
+	frame data/chars/valdoll/470.gif
+	offset 104 95
+	frame data/chars/valdoll/471.gif
+	offset 87 107
+	frame data/chars/valdoll/472.gif
+	offset 78 125
+	frame data/chars/valdoll/473.gif
+	delay 22
+	offset 63 134
+	frame data/chars/valdoll/474.gif
+	delay -1000
+	offset 63 134
+	frame data/chars/valdoll/474.gif
+
+
+anim freespecial13011
+	delay 18
+	offset 95 128
+	frame data/chars/valdoll/484.gif
+
+
+anim freespecial33020
+
+
+anim freespecial33021
+	delay 6
+	offset 28 44
+	frame data/chars/valdoll/1276.gif
+	offset 28 44
+	frame data/chars/valdoll/1277.gif
+	offset 28 45
+	frame data/chars/valdoll/1278.gif
+	offset 31 44
+	frame data/chars/valdoll/1279.gif
+	offset 28 44
+	frame data/chars/valdoll/1280.gif
+	offset 29 44
+	frame data/chars/valdoll/1281.gif
+
+
+anim freespecial43051
+	delay 10
+	offset -47 61
+	frame data/chars/valdoll/606.gif
+	offset -50 60
+	frame data/chars/valdoll/607.gif
+	offset -30 64
+	frame data/chars/valdoll/608.gif
+	offset -60 68
+	frame data/chars/valdoll/609.gif
+	offset -63 55
+	frame data/chars/valdoll/610.gif
+	offset -61 58
+	frame data/chars/valdoll/611.gif
+	delay 5
+	offset -72 59
+	frame data/chars/valdoll/612.gif
+
+
+anim freespecial10500
+	delay 22
+	offset 100 104
+	frame data/chars/valdoll/266.gif
+	delay -1000
+	offset 100 104
+	frame data/chars/valdoll/266.gif
+
+
+anim freespecial10501
+	delay 28
+	offset 105 114
+	frame data/chars/valdoll/267.gif
+	delay -1000
+	offset 105 114
+	frame data/chars/valdoll/267.gif
+
+
+anim freespecial10502
+	delay 33
+	offset 105 114
+	frame data/chars/valdoll/267.gif
+	delay -1000
+	offset 105 114
+	frame data/chars/valdoll/267.gif
+
+
+anim freespecial43052
+
+
+anim freespecial10510
+	delay 22
+	offset 90 110
+	frame data/chars/valdoll/268.gif
+	delay -1000
+	offset 90 110
+	frame data/chars/valdoll/268.gif
+
+
+anim freespecial10511
+	delay 28
+	offset 83 127
+	frame data/chars/valdoll/269.gif
+	delay -1000
+	offset 83 127
+	frame data/chars/valdoll/269.gif
+
+
+anim freespecial10512
+	delay 33
+	offset 83 127
+	frame data/chars/valdoll/269.gif
+	delay -1000
+	offset 83 127
+	frame data/chars/valdoll/269.gif
+
+
+anim freespecial42030
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/434.gif
+	offset 152 -2
+	frame data/chars/valdoll/435.gif
+	offset 141 3
+	frame data/chars/valdoll/436.gif
+	offset 152 6
+	frame data/chars/valdoll/437.gif
+	offset 153 1
+	frame data/chars/valdoll/434.gif
+	offset 152 -2
+	frame data/chars/valdoll/435.gif
+	offset 141 3
+	frame data/chars/valdoll/436.gif
+	offset 152 6
+	frame data/chars/valdoll/437.gif
+
+
+anim freespecial31000
+
+
+anim freespecial31001
+	delay -1000
+	offset 19 43
+	frame data/chars/valdoll/1253.gif
+
+
+anim freespecial33050
+
+
+anim freespecial33051
+	delay 5
+	offset 33 45
+	frame data/chars/valdoll/1282.gif
+	delay 6
+	offset 40 40
+	frame data/chars/valdoll/1283.gif
+	delay -1000
+	offset 41 46
+	frame data/chars/valdoll/1284.gif
+
+
+anim freespecial10530
+	delay 6
+	offset 95 109
+	frame data/chars/valdoll/270.gif
+	offset 104 95
+	frame data/chars/valdoll/271.gif
+	offset 87 107
+	frame data/chars/valdoll/272.gif
+	offset 78 125
+	frame data/chars/valdoll/273.gif
+	delay 22
+	offset 63 134
+	frame data/chars/valdoll/274.gif
+	delay -1000
+	offset 63 134
+	frame data/chars/valdoll/274.gif
+
+
+anim freespecial31011
+	delay 6
+	offset 23 24
+	frame data/chars/valdoll/1254.gif
+	offset 23 26
+	frame data/chars/valdoll/1255.gif
+
+
+anim freespecial43301
+
+
+anim freespecial13020
+	delay -1000
+	offset 108 102
+	frame data/chars/valdoll/487.gif
+
+
+anim freespecial31020
+
+
+anim freespecial31021
+	delay 6
+	offset 20 40
+	frame data/chars/valdoll/1256.gif
+	offset 18 42
+	frame data/chars/valdoll/1257.gif
+	offset 24 46
+	frame data/chars/valdoll/1258.gif
+	offset 22 43
+	frame data/chars/valdoll/1259.gif
+	offset 21 44
+	frame data/chars/valdoll/1260.gif
+	offset 24 44
+	frame data/chars/valdoll/1261.gif
+
+
+anim freespecial13021
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/518.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/519.gif
+	delay 4
+	offset 80 92
+	frame data/chars/valdoll/520.gif
+	delay 10
+	offset 88 97
+	frame data/chars/valdoll/521.gif
+	offset 97 93
+	frame data/chars/valdoll/522.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/523.gif
+
+
+anim freespecial13023
+	delay 4
+	offset 94 103
+	frame data/chars/valdoll/526.gif
+	delay 5
+	offset 128 118
+	frame data/chars/valdoll/527.gif
+	delay 4
+	offset 117 112
+	frame data/chars/valdoll/528.gif
+	offset 128 79
+	frame data/chars/valdoll/529.gif
+	offset 62 127
+	frame data/chars/valdoll/530.gif
+	delay 10
+	offset 63 124
+	frame data/chars/valdoll/531.gif
+	delay 6
+	offset 69 102
+	frame data/chars/valdoll/532.gif
+	delay 5
+	offset 104 96
+	frame data/chars/valdoll/533.gif
+
+
+anim freespecial12000
+	delay 8
+	offset 71 108
+	frame data/chars/valdoll/383.gif
+	offset 95 128
+	frame data/chars/valdoll/384.gif
+	offset 92 138
+	frame data/chars/valdoll/385.gif
+	offset 103 115
+	frame data/chars/valdoll/386.gif
+	offset 108 102
+	frame data/chars/valdoll/375.gif
+	offset 108 89
+	frame data/chars/valdoll/376.gif
+	offset 104 80
+	frame data/chars/valdoll/377.gif
+	offset 95 80
+	frame data/chars/valdoll/378.gif
+	offset 70 80
+	frame data/chars/valdoll/379.gif
+	offset 52 81
+	frame data/chars/valdoll/380.gif
+	offset 51 84
+	frame data/chars/valdoll/381.gif
+	offset 55 99
+	frame data/chars/valdoll/382.gif
+
+
+anim freespecial12001
+	delay 8
+	offset 108 102
+	frame data/chars/valdoll/387.gif
+	offset 108 91
+	frame data/chars/valdoll/388.gif
+	offset 104 91
+	frame data/chars/valdoll/389.gif
+	offset 95 91
+	frame data/chars/valdoll/390.gif
+	offset 70 91
+	frame data/chars/valdoll/391.gif
+	offset 56 91
+	frame data/chars/valdoll/392.gif
+	offset 56 91
+	frame data/chars/valdoll/393.gif
+	offset 56 99
+	frame data/chars/valdoll/394.gif
+	offset 71 108
+	frame data/chars/valdoll/395.gif
+	offset 95 128
+	frame data/chars/valdoll/396.gif
+	offset 92 138
+	frame data/chars/valdoll/397.gif
+	offset 103 115
+	frame data/chars/valdoll/398.gif
+	offset 108 102
+	frame data/chars/valdoll/399.gif
+
+
+anim freespecial31050
+
+
+anim freespecial31051
+	delay 6
+	offset 18 27
+	frame data/chars/valdoll/1262.gif
+	offset 17 25
+	frame data/chars/valdoll/1263.gif
+	offset 22 22
+	frame data/chars/valdoll/1264.gif
+	offset 18 27
+	frame data/chars/valdoll/1265.gif
+
+
+anim freespecial41301
+
+
+anim freespecial41021
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/318.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/319.gif
+	delay 4
+	offset 80 92
+	frame data/chars/valdoll/320.gif
+	delay 10
+	offset 88 97
+	frame data/chars/valdoll/321.gif
+	offset 97 93
+	frame data/chars/valdoll/322.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/323.gif
+
+
+anim freespecial42021
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/418.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/419.gif
+	delay 4
+	offset 80 92
+	frame data/chars/valdoll/420.gif
+	delay 10
+	offset 88 97
+	frame data/chars/valdoll/421.gif
+	offset 97 93
+	frame data/chars/valdoll/422.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/423.gif
+
+
+anim freespecial41030
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/334.gif
+	offset 152 -2
+	frame data/chars/valdoll/335.gif
+	offset 141 3
+	frame data/chars/valdoll/336.gif
+	offset 152 6
+	frame data/chars/valdoll/337.gif
+
+
+anim freespecial32500
+
+
+anim freespecial32501
+	delay -1000
+	offset 56 95
+	frame data/chars/valdoll/1270.gif
+
+
+anim freespecial74140108
+
+
+anim freespecial11002
+	delay 8
+	offset 108 102
+	frame data/chars/valdoll/300.gif
+	offset 108 91
+	frame data/chars/valdoll/301.gif
+	offset 104 91
+	frame data/chars/valdoll/302.gif
+	offset 95 91
+	frame data/chars/valdoll/303.gif
+	offset 70 91
+	frame data/chars/valdoll/304.gif
+	offset 52 91
+	frame data/chars/valdoll/305.gif
+	offset 40 91
+	frame data/chars/valdoll/306.gif
+	offset 55 99
+	frame data/chars/valdoll/307.gif
+	offset 70 108
+	frame data/chars/valdoll/308.gif
+	offset 95 128
+	frame data/chars/valdoll/309.gif
+	offset 92 138
+	frame data/chars/valdoll/310.gif
+	offset 103 115
+	frame data/chars/valdoll/311.gif
+	offset 108 102
+	frame data/chars/valdoll/312.gif
+
+
+anim freespecial33500
+
+
+anim freespecial13053
+
+
+anim freespecial33501
+	delay -1000
+	offset 55 53
+	frame data/chars/valdoll/1285.gif
+
+
+anim freespecial31500
+
+
+anim freespecial31501
+	delay -1000
+	offset 33 32
+	frame data/chars/valdoll/1266.gif
+
+
+anim freespecial41061
+	delay 4
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -59 49
+	frame data/chars/valdoll/591.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -54 55
+	frame data/chars/valdoll/592.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -62 44
+	frame data/chars/valdoll/593.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -57 49
+	frame data/chars/valdoll/594.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -63 50
+	frame data/chars/valdoll/595.gif
+	delay 6
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	delay 4
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -59 49
+	frame data/chars/valdoll/591.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -54 55
+	frame data/chars/valdoll/592.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -62 44
+	frame data/chars/valdoll/593.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -57 49
+	frame data/chars/valdoll/594.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -63 50
+	frame data/chars/valdoll/595.gif
+	delay 6
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	delay 2
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+
+
+anim freespecial21100
+	delay 5
+	offset 27 4
+	frame data/chars/valdoll/670.gif
+	offset 44 6
+	frame data/chars/valdoll/671.gif
+	offset 59 8
+	frame data/chars/valdoll/672.gif
+	delay 6
+	offset 65 8
+	frame data/chars/valdoll/673.gif
+	delay 5
+	offset 69 9
+	frame data/chars/valdoll/674.gif
+	offset 72 9
+	frame data/chars/valdoll/675.gif
+	offset 74 9
+	frame data/chars/valdoll/676.gif
+
+
+anim freespecial21101
+	delay 5
+	offset 44 6
+	frame data/chars/valdoll/671.gif
+	offset 59 8
+	frame data/chars/valdoll/672.gif
+	offset 65 8
+	frame data/chars/valdoll/673.gif
+	offset 69 9
+	frame data/chars/valdoll/674.gif
+	offset 72 9
+	frame data/chars/valdoll/675.gif
+	offset 74 9
+	frame data/chars/valdoll/676.gif
+
+
+anim freespecial21102
+	delay 6
+	offset 27 4
+	frame data/chars/valdoll/670.gif
+	offset 44 6
+	frame data/chars/valdoll/671.gif
+	offset 59 8
+	frame data/chars/valdoll/672.gif
+	offset 65 8
+	frame data/chars/valdoll/673.gif
+	offset 69 9
+	frame data/chars/valdoll/674.gif
+	offset 72 9
+	frame data/chars/valdoll/675.gif
+	delay 8
+	offset 74 9
+	frame data/chars/valdoll/676.gif
+
+
+anim freespecial21103
+	delay 5
+	offset 19 16
+	frame data/chars/valdoll/677.gif
+	offset 25 41
+	frame data/chars/valdoll/678.gif
+	offset 23 39
+	frame data/chars/valdoll/679.gif
+	offset 23 42
+	frame data/chars/valdoll/680.gif
+	offset 19 42
+	frame data/chars/valdoll/681.gif
+	offset 16 42
+	frame data/chars/valdoll/682.gif
+	offset 16 39
+	frame data/chars/valdoll/683.gif
+	offset 15 39
+	frame data/chars/valdoll/684.gif
+	offset 5 47
+	frame data/chars/valdoll/685.gif
+	offset -25 42
+	frame data/chars/valdoll/686.gif
+	offset -48 29
+	frame data/chars/valdoll/687.gif
+	delay 6
+	offset -61 9
+	frame data/chars/valdoll/688.gif
+
+
+anim freespecial21104
+	delay 5
+	offset 0 22
+	frame data/chars/valdoll/689.gif
+	offset 8 55
+	frame data/chars/valdoll/690.gif
+	offset 6 54
+	frame data/chars/valdoll/691.gif
+	offset 6 58
+	frame data/chars/valdoll/692.gif
+	offset 0 58
+	frame data/chars/valdoll/693.gif
+	offset -4 58
+	frame data/chars/valdoll/694.gif
+	offset -4 54
+	frame data/chars/valdoll/695.gif
+	offset -6 54
+	frame data/chars/valdoll/696.gif
+	offset -20 64
+	frame data/chars/valdoll/697.gif
+	offset -59 57
+	frame data/chars/valdoll/698.gif
+	offset -89 40
+	frame data/chars/valdoll/699.gif
+	delay 6
+	offset -107 12
+	frame data/chars/valdoll/700.gif
+
+
+anim freespecial21110
+	delay 5
+	offset 27 4
+	frame data/chars/valdoll/670.gif
+	offset 44 6
+	frame data/chars/valdoll/671.gif
+	offset 59 8
+	frame data/chars/valdoll/672.gif
+	delay 6
+	offset 65 8
+	frame data/chars/valdoll/673.gif
+	delay 5
+	offset 69 9
+	frame data/chars/valdoll/674.gif
+	offset 72 9
+	frame data/chars/valdoll/675.gif
+	offset 74 9
+	frame data/chars/valdoll/676.gif
+
+
+anim freespecial21111
+	delay 5
+	offset 44 6
+	frame data/chars/valdoll/671.gif
+	offset 59 8
+	frame data/chars/valdoll/672.gif
+	offset 65 8
+	frame data/chars/valdoll/673.gif
+	offset 69 9
+	frame data/chars/valdoll/674.gif
+	offset 72 9
+	frame data/chars/valdoll/675.gif
+	offset 74 9
+	frame data/chars/valdoll/676.gif
+
+
+anim freespecial21112
+	delay 6
+	offset 27 4
+	frame data/chars/valdoll/670.gif
+	offset 44 6
+	frame data/chars/valdoll/671.gif
+	offset 59 8
+	frame data/chars/valdoll/672.gif
+	offset 65 8
+	frame data/chars/valdoll/673.gif
+	offset 69 9
+	frame data/chars/valdoll/674.gif
+	offset 72 9
+	frame data/chars/valdoll/675.gif
+	delay 8
+	offset 74 9
+	frame data/chars/valdoll/676.gif
+
+
+anim freespecial12053
+
+
+anim freespecial43053
+
+
+anim freespecial43054
+
+
+anim freespecial13000
+	delay 8
+	offset 71 108
+	frame data/chars/valdoll/483.gif
+	offset 95 128
+	frame data/chars/valdoll/484.gif
+	offset 92 138
+	frame data/chars/valdoll/485.gif
+	offset 103 115
+	frame data/chars/valdoll/486.gif
+	offset 108 102
+	frame data/chars/valdoll/475.gif
+	offset 108 89
+	frame data/chars/valdoll/476.gif
+	offset 104 80
+	frame data/chars/valdoll/477.gif
+	offset 95 80
+	frame data/chars/valdoll/478.gif
+	offset 70 80
+	frame data/chars/valdoll/479.gif
+	offset 52 81
+	frame data/chars/valdoll/480.gif
+	offset 51 84
+	frame data/chars/valdoll/481.gif
+	offset 55 99
+	frame data/chars/valdoll/482.gif
+
+
+anim freespecial13001
+	delay 8
+	offset 108 102
+	frame data/chars/valdoll/487.gif
+	offset 108 91
+	frame data/chars/valdoll/488.gif
+	offset 104 91
+	frame data/chars/valdoll/489.gif
+	offset 95 91
+	frame data/chars/valdoll/490.gif
+	offset 70 91
+	frame data/chars/valdoll/491.gif
+	offset 56 91
+	frame data/chars/valdoll/492.gif
+	offset 56 91
+	frame data/chars/valdoll/493.gif
+	offset 56 99
+	frame data/chars/valdoll/494.gif
+	offset 71 108
+	frame data/chars/valdoll/495.gif
+	offset 95 128
+	frame data/chars/valdoll/496.gif
+	offset 92 138
+	frame data/chars/valdoll/497.gif
+	offset 103 115
+	frame data/chars/valdoll/498.gif
+	offset 108 102
+	frame data/chars/valdoll/499.gif
+
+
+anim freespecial13002
+	delay 8
+	offset 108 102
+	frame data/chars/valdoll/500.gif
+	offset 108 91
+	frame data/chars/valdoll/501.gif
+	offset 104 91
+	frame data/chars/valdoll/502.gif
+	offset 95 91
+	frame data/chars/valdoll/503.gif
+	offset 70 91
+	frame data/chars/valdoll/504.gif
+	offset 52 91
+	frame data/chars/valdoll/505.gif
+	offset 40 91
+	frame data/chars/valdoll/506.gif
+	offset 55 99
+	frame data/chars/valdoll/507.gif
+	offset 70 108
+	frame data/chars/valdoll/508.gif
+	offset 95 128
+	frame data/chars/valdoll/509.gif
+	offset 92 138
+	frame data/chars/valdoll/510.gif
+	offset 103 115
+	frame data/chars/valdoll/511.gif
+	offset 108 102
+	frame data/chars/valdoll/512.gif
+
+
+anim freespecial13005
+	delay 6
+	offset 68 93
+	frame data/chars/valdoll/513.gif
+	offset 81 102
+	frame data/chars/valdoll/514.gif
+	offset 77 104
+	frame data/chars/valdoll/515.gif
+	offset 92 99
+	frame data/chars/valdoll/516.gif
+	delay 8
+	offset 97 96
+	frame data/chars/valdoll/517.gif
+
+
+anim freespecial21200
+	delay 6
+	offset 51 12
+	frame data/chars/valdoll/701.gif
+	offset 57 11
+	frame data/chars/valdoll/702.gif
+	offset 58 13
+	frame data/chars/valdoll/703.gif
+	offset 54 15
+	frame data/chars/valdoll/704.gif
+
+
+anim freespecial21201
+	delay 13
+	offset 14 10
+	frame data/chars/valdoll/705.gif
+	offset 13 10
+	frame data/chars/valdoll/706.gif
+	offset 15 10
+	frame data/chars/valdoll/707.gif
+	offset 16 11
+	frame data/chars/valdoll/708.gif
+	delay 14
+	offset 17 11
+	frame data/chars/valdoll/709.gif
+
+
+anim freespecial13010
+	delay 15
+	offset 95 128
+	frame data/chars/valdoll/484.gif
+
+
+anim freespecial21203
+	delay 6
+	offset 21 21
+	frame data/chars/valdoll/715.gif
+	offset 39 30
+	frame data/chars/valdoll/716.gif
+	offset 34 39
+	frame data/chars/valdoll/717.gif
+	delay 8
+	offset 36 46
+	frame data/chars/valdoll/718.gif
+	delay 6
+	offset 36 53
+	frame data/chars/valdoll/719.gif
+	offset 34 55
+	frame data/chars/valdoll/720.gif
+	offset 33 58
+	frame data/chars/valdoll/721.gif
+	offset 29 59
+	frame data/chars/valdoll/722.gif
+	offset 28 61
+	frame data/chars/valdoll/723.gif
+	offset 23 62
+	frame data/chars/valdoll/724.gif
+	delay 8
+	offset 23 64
+	frame data/chars/valdoll/725.gif
+
+
+anim freespecial21204
+	delay 2
+	offset 17 41
+	frame data/chars/valdoll/726.gif
+	offset 17 41
+	frame data/chars/valdoll/727.gif
+	offset 17 41
+	frame data/chars/valdoll/728.gif
+	offset 16 41
+	frame data/chars/valdoll/729.gif
+	offset 17 41
+	frame data/chars/valdoll/728.gif
+	delay -1000
+	offset 17 41
+	frame data/chars/valdoll/727.gif
+
+
+anim freespecial21205
+	delay 6
+	offset 20 43
+	frame data/chars/valdoll/730.gif
+	offset 24 37
+	frame data/chars/valdoll/731.gif
+	offset 23 42
+	frame data/chars/valdoll/732.gif
+	offset 22 42
+	frame data/chars/valdoll/733.gif
+	offset 28 41
+	frame data/chars/valdoll/734.gif
+	offset 36 64
+	frame data/chars/valdoll/735.gif
+	delay 8
+	offset 57 74
+	frame data/chars/valdoll/736.gif
+
+
+anim freespecial21206
+	delay 4
+	offset 25 9
+	frame data/chars/valdoll/737.gif
+	offset 24 9
+	frame data/chars/valdoll/738.gif
+	offset 23 9
+	frame data/chars/valdoll/739.gif
+	offset 26 10
+	frame data/chars/valdoll/740.gif
+	offset 27 10
+	frame data/chars/valdoll/741.gif
+	offset 30 10
+	frame data/chars/valdoll/742.gif
+	offset 29 10
+	frame data/chars/valdoll/743.gif
+	offset 28 10
+	frame data/chars/valdoll/744.gif
+
+
+anim freespecial10020
+	delay -1000
+	offset 108 102
+	frame data/chars/valdoll/187.gif
+
+
+anim freespecial21210
+	delay 6
+	offset 51 12
+	frame data/chars/valdoll/701.gif
+	offset 57 11
+	frame data/chars/valdoll/702.gif
+	offset 58 13
+	frame data/chars/valdoll/703.gif
+	offset 54 15
+	frame data/chars/valdoll/704.gif
+	offset 51 12
+	frame data/chars/valdoll/701.gif
+	offset 57 11
+	frame data/chars/valdoll/702.gif
+	offset 58 13
+	frame data/chars/valdoll/703.gif
+	offset 54 15
+	frame data/chars/valdoll/704.gif
+
+
+anim freespecial21211
+	delay 13
+	offset 14 10
+	frame data/chars/valdoll/705.gif
+	offset 13 10
+	frame data/chars/valdoll/706.gif
+	offset 15 10
+	frame data/chars/valdoll/707.gif
+	offset 16 11
+	frame data/chars/valdoll/708.gif
+	delay 14
+	offset 17 11
+	frame data/chars/valdoll/709.gif
+
+
+anim freespecial21212
+	delay 13
+	offset 9 7
+	frame data/chars/valdoll/710.gif
+	offset 10 9
+	frame data/chars/valdoll/711.gif
+	offset 10 11
+	frame data/chars/valdoll/712.gif
+	offset 11 12
+	frame data/chars/valdoll/713.gif
+	delay 14
+	offset 11 13
+	frame data/chars/valdoll/714.gif
+
+
+anim freespecial21213
+	delay 6
+	offset 21 21
+	frame data/chars/valdoll/715.gif
+	offset 39 30
+	frame data/chars/valdoll/716.gif
+	offset 34 39
+	frame data/chars/valdoll/717.gif
+	delay 8
+	offset 36 46
+	frame data/chars/valdoll/718.gif
+	delay 6
+	offset 36 53
+	frame data/chars/valdoll/719.gif
+	offset 34 55
+	frame data/chars/valdoll/720.gif
+	offset 33 58
+	frame data/chars/valdoll/721.gif
+	offset 29 59
+	frame data/chars/valdoll/722.gif
+	offset 28 61
+	frame data/chars/valdoll/723.gif
+	offset 23 62
+	frame data/chars/valdoll/724.gif
+	delay 8
+	offset 23 64
+	frame data/chars/valdoll/725.gif
+
+
+anim freespecial13022
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/518.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/519.gif
+	delay 2
+	offset 54 110
+	frame data/chars/valdoll/524.gif
+	delay 10
+	offset 52 108
+	frame data/chars/valdoll/525.gif
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/522.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/523.gif
+
+
+anim freespecial21215
+	delay 6
+	offset 20 43
+	frame data/chars/valdoll/730.gif
+	offset 24 37
+	frame data/chars/valdoll/731.gif
+	offset 23 42
+	frame data/chars/valdoll/732.gif
+	offset 22 42
+	frame data/chars/valdoll/733.gif
+	offset 28 41
+	frame data/chars/valdoll/734.gif
+	offset 36 64
+	frame data/chars/valdoll/735.gif
+	delay 8
+	offset 57 74
+	frame data/chars/valdoll/736.gif
+
+
+anim freespecial13030
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/534.gif
+	offset 152 -2
+	frame data/chars/valdoll/535.gif
+	offset 141 3
+	frame data/chars/valdoll/536.gif
+	offset 152 6
+	frame data/chars/valdoll/537.gif
+	offset 153 1
+	frame data/chars/valdoll/534.gif
+	offset 152 -2
+	frame data/chars/valdoll/535.gif
+	offset 141 3
+	frame data/chars/valdoll/536.gif
+	offset 152 6
+	frame data/chars/valdoll/537.gif
+
+
+anim freespecial13031
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/522.gif
+	delay 6
+	offset 99 95
+	frame data/chars/valdoll/523.gif
+
+
+anim freespecial13035
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/534.gif
+	offset 152 -2
+	frame data/chars/valdoll/535.gif
+	offset 141 3
+	frame data/chars/valdoll/536.gif
+	offset 152 6
+	frame data/chars/valdoll/537.gif
+	offset 153 1
+	frame data/chars/valdoll/534.gif
+	offset 152 -2
+	frame data/chars/valdoll/535.gif
+	offset 141 3
+	frame data/chars/valdoll/536.gif
+	offset 152 6
+	frame data/chars/valdoll/537.gif
+
+
+anim freespecial13040
+	delay -1000
+	offset 98 118
+	frame data/chars/valdoll/538.gif
+
+
+anim freespecial13041
+	delay 5
+	offset 137 119
+	frame data/chars/valdoll/545.gif
+
+
+anim freespecial13045
+	delay 4
+	offset 113 116
+	frame data/chars/valdoll/539.gif
+	offset 126 108
+	frame data/chars/valdoll/540.gif
+	offset 135 114
+	frame data/chars/valdoll/541.gif
+	delay 22
+	offset 135 114
+	frame data/chars/valdoll/542.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/543.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/544.gif
+
+
+anim freespecial13046
+	delay 6
+	offset 137 119
+	frame data/chars/valdoll/545.gif
+	delay 4
+	offset 139 111
+	frame data/chars/valdoll/546.gif
+	offset 151 114
+	frame data/chars/valdoll/547.gif
+	delay 22
+	offset 151 114
+	frame data/chars/valdoll/548.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/543.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/544.gif
+
+
+anim freespecial11000
+	delay 8
+	offset 71 108
+	frame data/chars/valdoll/283.gif
+	offset 95 128
+	frame data/chars/valdoll/284.gif
+	offset 92 138
+	frame data/chars/valdoll/285.gif
+	offset 103 115
+	frame data/chars/valdoll/286.gif
+	offset 108 102
+	frame data/chars/valdoll/275.gif
+	offset 108 89
+	frame data/chars/valdoll/276.gif
+	offset 104 80
+	frame data/chars/valdoll/277.gif
+	offset 95 80
+	frame data/chars/valdoll/278.gif
+	offset 70 80
+	frame data/chars/valdoll/279.gif
+	offset 52 81
+	frame data/chars/valdoll/280.gif
+	offset 51 84
+	frame data/chars/valdoll/281.gif
+	offset 55 99
+	frame data/chars/valdoll/282.gif
+
+
+anim freespecial11001
+	delay 8
+	offset 108 102
+	frame data/chars/valdoll/287.gif
+	offset 108 91
+	frame data/chars/valdoll/288.gif
+	offset 104 91
+	frame data/chars/valdoll/289.gif
+	offset 95 91
+	frame data/chars/valdoll/290.gif
+	offset 70 91
+	frame data/chars/valdoll/291.gif
+	offset 56 91
+	frame data/chars/valdoll/292.gif
+	offset 56 91
+	frame data/chars/valdoll/293.gif
+	offset 56 99
+	frame data/chars/valdoll/294.gif
+	offset 71 108
+	frame data/chars/valdoll/295.gif
+	offset 95 128
+	frame data/chars/valdoll/296.gif
+	offset 92 138
+	frame data/chars/valdoll/297.gif
+	offset 103 115
+	frame data/chars/valdoll/298.gif
+	offset 108 102
+	frame data/chars/valdoll/299.gif
+
+
+anim freespecial13050
+	delay 8
+	offset 98 103
+	frame data/chars/valdoll/549.gif
+	offset 74 116
+	frame data/chars/valdoll/550.gif
+	offset 108 110
+	frame data/chars/valdoll/551.gif
+	offset 116 106
+	frame data/chars/valdoll/552.gif
+	delay 14
+	offset 99 128
+	frame data/chars/valdoll/553.gif
+	delay 5
+	offset 91 140
+	frame data/chars/valdoll/554.gif
+	delay 43
+	offset 94 129
+	frame data/chars/valdoll/555.gif
+	delay 10
+	offset 101 106
+	frame data/chars/valdoll/518.gif
+
+
+anim freespecial13051
+	delay 10
+	offset -47 61
+	frame data/chars/valdoll/606.gif
+	offset -50 60
+	frame data/chars/valdoll/607.gif
+	offset -30 64
+	frame data/chars/valdoll/608.gif
+	offset -60 68
+	frame data/chars/valdoll/609.gif
+	offset -63 55
+	frame data/chars/valdoll/610.gif
+	offset -61 58
+	frame data/chars/valdoll/611.gif
+	delay 5
+	offset -72 59
+	frame data/chars/valdoll/612.gif
+
+
+anim freespecial13052
+
+
+anim freespecial11005
+	delay 6
+	offset 68 93
+	frame data/chars/valdoll/313.gif
+	offset 81 102
+	frame data/chars/valdoll/314.gif
+	offset 77 104
+	frame data/chars/valdoll/315.gif
+	offset 92 99
+	frame data/chars/valdoll/316.gif
+	delay 8
+	offset 97 96
+	frame data/chars/valdoll/317.gif
+
+
+anim freespecial13054
+
+
+anim freespecial13055
+
+
+anim freespecial13056
+
+
+anim freespecial13057
+
+
+anim freespecial11010
+	delay 15
+	offset 95 128
+	frame data/chars/valdoll/284.gif
+
+
+anim freespecial11011
+	delay 18
+	offset 95 128
+	frame data/chars/valdoll/284.gif
+
+
+anim freespecial13061
+	delay 10
+	offset -47 61
+	frame data/chars/valdoll/606.gif
+	offset -50 60
+	frame data/chars/valdoll/607.gif
+	offset -30 64
+	frame data/chars/valdoll/608.gif
+	offset -60 68
+	frame data/chars/valdoll/609.gif
+	offset -63 55
+	frame data/chars/valdoll/610.gif
+	offset -61 58
+	frame data/chars/valdoll/611.gif
+	delay 5
+	offset -72 59
+	frame data/chars/valdoll/612.gif
+
+
+anim freespecial11020
+	delay -1000
+	offset 108 102
+	frame data/chars/valdoll/287.gif
+
+
+anim freespecial11021
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/318.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/319.gif
+	delay 4
+	offset 80 92
+	frame data/chars/valdoll/320.gif
+	delay 10
+	offset 88 97
+	frame data/chars/valdoll/321.gif
+	offset 97 93
+	frame data/chars/valdoll/322.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/323.gif
+
+
+anim freespecial11022
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/318.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/319.gif
+	delay 2
+	offset 54 110
+	frame data/chars/valdoll/324.gif
+	delay 10
+	offset 52 108
+	frame data/chars/valdoll/325.gif
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/322.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/323.gif
+
+
+anim freespecial11023
+	delay 4
+	offset 94 103
+	frame data/chars/valdoll/326.gif
+	delay 5
+	offset 128 118
+	frame data/chars/valdoll/327.gif
+	delay 4
+	offset 117 112
+	frame data/chars/valdoll/328.gif
+	offset 128 79
+	frame data/chars/valdoll/329.gif
+	offset 62 127
+	frame data/chars/valdoll/330.gif
+	delay 10
+	offset 63 124
+	frame data/chars/valdoll/331.gif
+	delay 6
+	offset 69 102
+	frame data/chars/valdoll/332.gif
+	delay 5
+	offset 104 96
+	frame data/chars/valdoll/333.gif
+
+
+anim freespecial11030
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/334.gif
+	offset 152 -2
+	frame data/chars/valdoll/335.gif
+	offset 141 3
+	frame data/chars/valdoll/336.gif
+	offset 152 6
+	frame data/chars/valdoll/337.gif
+
+
+anim freespecial11031
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/322.gif
+	delay 6
+	offset 99 95
+	frame data/chars/valdoll/323.gif
+
+
+anim freespecial11035
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/334.gif
+	offset 152 -2
+	frame data/chars/valdoll/335.gif
+	offset 141 3
+	frame data/chars/valdoll/336.gif
+	offset 152 6
+	frame data/chars/valdoll/337.gif
+	offset 153 1
+	frame data/chars/valdoll/334.gif
+	offset 152 -2
+	frame data/chars/valdoll/335.gif
+	offset 141 3
+	frame data/chars/valdoll/336.gif
+	offset 152 6
+	frame data/chars/valdoll/337.gif
+
+
+anim freespecial11040
+	delay -1000
+	offset 98 118
+	frame data/chars/valdoll/338.gif
+
+
+anim freespecial11041
+	delay 5
+	offset 137 119
+	frame data/chars/valdoll/345.gif
+
+
+anim freespecial11045
+	delay 4
+	offset 113 116
+	frame data/chars/valdoll/339.gif
+	offset 126 108
+	frame data/chars/valdoll/340.gif
+	offset 135 114
+	frame data/chars/valdoll/341.gif
+	delay 22
+	offset 135 114
+	frame data/chars/valdoll/342.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/343.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/344.gif
+
+
+anim freespecial11046
+	delay 6
+	offset 137 119
+	frame data/chars/valdoll/345.gif
+	delay 4
+	offset 139 111
+	frame data/chars/valdoll/346.gif
+	offset 151 114
+	frame data/chars/valdoll/347.gif
+	delay 22
+	offset 151 114
+	frame data/chars/valdoll/348.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/343.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/344.gif
+
+
+anim freespecial11050
+	delay 8
+	offset 98 103
+	frame data/chars/valdoll/349.gif
+	offset 74 116
+	frame data/chars/valdoll/350.gif
+	offset 108 110
+	frame data/chars/valdoll/351.gif
+	offset 116 106
+	frame data/chars/valdoll/352.gif
+	delay 14
+	offset 99 128
+	frame data/chars/valdoll/353.gif
+	delay 10
+	offset 91 140
+	frame data/chars/valdoll/354.gif
+	offset 94 129
+	frame data/chars/valdoll/355.gif
+	offset 91 140
+	frame data/chars/valdoll/354.gif
+	offset 94 129
+	frame data/chars/valdoll/355.gif
+	offset 91 140
+	frame data/chars/valdoll/354.gif
+	offset 94 129
+	frame data/chars/valdoll/355.gif
+	offset 91 140
+	frame data/chars/valdoll/354.gif
+	offset 94 129
+	frame data/chars/valdoll/355.gif
+	delay 6
+	offset 91 140
+	frame data/chars/valdoll/354.gif
+	delay 10
+	offset 101 106
+	frame data/chars/valdoll/318.gif
+
+
+anim freespecial11051
+	delay 4
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -59 49
+	frame data/chars/valdoll/591.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -54 55
+	frame data/chars/valdoll/592.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -62 44
+	frame data/chars/valdoll/593.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -57 49
+	frame data/chars/valdoll/594.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -63 50
+	frame data/chars/valdoll/595.gif
+	delay 6
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	delay 4
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -59 49
+	frame data/chars/valdoll/591.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -54 55
+	frame data/chars/valdoll/592.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -62 44
+	frame data/chars/valdoll/593.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -57 49
+	frame data/chars/valdoll/594.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -63 50
+	frame data/chars/valdoll/595.gif
+	delay 6
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	delay 2
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+
+
+anim freespecial11052
+
+
+anim freespecial11061
+	delay 4
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -59 49
+	frame data/chars/valdoll/591.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -54 55
+	frame data/chars/valdoll/592.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -62 44
+	frame data/chars/valdoll/593.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -57 49
+	frame data/chars/valdoll/594.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -63 50
+	frame data/chars/valdoll/595.gif
+	delay 6
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	delay 4
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -59 49
+	frame data/chars/valdoll/591.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -54 55
+	frame data/chars/valdoll/592.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -62 44
+	frame data/chars/valdoll/593.gif
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	offset -57 49
+	frame data/chars/valdoll/594.gif
+	offset -48 59
+	frame data/chars/valdoll/596.gif
+	offset -63 50
+	frame data/chars/valdoll/595.gif
+	delay 6
+	offset -48 59
+	frame data/chars/valdoll/597.gif
+	delay 2
+	offset -55 51
+	frame data/chars/valdoll/590.gif
+
+
+anim freespecial7000
+	delay 2
+	offset 17 14
+	frame data/chars/valdoll/868.gif
+	offset 21 18
+	frame data/chars/valdoll/869.gif
+	offset 25 20
+	frame data/chars/valdoll/870.gif
+	offset 27 21
+	frame data/chars/valdoll/871.gif
+	offset 29 22
+	frame data/chars/valdoll/872.gif
+	offset 29 22
+	frame data/chars/valdoll/873.gif
+	delay 4
+	offset 29 21
+	frame data/chars/valdoll/874.gif
+
+
+anim freespecial7001
+	delay 2
+	offset 26 18
+	frame data/chars/valdoll/875.gif
+	offset 30 23
+	frame data/chars/valdoll/876.gif
+	offset 33 27
+	frame data/chars/valdoll/877.gif
+	offset 34 30
+	frame data/chars/valdoll/878.gif
+	offset 36 32
+	frame data/chars/valdoll/879.gif
+	offset 38 33
+	frame data/chars/valdoll/880.gif
+	offset 39 32
+	frame data/chars/valdoll/881.gif
+	offset 39 30
+	frame data/chars/valdoll/882.gif
+	delay 4
+	offset 37 30
+	frame data/chars/valdoll/883.gif
+
+
+anim freespecial7002
+	delay 2
+	offset 33 29
+	frame data/chars/valdoll/884.gif
+	offset 41 35
+	frame data/chars/valdoll/885.gif
+	offset 47 38
+	frame data/chars/valdoll/886.gif
+	offset 50 39
+	frame data/chars/valdoll/887.gif
+	offset 52 40
+	frame data/chars/valdoll/888.gif
+	offset 52 39
+	frame data/chars/valdoll/889.gif
+	offset 50 37
+	frame data/chars/valdoll/890.gif
+	offset 51 37
+	frame data/chars/valdoll/891.gif
+	offset 54 39
+	frame data/chars/valdoll/892.gif
+	offset 54 40
+	frame data/chars/valdoll/893.gif
+	delay 4
+	offset 54 41
+	frame data/chars/valdoll/894.gif
+
+
+anim freespecial7003
+	delay 2
+	offset 32 43
+	frame data/chars/valdoll/895.gif
+	offset 40 47
+	frame data/chars/valdoll/896.gif
+	offset 46 52
+	frame data/chars/valdoll/897.gif
+	offset 49 55
+	frame data/chars/valdoll/898.gif
+	offset 51 59
+	frame data/chars/valdoll/899.gif
+	offset 51 62
+	frame data/chars/valdoll/900.gif
+	offset 56 65
+	frame data/chars/valdoll/901.gif
+	offset 58 68
+	frame data/chars/valdoll/902.gif
+	offset 58 70
+	frame data/chars/valdoll/903.gif
+	offset 57 72
+	frame data/chars/valdoll/904.gif
+	offset 54 74
+	frame data/chars/valdoll/905.gif
+	offset 48 76
+	frame data/chars/valdoll/906.gif
+	offset 48 77
+	frame data/chars/valdoll/907.gif
+	offset 50 79
+	frame data/chars/valdoll/908.gif
+	delay 4
+	offset 51 80
+	frame data/chars/valdoll/909.gif
+
+
+anim freespecial7004
+	delay 2
+	offset 25 20
+	frame data/chars/valdoll/910.gif
+	delay 4
+	offset 32 25
+	frame data/chars/valdoll/911.gif
+	offset 48 38
+	frame data/chars/valdoll/912.gif
+	offset 44 34
+	frame data/chars/valdoll/913.gif
+	offset 48 39
+	frame data/chars/valdoll/914.gif
+	offset 53 43
+	frame data/chars/valdoll/915.gif
+	offset 57 47
+	frame data/chars/valdoll/916.gif
+	offset 59 50
+	frame data/chars/valdoll/917.gif
+	offset 60 52
+	frame data/chars/valdoll/918.gif
+	delay 2
+	offset 61 53
+	frame data/chars/valdoll/919.gif
+	delay 4
+	offset 60 54
+	frame data/chars/valdoll/920.gif
+	offset 59 53
+	frame data/chars/valdoll/921.gif
+	offset 52 52
+	frame data/chars/valdoll/922.gif
+	offset 54 51
+	frame data/chars/valdoll/923.gif
+	offset 55 49
+	frame data/chars/valdoll/924.gif
+	delay 5
+	offset 54 46
+	frame data/chars/valdoll/925.gif
+
+
+anim freespecial7005
+	delay 2
+	offset 44 38
+	frame data/chars/valdoll/926.gif
+	offset 48 44
+	frame data/chars/valdoll/927.gif
+	offset 52 48
+	frame data/chars/valdoll/928.gif
+	offset 56 53
+	frame data/chars/valdoll/929.gif
+	offset 60 57
+	frame data/chars/valdoll/930.gif
+	offset 64 58
+	frame data/chars/valdoll/931.gif
+	offset 67 57
+	frame data/chars/valdoll/932.gif
+	offset 71 55
+	frame data/chars/valdoll/933.gif
+	offset 74 57
+	frame data/chars/valdoll/934.gif
+	offset 77 59
+	frame data/chars/valdoll/935.gif
+	delay 4
+	offset 81 61
+	frame data/chars/valdoll/936.gif
+
+
+anim freespecial7006
+	delay 2
+	offset 7 28
+	frame data/chars/valdoll/937.gif
+	offset 13 34
+	frame data/chars/valdoll/938.gif
+	offset 10 38
+	frame data/chars/valdoll/939.gif
+	offset 11 41
+	frame data/chars/valdoll/940.gif
+	offset 12 43
+	frame data/chars/valdoll/941.gif
+	offset 13 44
+	frame data/chars/valdoll/942.gif
+	offset 14 44
+	frame data/chars/valdoll/943.gif
+	offset 14 34
+	frame data/chars/valdoll/944.gif
+	offset 15 36
+	frame data/chars/valdoll/945.gif
+	offset 15 38
+	frame data/chars/valdoll/946.gif
+	delay 4
+	offset 16 40
+	frame data/chars/valdoll/947.gif
+
+
+anim freespecial7007
+	delay 4
+	offset 16 21
+	frame data/chars/valdoll/948.gif
+	offset 21 30
+	frame data/chars/valdoll/949.gif
+	offset 26 38
+	frame data/chars/valdoll/950.gif
+	offset 30 39
+	frame data/chars/valdoll/951.gif
+	offset 33 41
+	frame data/chars/valdoll/952.gif
+	offset 35 43
+	frame data/chars/valdoll/953.gif
+	offset 36 44
+	frame data/chars/valdoll/954.gif
+	offset 36 43
+	frame data/chars/valdoll/955.gif
+	offset 36 45
+	frame data/chars/valdoll/956.gif
+	offset 37 46
+	frame data/chars/valdoll/957.gif
+	offset 38 48
+	frame data/chars/valdoll/958.gif
+	offset 37 49
+	frame data/chars/valdoll/959.gif
+	offset 37 51
+	frame data/chars/valdoll/960.gif
+	offset 38 52
+	frame data/chars/valdoll/961.gif
+	offset 38 54
+	frame data/chars/valdoll/962.gif
+	delay 5
+	offset 37 55
+	frame data/chars/valdoll/963.gif
+
+
+anim pain5000
+	delay 2
+	offset 53 119
+	frame data/chars/valdoll/95.gif
+
+
+anim pain5001
+
+
+anim freespecial7050
+	delay 6
+	offset 29 38
+	frame data/chars/valdoll/964.gif
+	offset 33 39
+	frame data/chars/valdoll/965.gif
+	offset 32 40
+	frame data/chars/valdoll/966.gif
+	offset 30 36
+	frame data/chars/valdoll/967.gif
+	offset 30 38
+	frame data/chars/valdoll/968.gif
+	offset 31 38
+	frame data/chars/valdoll/969.gif
+	offset 32 37
+	frame data/chars/valdoll/970.gif
+	offset 33 38
+	frame data/chars/valdoll/971.gif
+	offset 34 39
+	frame data/chars/valdoll/972.gif
+	offset 33 39
+	frame data/chars/valdoll/973.gif
+	offset 32 40
+	frame data/chars/valdoll/974.gif
+	offset 30 36
+	frame data/chars/valdoll/975.gif
+	offset 24 35
+	frame data/chars/valdoll/976.gif
+
+
+anim freespecial7051
+	delay 6
+	offset 31 18
+	frame data/chars/valdoll/977.gif
+	offset 31 34
+	frame data/chars/valdoll/978.gif
+	offset 36 38
+	frame data/chars/valdoll/979.gif
+	offset 37 39
+	frame data/chars/valdoll/980.gif
+	offset 37 39
+	frame data/chars/valdoll/981.gif
+	offset 34 39
+	frame data/chars/valdoll/982.gif
+	offset 33 39
+	frame data/chars/valdoll/983.gif
+	offset 35 38
+	frame data/chars/valdoll/984.gif
+	offset 36 38
+	frame data/chars/valdoll/985.gif
+	offset 36 39
+	frame data/chars/valdoll/986.gif
+	offset 36 39
+	frame data/chars/valdoll/987.gif
+	offset 37 38
+	frame data/chars/valdoll/988.gif
+	offset 37 38
+	frame data/chars/valdoll/989.gif
+
+
+anim freespecial7052
+	delay 6
+	offset 28 29
+	frame data/chars/valdoll/990.gif
+	offset 31 31
+	frame data/chars/valdoll/991.gif
+	offset 30 40
+	frame data/chars/valdoll/992.gif
+	offset 29 40
+	frame data/chars/valdoll/993.gif
+	offset 30 40
+	frame data/chars/valdoll/994.gif
+	offset 30 40
+	frame data/chars/valdoll/995.gif
+	offset 30 41
+	frame data/chars/valdoll/996.gif
+	offset 31 41
+	frame data/chars/valdoll/997.gif
+	offset 31 39
+	frame data/chars/valdoll/998.gif
+	offset 30 39
+	frame data/chars/valdoll/999.gif
+	offset 30 39
+	frame data/chars/valdoll/1000.gif
+	offset 24 40
+	frame data/chars/valdoll/1001.gif
+	offset 24 40
+	frame data/chars/valdoll/1002.gif
+
+
+anim pain5005
+	delay -1000
+	offset 41 116
+	frame data/chars/valdoll/94.gif
+
+
+anim pain5006
+	delay -1000
+	offset 41 116
+	frame data/chars/valdoll/94.gif
+
+
+anim pain5007
+	delay -1000
+	offset 41 116
+	frame data/chars/valdoll/94.gif
+
+
+anim freespecial2200
+	delay 6
+	offset 43 123
+	frame data/chars/valdoll/55.gif
+	offset 53 121
+	frame data/chars/valdoll/63.gif
+	delay 4
+	offset 71 130
+	frame data/chars/valdoll/64.gif
+	offset 66 129
+	frame data/chars/valdoll/65.gif
+	delay 6
+	offset 69 126
+	frame data/chars/valdoll/66.gif
+	offset 58 170
+	frame data/chars/valdoll/67.gif
+	offset 61 171
+	frame data/chars/valdoll/68.gif
+	offset 46 166
+	frame data/chars/valdoll/69.gif
+	offset 47 160
+	frame data/chars/valdoll/70.gif
+	offset 48 151
+	frame data/chars/valdoll/71.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 43 132
+	frame data/chars/valdoll/75.gif
+
+
+anim pain5010
+	delay 2
+	offset 47 118
+	frame data/chars/valdoll/107.gif
+
+
+anim pain5011
+
+
+anim freespecial7060
+	delay 10
+	offset 24 26
+	frame data/chars/valdoll/1003.gif
+	offset 23 25
+	frame data/chars/valdoll/1004.gif
+	offset 23 24
+	frame data/chars/valdoll/1005.gif
+	offset 23 23
+	frame data/chars/valdoll/1006.gif
+	offset 23 23
+	frame data/chars/valdoll/1007.gif
+	offset 23 23
+	frame data/chars/valdoll/1008.gif
+	offset 23 23
+	frame data/chars/valdoll/1009.gif
+	offset 23 23
+	frame data/chars/valdoll/1010.gif
+	offset 23 23
+	frame data/chars/valdoll/1011.gif
+	offset 23 23
+	frame data/chars/valdoll/1012.gif
+	offset 23 23
+	frame data/chars/valdoll/1013.gif
+
+
+anim freespecial7061
+	delay 10
+	offset 16 15
+	frame data/chars/valdoll/1014.gif
+	offset 15 14
+	frame data/chars/valdoll/1015.gif
+	offset 14 14
+	frame data/chars/valdoll/1016.gif
+	offset 14 14
+	frame data/chars/valdoll/1017.gif
+	offset 14 14
+	frame data/chars/valdoll/1018.gif
+	offset 14 14
+	frame data/chars/valdoll/1019.gif
+	offset 14 14
+	frame data/chars/valdoll/1020.gif
+	offset 14 14
+	frame data/chars/valdoll/1021.gif
+	offset 14 14
+	frame data/chars/valdoll/1022.gif
+	offset 14 14
+	frame data/chars/valdoll/1023.gif
+	offset 14 14
+	frame data/chars/valdoll/1024.gif
+	offset 14 14
+	frame data/chars/valdoll/1025.gif
+
+
+anim freespecial7062
+	delay 10
+	offset 23 24
+	frame data/chars/valdoll/1026.gif
+	offset 21 24
+	frame data/chars/valdoll/1027.gif
+	offset 20 24
+	frame data/chars/valdoll/1028.gif
+	offset 20 23
+	frame data/chars/valdoll/1029.gif
+	offset 20 23
+	frame data/chars/valdoll/1030.gif
+	offset 20 23
+	frame data/chars/valdoll/1031.gif
+	offset 20 23
+	frame data/chars/valdoll/1032.gif
+	offset 20 23
+	frame data/chars/valdoll/1033.gif
+	offset 20 23
+	frame data/chars/valdoll/1034.gif
+	offset 20 23
+	frame data/chars/valdoll/1035.gif
+	offset 20 23
+	frame data/chars/valdoll/1036.gif
+
+
+anim freespecial7063
+	delay 10
+	offset 16 13
+	frame data/chars/valdoll/1037.gif
+	offset 16 12
+	frame data/chars/valdoll/1038.gif
+	offset 15 12
+	frame data/chars/valdoll/1039.gif
+	offset 15 12
+	frame data/chars/valdoll/1040.gif
+	offset 15 12
+	frame data/chars/valdoll/1041.gif
+	offset 15 12
+	frame data/chars/valdoll/1042.gif
+	offset 15 12
+	frame data/chars/valdoll/1043.gif
+	offset 15 12
+	frame data/chars/valdoll/1044.gif
+	offset 15 12
+	frame data/chars/valdoll/1045.gif
+	offset 15 12
+	frame data/chars/valdoll/1046.gif
+	offset 15 12
+	frame data/chars/valdoll/1047.gif
+
+
+anim freespecial7064
+	delay 2
+	offset 7 6
+	frame data/chars/valdoll/1048.gif
+	offset 7 6
+	frame data/chars/valdoll/1048.gif
+	offset 6 6
+	frame data/chars/valdoll/1049.gif
+	offset 6 6
+	frame data/chars/valdoll/1049.gif
+	offset 7 6
+	frame data/chars/valdoll/1050.gif
+	offset 7 6
+	frame data/chars/valdoll/1050.gif
+
+
+anim freespecial7065
+	delay 2
+	offset 12 10
+	frame data/chars/valdoll/1051.gif
+	offset 12 10
+	frame data/chars/valdoll/1051.gif
+	offset 12 10
+	frame data/chars/valdoll/1052.gif
+	offset 12 10
+	frame data/chars/valdoll/1052.gif
+	offset 12 10
+	frame data/chars/valdoll/1053.gif
+	offset 12 10
+	frame data/chars/valdoll/1053.gif
+
+
+anim freespecial7066
+	delay 2
+	offset 19 15
+	frame data/chars/valdoll/1054.gif
+	offset 19 15
+	frame data/chars/valdoll/1054.gif
+	offset 19 16
+	frame data/chars/valdoll/1055.gif
+	offset 19 16
+	frame data/chars/valdoll/1055.gif
+	offset 20 17
+	frame data/chars/valdoll/1056.gif
+	offset 20 17
+	frame data/chars/valdoll/1056.gif
+
+
+anim freespecial7067
+	delay 2
+	offset 7 6
+	frame data/chars/valdoll/1048.gif
+	offset 7 6
+	frame data/chars/valdoll/1048.gif
+	offset 6 6
+	frame data/chars/valdoll/1049.gif
+	offset 6 6
+	frame data/chars/valdoll/1049.gif
+	offset 7 6
+	frame data/chars/valdoll/1050.gif
+	offset 7 6
+	frame data/chars/valdoll/1050.gif
+
+
+anim pain5020
+	delay 2
+	offset 53 119
+	frame data/chars/valdoll/95.gif
+
+
+anim pain5021
+
+
+anim pain5022
+
+
+anim freespecial7071
+	delay 5
+	offset 18 29
+	frame data/chars/valdoll/1073.gif
+	offset 17 29
+	frame data/chars/valdoll/1074.gif
+	offset 18 28
+	frame data/chars/valdoll/1075.gif
+	offset 17 28
+	frame data/chars/valdoll/1076.gif
+	offset 17 29
+	frame data/chars/valdoll/1077.gif
+	offset 11 28
+	frame data/chars/valdoll/1078.gif
+	offset 10 28
+	frame data/chars/valdoll/1079.gif
+	offset 11 28
+	frame data/chars/valdoll/1080.gif
+	offset 11 29
+	frame data/chars/valdoll/1081.gif
+	offset 11 29
+	frame data/chars/valdoll/1082.gif
+	offset 11 28
+	frame data/chars/valdoll/1083.gif
+	offset 10 27
+	frame data/chars/valdoll/1084.gif
+	offset 8 29
+	frame data/chars/valdoll/1085.gif
+	offset 8 29
+	frame data/chars/valdoll/1086.gif
+	offset 8 28
+	frame data/chars/valdoll/1087.gif
+	offset 8 28
+	frame data/chars/valdoll/1088.gif
+	offset 18 29
+	frame data/chars/valdoll/1073.gif
+	offset 17 29
+	frame data/chars/valdoll/1074.gif
+	offset 18 28
+	frame data/chars/valdoll/1075.gif
+	offset 17 28
+	frame data/chars/valdoll/1076.gif
+
+
+anim freespecial7072
+	delay 5
+	offset 34 14
+	frame data/chars/valdoll/1089.gif
+	offset 34 14
+	frame data/chars/valdoll/1090.gif
+	offset 33 14
+	frame data/chars/valdoll/1091.gif
+	offset 32 14
+	frame data/chars/valdoll/1092.gif
+	offset 34 13
+	frame data/chars/valdoll/1093.gif
+	offset 34 13
+	frame data/chars/valdoll/1094.gif
+	offset 32 12
+	frame data/chars/valdoll/1095.gif
+	offset 32 12
+	frame data/chars/valdoll/1096.gif
+	offset 34 13
+	frame data/chars/valdoll/1097.gif
+	offset 34 16
+	frame data/chars/valdoll/1098.gif
+	offset 32 15
+	frame data/chars/valdoll/1099.gif
+	offset 32 16
+	frame data/chars/valdoll/1100.gif
+	offset 34 15
+	frame data/chars/valdoll/1101.gif
+	offset 34 15
+	frame data/chars/valdoll/1102.gif
+	offset 33 12
+	frame data/chars/valdoll/1103.gif
+	offset 32 12
+	frame data/chars/valdoll/1104.gif
+	offset 34 14
+	frame data/chars/valdoll/1089.gif
+	offset 34 14
+	frame data/chars/valdoll/1090.gif
+	offset 33 14
+	frame data/chars/valdoll/1091.gif
+	offset 32 14
+	frame data/chars/valdoll/1092.gif
+
+
+anim pain5025
+	delay -1000
+	offset 41 116
+	frame data/chars/valdoll/94.gif
+
+
+anim pain5026
+	delay -1000
+	offset 41 116
+	frame data/chars/valdoll/94.gif
+
+
+anim pain5027
+	delay -1000
+	offset 41 116
+	frame data/chars/valdoll/94.gif
+
+
+anim pain5030
+	delay 2
+	offset 59 111
+	frame data/chars/valdoll/121.gif
+
+
+anim freespecial7080
+	delay 10
+	offset 21 32
+	frame data/chars/valdoll/1137.gif
+	offset 28 33
+	frame data/chars/valdoll/1138.gif
+	offset 28 39
+	frame data/chars/valdoll/1139.gif
+	offset 27 43
+	frame data/chars/valdoll/1140.gif
+	offset 27 38
+	frame data/chars/valdoll/1141.gif
+	offset 27 37
+	frame data/chars/valdoll/1142.gif
+	offset 26 35
+	frame data/chars/valdoll/1143.gif
+	offset 26 32
+	frame data/chars/valdoll/1144.gif
+	offset 25 31
+	frame data/chars/valdoll/1145.gif
+	offset 26 28
+	frame data/chars/valdoll/1146.gif
+	offset 25 26
+	frame data/chars/valdoll/1147.gif
+	offset 26 24
+	frame data/chars/valdoll/1148.gif
+	offset 26 24
+	frame data/chars/valdoll/1149.gif
+	offset 25 18
+	frame data/chars/valdoll/1150.gif
+	offset 24 17
+	frame data/chars/valdoll/1151.gif
+	offset 23 17
+	frame data/chars/valdoll/1152.gif
+
+
+anim freespecial7081
+	delay 10
+	offset 28 26
+	frame data/chars/valdoll/1153.gif
+	offset 28 22
+	frame data/chars/valdoll/1154.gif
+	offset 28 24
+	frame data/chars/valdoll/1155.gif
+	offset 31 28
+	frame data/chars/valdoll/1156.gif
+	offset 32 23
+	frame data/chars/valdoll/1157.gif
+	offset 32 22
+	frame data/chars/valdoll/1158.gif
+	offset 33 24
+	frame data/chars/valdoll/1159.gif
+	offset 33 27
+	frame data/chars/valdoll/1160.gif
+	offset 32 29
+	frame data/chars/valdoll/1161.gif
+	offset 32 26
+	frame data/chars/valdoll/1162.gif
+	offset 31 23
+	frame data/chars/valdoll/1163.gif
+	offset 30 20
+	frame data/chars/valdoll/1164.gif
+	offset 29 18
+	frame data/chars/valdoll/1165.gif
+	offset 27 16
+	frame data/chars/valdoll/1166.gif
+	offset 27 15
+	frame data/chars/valdoll/1167.gif
+	offset 18 15
+	frame data/chars/valdoll/1168.gif
+
+
+anim freespecial7082
+	delay 10
+	offset -1 26
+	frame data/chars/valdoll/1169.gif
+	offset 38 21
+	frame data/chars/valdoll/1170.gif
+	offset 38 21
+	frame data/chars/valdoll/1171.gif
+	offset 37 18
+	frame data/chars/valdoll/1172.gif
+	offset 37 14
+	frame data/chars/valdoll/1173.gif
+	offset 37 14
+	frame data/chars/valdoll/1174.gif
+	offset 36 18
+	frame data/chars/valdoll/1175.gif
+	offset 36 27
+	frame data/chars/valdoll/1176.gif
+	offset 35 24
+	frame data/chars/valdoll/1177.gif
+	offset 34 21
+	frame data/chars/valdoll/1178.gif
+	offset 35 18
+	frame data/chars/valdoll/1179.gif
+	offset 35 16
+	frame data/chars/valdoll/1180.gif
+	offset 33 13
+	frame data/chars/valdoll/1181.gif
+	offset 33 11
+	frame data/chars/valdoll/1182.gif
+	offset 25 10
+	frame data/chars/valdoll/1183.gif
+	offset 25 10
+	frame data/chars/valdoll/1184.gif
+
+
+anim pain5035
+	delay 6
+	offset 59 111
+	frame data/chars/valdoll/121.gif
+
+
+anim pain5040
+	delay 6
+	offset 49 121
+	frame data/chars/valdoll/42.gif
+	offset 70 124
+	frame data/chars/valdoll/43.gif
+	offset 67 126
+	frame data/chars/valdoll/44.gif
+	offset 70 123
+	frame data/chars/valdoll/45.gif
+
+
+anim freespecial7090
+	delay 4
+	offset 14 8
+	frame data/chars/valdoll/1185.gif
+	delay 6
+	offset 13 8
+	frame data/chars/valdoll/1186.gif
+	delay 4
+	offset 16 14
+	frame data/chars/valdoll/1187.gif
+	delay 6
+	offset 16 14
+	frame data/chars/valdoll/1188.gif
+	delay 4
+	offset 20 16
+	frame data/chars/valdoll/1189.gif
+	delay 6
+	offset 19 16
+	frame data/chars/valdoll/1190.gif
+	delay 4
+	offset 20 18
+	frame data/chars/valdoll/1191.gif
+	delay 6
+	offset 19 18
+	frame data/chars/valdoll/1192.gif
+	delay 4
+	offset 23 24
+	frame data/chars/valdoll/1193.gif
+	delay 6
+	offset 23 23
+	frame data/chars/valdoll/1194.gif
+	delay 4
+	offset 25 26
+	frame data/chars/valdoll/1195.gif
+	delay 6
+	offset 25 25
+	frame data/chars/valdoll/1196.gif
+	delay 4
+	offset 29 27
+	frame data/chars/valdoll/1197.gif
+	delay 6
+	offset 28 27
+	frame data/chars/valdoll/1198.gif
+	delay 4
+	offset 31 29
+	frame data/chars/valdoll/1199.gif
+	delay -1000
+	offset 31 29
+	frame data/chars/valdoll/1200.gif
+
+
+anim freespecial7091
+	delay 4
+	offset 14 7
+	frame data/chars/valdoll/1201.gif
+	delay 6
+	offset 13 7
+	frame data/chars/valdoll/1202.gif
+	delay 4
+	offset 17 9
+	frame data/chars/valdoll/1203.gif
+	delay 6
+	offset 17 8
+	frame data/chars/valdoll/1204.gif
+	delay 4
+	offset 19 10
+	frame data/chars/valdoll/1205.gif
+	delay 6
+	offset 19 10
+	frame data/chars/valdoll/1206.gif
+	delay 4
+	offset 22 14
+	frame data/chars/valdoll/1207.gif
+	delay 6
+	offset 22 14
+	frame data/chars/valdoll/1208.gif
+	delay 4
+	offset 25 15
+	frame data/chars/valdoll/1209.gif
+	delay 6
+	offset 24 14
+	frame data/chars/valdoll/1210.gif
+	delay 4
+	offset 27 18
+	frame data/chars/valdoll/1211.gif
+	delay 6
+	offset 27 18
+	frame data/chars/valdoll/1212.gif
+	delay 4
+	offset 30 20
+	frame data/chars/valdoll/1213.gif
+	delay 6
+	offset 29 20
+	frame data/chars/valdoll/1214.gif
+	delay 4
+	offset 32 22
+	frame data/chars/valdoll/1215.gif
+	delay -1000
+	offset 31 21
+	frame data/chars/valdoll/1216.gif
+
+
+anim freespecial7092
+	delay 4
+	offset 12 9
+	frame data/chars/valdoll/1217.gif
+	delay 6
+	offset 11 8
+	frame data/chars/valdoll/1218.gif
+	delay 4
+	offset 14 11
+	frame data/chars/valdoll/1219.gif
+	delay 6
+	offset 13 10
+	frame data/chars/valdoll/1220.gif
+	delay 4
+	offset 16 13
+	frame data/chars/valdoll/1221.gif
+	delay 6
+	offset 15 12
+	frame data/chars/valdoll/1222.gif
+	delay 4
+	offset 17 14
+	frame data/chars/valdoll/1223.gif
+	delay 6
+	offset 17 13
+	frame data/chars/valdoll/1224.gif
+	delay 4
+	offset 19 19
+	frame data/chars/valdoll/1225.gif
+	delay 6
+	offset 18 18
+	frame data/chars/valdoll/1226.gif
+	delay 4
+	offset 21 21
+	frame data/chars/valdoll/1227.gif
+	delay 6
+	offset 21 20
+	frame data/chars/valdoll/1228.gif
+	delay 4
+	offset 25 23
+	frame data/chars/valdoll/1229.gif
+	delay 6
+	offset 24 22
+	frame data/chars/valdoll/1230.gif
+	delay 4
+	offset 27 25
+	frame data/chars/valdoll/1231.gif
+	delay -1000
+	offset 26 24
+	frame data/chars/valdoll/1232.gif
+
+
+anim freespecial7094
+	delay 2
+	offset 6 5
+	frame data/chars/valdoll/1233.gif
+	offset 6 5
+	frame data/chars/valdoll/1233.gif
+	offset 5 5
+	frame data/chars/valdoll/1234.gif
+	offset 5 5
+	frame data/chars/valdoll/1234.gif
+	offset 6 5
+	frame data/chars/valdoll/1235.gif
+	offset 6 5
+	frame data/chars/valdoll/1235.gif
+
+
+anim freespecial7095
+	delay 2
+	offset 11 9
+	frame data/chars/valdoll/1236.gif
+	offset 11 9
+	frame data/chars/valdoll/1236.gif
+	offset 10 9
+	frame data/chars/valdoll/1237.gif
+	offset 10 9
+	frame data/chars/valdoll/1237.gif
+	offset 11 9
+	frame data/chars/valdoll/1238.gif
+	offset 11 9
+	frame data/chars/valdoll/1238.gif
+
+
+anim freespecial7096
+	delay 2
+	offset 18 15
+	frame data/chars/valdoll/1239.gif
+	offset 18 15
+	frame data/chars/valdoll/1239.gif
+	offset 18 16
+	frame data/chars/valdoll/1240.gif
+	offset 18 16
+	frame data/chars/valdoll/1240.gif
+	offset 19 17
+	frame data/chars/valdoll/1241.gif
+	offset 19 17
+	frame data/chars/valdoll/1241.gif
+
+
+anim freespecial7097
+	delay 2
+	offset 6 5
+	frame data/chars/valdoll/1233.gif
+	offset 6 5
+	frame data/chars/valdoll/1233.gif
+	offset 5 5
+	frame data/chars/valdoll/1234.gif
+	offset 5 5
+	frame data/chars/valdoll/1234.gif
+	offset 6 5
+	frame data/chars/valdoll/1235.gif
+	offset 6 5
+	frame data/chars/valdoll/1235.gif
+
+
+anim pain5050
+
+
+anim freespecial7099
+	delay 2
+	offset 18 15
+	frame data/chars/valdoll/1239.gif
+	offset 18 15
+	frame data/chars/valdoll/1239.gif
+	offset 18 16
+	frame data/chars/valdoll/1240.gif
+	offset 18 16
+	frame data/chars/valdoll/1240.gif
+	offset 19 17
+	frame data/chars/valdoll/1241.gif
+	offset 19 17
+	frame data/chars/valdoll/1241.gif
+
+
+anim pain5061
+
+
+anim pain5070
+
+
+anim pain5080
+	delay 6
+	offset 81 36
+	frame data/chars/valdoll/141.gif
+
+
+anim pain5090
+
+
+anim freespecial1000
+	delay 6
+	offset 43 123
+	frame data/chars/valdoll/55.gif
+	delay 5
+	offset 58 128
+	frame data/chars/valdoll/56.gif
+	offset 53 127
+	frame data/chars/valdoll/57.gif
+	delay 4
+	offset 56 124
+	frame data/chars/valdoll/58.gif
+	delay 5
+	offset 58 128
+	frame data/chars/valdoll/56.gif
+	delay 4
+	offset 53 127
+	frame data/chars/valdoll/57.gif
+	offset 56 124
+	frame data/chars/valdoll/58.gif
+	offset 58 128
+	frame data/chars/valdoll/56.gif
+	offset 53 127
+	frame data/chars/valdoll/57.gif
+	offset 56 124
+	frame data/chars/valdoll/58.gif
+	offset 58 128
+	frame data/chars/valdoll/56.gif
+	offset 53 127
+	frame data/chars/valdoll/57.gif
+	offset 56 124
+	frame data/chars/valdoll/58.gif
+	offset 58 128
+	frame data/chars/valdoll/56.gif
+	offset 53 127
+	frame data/chars/valdoll/57.gif
+	offset 56 124
+	frame data/chars/valdoll/58.gif
+	offset 58 128
+	frame data/chars/valdoll/56.gif
+	offset 53 127
+	frame data/chars/valdoll/57.gif
+	offset 56 124
+	frame data/chars/valdoll/58.gif
+	offset 58 128
+	frame data/chars/valdoll/56.gif
+	offset 53 127
+	frame data/chars/valdoll/57.gif
+	offset 56 124
+	frame data/chars/valdoll/58.gif
+	offset 58 128
+	frame data/chars/valdoll/56.gif
+	offset 53 127
+	frame data/chars/valdoll/57.gif
+	offset 56 124
+	frame data/chars/valdoll/58.gif
+	offset 58 128
+	frame data/chars/valdoll/56.gif
+	offset 53 127
+	frame data/chars/valdoll/57.gif
+	offset 56 124
+	frame data/chars/valdoll/58.gif
+	delay 8
+	offset 43 123
+	frame data/chars/valdoll/55.gif
+
+
+anim freespecial1001
+	delay 6
+	offset 33 38
+	frame data/chars/valdoll/642.gif
+	offset 24 43
+	frame data/chars/valdoll/643.gif
+	offset 41 61
+	frame data/chars/valdoll/644.gif
+	offset 42 59
+	frame data/chars/valdoll/645.gif
+	delay 2
+	offset -8 16
+	frame data/chars/valdoll/646.gif
+	offset -8 16
+	frame data/chars/valdoll/647.gif
+	offset -8 16
+	frame data/chars/valdoll/648.gif
+	delay 4
+	offset -6 24
+	frame data/chars/valdoll/650.gif
+	offset -10 8
+	frame data/chars/valdoll/651.gif
+	offset -8 16
+	frame data/chars/valdoll/649.gif
+	offset -6 24
+	frame data/chars/valdoll/650.gif
+	offset -10 8
+	frame data/chars/valdoll/651.gif
+	offset -8 16
+	frame data/chars/valdoll/649.gif
+	offset -6 24
+	frame data/chars/valdoll/650.gif
+	offset -10 8
+	frame data/chars/valdoll/651.gif
+	offset -8 16
+	frame data/chars/valdoll/649.gif
+	offset -6 24
+	frame data/chars/valdoll/650.gif
+	offset -10 8
+	frame data/chars/valdoll/651.gif
+	offset -8 16
+	frame data/chars/valdoll/649.gif
+	delay 2
+	offset -6 24
+	frame data/chars/valdoll/650.gif
+	delay 4
+	offset -10 8
+	frame data/chars/valdoll/651.gif
+	offset -8 16
+	frame data/chars/valdoll/649.gif
+	delay 5
+	offset -12 4
+	frame data/chars/valdoll/652.gif
+	delay 8
+	offset -16 2
+	frame data/chars/valdoll/653.gif
+
+
+anim freespecial1002
+	delay 6
+	offset 33 38
+	frame data/chars/valdoll/642.gif
+	offset 24 43
+	frame data/chars/valdoll/643.gif
+	offset 41 61
+	frame data/chars/valdoll/644.gif
+	offset 42 59
+	frame data/chars/valdoll/645.gif
+	delay 2
+	offset -8 16
+	frame data/chars/valdoll/646.gif
+	offset -8 16
+	frame data/chars/valdoll/647.gif
+	offset -8 16
+	frame data/chars/valdoll/648.gif
+	delay 4
+	offset -6 24
+	frame data/chars/valdoll/650.gif
+	offset -10 8
+	frame data/chars/valdoll/651.gif
+	offset -8 16
+	frame data/chars/valdoll/649.gif
+	offset -6 24
+	frame data/chars/valdoll/650.gif
+	offset -10 8
+	frame data/chars/valdoll/651.gif
+	offset -8 16
+	frame data/chars/valdoll/649.gif
+	offset -6 24
+	frame data/chars/valdoll/650.gif
+	offset -10 8
+	frame data/chars/valdoll/651.gif
+	offset -8 16
+	frame data/chars/valdoll/649.gif
+	offset -6 24
+	frame data/chars/valdoll/650.gif
+	offset -10 8
+	frame data/chars/valdoll/651.gif
+	offset -8 16
+	frame data/chars/valdoll/649.gif
+	delay 2
+	offset -6 24
+	frame data/chars/valdoll/650.gif
+	delay 4
+	offset -10 8
+	frame data/chars/valdoll/651.gif
+	offset -8 16
+	frame data/chars/valdoll/649.gif
+	delay 5
+	offset -12 4
+	frame data/chars/valdoll/652.gif
+	delay 8
+	offset -16 2
+	frame data/chars/valdoll/653.gif
+
+
+anim pain5100
+
+
+anim pain5101
+
+
+anim freespecial1010
+	delay 6
+	offset 43 124
+	frame data/chars/valdoll/59.gif
+	delay 11
+	offset 41 150
+	frame data/chars/valdoll/60.gif
+	delay 4
+	offset 42 150
+	frame data/chars/valdoll/61.gif
+	offset 43 150
+	frame data/chars/valdoll/62.gif
+	offset 41 150
+	frame data/chars/valdoll/60.gif
+	offset 42 150
+	frame data/chars/valdoll/61.gif
+	offset 43 150
+	frame data/chars/valdoll/62.gif
+	offset 41 150
+	frame data/chars/valdoll/60.gif
+	offset 42 150
+	frame data/chars/valdoll/61.gif
+	offset 43 150
+	frame data/chars/valdoll/62.gif
+	offset 41 150
+	frame data/chars/valdoll/60.gif
+	offset 42 150
+	frame data/chars/valdoll/61.gif
+	offset 43 150
+	frame data/chars/valdoll/62.gif
+	offset 41 150
+	frame data/chars/valdoll/60.gif
+	offset 42 150
+	frame data/chars/valdoll/61.gif
+	offset 43 150
+	frame data/chars/valdoll/62.gif
+	offset 41 150
+	frame data/chars/valdoll/60.gif
+	offset 42 150
+	frame data/chars/valdoll/61.gif
+	offset 43 150
+	frame data/chars/valdoll/62.gif
+	offset 41 150
+	frame data/chars/valdoll/60.gif
+	offset 42 150
+	frame data/chars/valdoll/61.gif
+	offset 43 150
+	frame data/chars/valdoll/62.gif
+	offset 41 150
+	frame data/chars/valdoll/60.gif
+	offset 42 150
+	frame data/chars/valdoll/61.gif
+	offset 43 150
+	frame data/chars/valdoll/62.gif
+	offset 41 150
+	frame data/chars/valdoll/60.gif
+	offset 42 150
+	frame data/chars/valdoll/61.gif
+	delay 8
+	offset 43 124
+	frame data/chars/valdoll/59.gif
+
+
+anim freespecial1011
+	delay 6
+	offset 40 41
+	frame data/chars/valdoll/654.gif
+	offset 36 43
+	frame data/chars/valdoll/655.gif
+	offset 57 77
+	frame data/chars/valdoll/656.gif
+	offset 57 71
+	frame data/chars/valdoll/657.gif
+	delay 2
+	offset -8 92
+	frame data/chars/valdoll/658.gif
+	offset -8 113
+	frame data/chars/valdoll/659.gif
+	offset -8 134
+	frame data/chars/valdoll/660.gif
+	offset -3 162
+	frame data/chars/valdoll/661.gif
+	offset -3 183
+	frame data/chars/valdoll/662.gif
+	offset -6 191
+	frame data/chars/valdoll/663.gif
+	offset -6 212
+	frame data/chars/valdoll/664.gif
+	delay 4
+	offset -8 235
+	frame data/chars/valdoll/665.gif
+	offset -3 235
+	frame data/chars/valdoll/666.gif
+	offset -6 231
+	frame data/chars/valdoll/667.gif
+	offset -8 235
+	frame data/chars/valdoll/665.gif
+	offset -3 235
+	frame data/chars/valdoll/666.gif
+	offset -6 231
+	frame data/chars/valdoll/667.gif
+	offset -8 235
+	frame data/chars/valdoll/665.gif
+	offset -3 235
+	frame data/chars/valdoll/666.gif
+	offset -6 231
+	frame data/chars/valdoll/667.gif
+	offset -8 235
+	frame data/chars/valdoll/665.gif
+	offset -3 235
+	frame data/chars/valdoll/666.gif
+	offset -6 231
+	frame data/chars/valdoll/667.gif
+	offset -8 235
+	frame data/chars/valdoll/665.gif
+	offset -3 235
+	frame data/chars/valdoll/666.gif
+	delay 2
+	offset -6 231
+	frame data/chars/valdoll/667.gif
+	delay 5
+	offset -9 80
+	frame data/chars/valdoll/668.gif
+	delay 8
+	offset -8 56
+	frame data/chars/valdoll/669.gif
+
+
+anim freespecial13300
+	delay 6
+	offset 101 106
+	frame data/chars/valdoll/518.gif
+	offset 95 103
+	frame data/chars/valdoll/519.gif
+	offset 80 92
+	frame data/chars/valdoll/520.gif
+	delay 42
+	offset 88 97
+	frame data/chars/valdoll/521.gif
+
+
+anim freespecial13301
+
+
+anim pain5110
+
+
+anim freespecial13310
+	delay 6
+	offset 71 115
+	frame data/chars/valdoll/556.gif
+	delay 8
+	offset 53 120
+	frame data/chars/valdoll/557.gif
+	delay 6
+	offset 44 116
+	frame data/chars/valdoll/558.gif
+	delay 8
+	offset 43 112
+	frame data/chars/valdoll/559.gif
+	delay 6
+	offset 49 112
+	frame data/chars/valdoll/560.gif
+	delay 8
+	offset 81 111
+	frame data/chars/valdoll/561.gif
+	delay 6
+	offset 103 119
+	frame data/chars/valdoll/562.gif
+	delay 8
+	offset 88 120
+	frame data/chars/valdoll/563.gif
+	delay 6
+	offset 78 115
+	frame data/chars/valdoll/564.gif
+	delay 8
+	offset 68 116
+	frame data/chars/valdoll/565.gif
+
+
+anim pain5120
+
+
+anim pain5121
+
+
+anim pain5150
+
+
+anim freespecial11300
+	delay 6
+	offset 101 106
+	frame data/chars/valdoll/318.gif
+	offset 95 103
+	frame data/chars/valdoll/319.gif
+	offset 80 92
+	frame data/chars/valdoll/320.gif
+	delay 42
+	offset 88 97
+	frame data/chars/valdoll/321.gif
+
+
+anim freespecial11301
+
+
+anim freespecial42022
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/418.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/419.gif
+	delay 2
+	offset 54 110
+	frame data/chars/valdoll/424.gif
+	delay 10
+	offset 52 108
+	frame data/chars/valdoll/425.gif
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/422.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/423.gif
+
+
+anim freespecial42023
+	delay 4
+	offset 94 103
+	frame data/chars/valdoll/426.gif
+	delay 5
+	offset 128 118
+	frame data/chars/valdoll/427.gif
+	delay 4
+	offset 117 112
+	frame data/chars/valdoll/428.gif
+	offset 128 79
+	frame data/chars/valdoll/429.gif
+	offset 62 127
+	frame data/chars/valdoll/430.gif
+	delay 10
+	offset 63 124
+	frame data/chars/valdoll/431.gif
+	delay 6
+	offset 69 102
+	frame data/chars/valdoll/432.gif
+	delay 5
+	offset 104 96
+	frame data/chars/valdoll/433.gif
+
+
+anim pain5160
+
+
+anim freespecial11310
+	delay 6
+	offset 53 120
+	frame data/chars/valdoll/356.gif
+	delay 8
+	offset 44 116
+	frame data/chars/valdoll/357.gif
+	delay 6
+	offset 43 112
+	frame data/chars/valdoll/358.gif
+	delay 8
+	offset 49 112
+	frame data/chars/valdoll/359.gif
+	delay 6
+	offset 81 111
+	frame data/chars/valdoll/360.gif
+	delay 8
+	offset 103 119
+	frame data/chars/valdoll/361.gif
+	delay 6
+	offset 88 120
+	frame data/chars/valdoll/362.gif
+	delay 8
+	offset 78 115
+	frame data/chars/valdoll/363.gif
+	delay 6
+	offset 68 116
+	frame data/chars/valdoll/364.gif
+	delay 8
+	offset 71 115
+	frame data/chars/valdoll/365.gif
+
+
+anim pain5170
+	delay 6
+	offset 81 36
+	frame data/chars/valdoll/141.gif
+	offset 91 25
+	frame data/chars/valdoll/144.gif
+
+
+anim freespecial42035
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/434.gif
+	offset 152 -2
+	frame data/chars/valdoll/435.gif
+	offset 141 3
+	frame data/chars/valdoll/436.gif
+	offset 152 6
+	frame data/chars/valdoll/437.gif
+	offset 153 1
+	frame data/chars/valdoll/434.gif
+	offset 152 -2
+	frame data/chars/valdoll/435.gif
+	offset 141 3
+	frame data/chars/valdoll/436.gif
+	offset 152 6
+	frame data/chars/valdoll/437.gif
+
+
+anim freespecial42045
+	delay 4
+	offset 113 116
+	frame data/chars/valdoll/439.gif
+	offset 126 108
+	frame data/chars/valdoll/440.gif
+	offset 135 114
+	frame data/chars/valdoll/441.gif
+	delay 22
+	offset 135 114
+	frame data/chars/valdoll/442.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/443.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/444.gif
+
+
+anim freespecial42046
+	delay 6
+	offset 137 119
+	frame data/chars/valdoll/445.gif
+	delay 4
+	offset 139 111
+	frame data/chars/valdoll/446.gif
+	offset 151 114
+	frame data/chars/valdoll/447.gif
+	delay 22
+	offset 151 114
+	frame data/chars/valdoll/448.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/443.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/444.gif
+
+
+anim freespecial42051
+	delay 6
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	offset -48 66
+	frame data/chars/valdoll/599.gif
+	offset -47 63
+	frame data/chars/valdoll/600.gif
+	offset -47 66
+	frame data/chars/valdoll/601.gif
+	offset -48 67
+	frame data/chars/valdoll/602.gif
+	offset -47 63
+	frame data/chars/valdoll/603.gif
+	offset -48 66
+	frame data/chars/valdoll/604.gif
+	offset -48 67
+	frame data/chars/valdoll/605.gif
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	offset -47 63
+	frame data/chars/valdoll/600.gif
+	offset -48 67
+	frame data/chars/valdoll/602.gif
+	offset -48 66
+	frame data/chars/valdoll/604.gif
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	delay 2
+	offset -48 66
+	frame data/chars/valdoll/599.gif
+
+
+anim freespecial42052
+
+
+anim freespecial42053
+
+
+anim freespecial42054
+
+
+anim freespecial42055
+
+
+anim freespecial1100
+	delay 6
+	offset 43 123
+	frame data/chars/valdoll/55.gif
+	offset 53 121
+	frame data/chars/valdoll/63.gif
+	offset 71 130
+	frame data/chars/valdoll/64.gif
+	offset 66 129
+	frame data/chars/valdoll/65.gif
+	offset 69 126
+	frame data/chars/valdoll/66.gif
+	offset 66 129
+	frame data/chars/valdoll/65.gif
+	delay 8
+	offset 69 126
+	frame data/chars/valdoll/66.gif
+	delay 6
+	offset 58 170
+	frame data/chars/valdoll/67.gif
+	offset 61 171
+	frame data/chars/valdoll/68.gif
+	offset 46 166
+	frame data/chars/valdoll/69.gif
+	offset 47 160
+	frame data/chars/valdoll/70.gif
+	offset 48 151
+	frame data/chars/valdoll/71.gif
+	delay 4
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+	delay 11
+	offset 43 132
+	frame data/chars/valdoll/75.gif
+
+
+anim freespecial42061
+	delay 6
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	offset -48 66
+	frame data/chars/valdoll/599.gif
+	offset -47 63
+	frame data/chars/valdoll/600.gif
+	offset -47 66
+	frame data/chars/valdoll/601.gif
+	offset -48 67
+	frame data/chars/valdoll/602.gif
+	offset -47 63
+	frame data/chars/valdoll/603.gif
+	offset -48 66
+	frame data/chars/valdoll/604.gif
+	offset -48 67
+	frame data/chars/valdoll/605.gif
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	offset -47 63
+	frame data/chars/valdoll/600.gif
+	offset -48 67
+	frame data/chars/valdoll/602.gif
+	offset -48 66
+	frame data/chars/valdoll/604.gif
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	delay 2
+	offset -48 66
+	frame data/chars/valdoll/599.gif
+
+
+anim pain5200
+	delay 6
+	offset 49 121
+	frame data/chars/valdoll/42.gif
+	offset 70 124
+	frame data/chars/valdoll/43.gif
+	offset 70 124
+	frame data/chars/valdoll/43.gif
+	offset 67 126
+	frame data/chars/valdoll/44.gif
+	offset 70 123
+	frame data/chars/valdoll/45.gif
+
+
+anim freespecial40021
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/218.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/219.gif
+	delay 4
+	offset 80 92
+	frame data/chars/valdoll/220.gif
+	delay 10
+	offset 88 97
+	frame data/chars/valdoll/221.gif
+	offset 97 93
+	frame data/chars/valdoll/222.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/223.gif
+
+
+anim freespecial40022
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/218.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/219.gif
+	delay 2
+	offset 54 110
+	frame data/chars/valdoll/224.gif
+	delay 10
+	offset 52 108
+	frame data/chars/valdoll/225.gif
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/222.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/223.gif
+
+
+anim freespecial40023
+	delay 4
+	offset 94 103
+	frame data/chars/valdoll/226.gif
+	delay 5
+	offset 128 118
+	frame data/chars/valdoll/227.gif
+	delay 4
+	offset 117 112
+	frame data/chars/valdoll/228.gif
+	offset 128 79
+	frame data/chars/valdoll/229.gif
+	offset 62 127
+	frame data/chars/valdoll/230.gif
+	delay 10
+	offset 63 124
+	frame data/chars/valdoll/231.gif
+	delay 6
+	offset 69 102
+	frame data/chars/valdoll/232.gif
+	delay 5
+	offset 104 96
+	frame data/chars/valdoll/233.gif
+
+
+anim pain5210
+	delay 6
+	offset 49 121
+	frame data/chars/valdoll/42.gif
+	offset 70 124
+	frame data/chars/valdoll/43.gif
+	offset 70 124
+	frame data/chars/valdoll/43.gif
+	offset 67 126
+	frame data/chars/valdoll/44.gif
+	offset 70 123
+	frame data/chars/valdoll/45.gif
+
+
+anim pain5211
+
+
+anim freespecial40030
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/234.gif
+	offset 152 -2
+	frame data/chars/valdoll/235.gif
+	offset 141 3
+	frame data/chars/valdoll/236.gif
+	offset 152 6
+	frame data/chars/valdoll/237.gif
+
+
+anim freespecial40035
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/234.gif
+	offset 152 -2
+	frame data/chars/valdoll/235.gif
+	offset 141 3
+	frame data/chars/valdoll/236.gif
+	offset 152 6
+	frame data/chars/valdoll/237.gif
+	offset 153 1
+	frame data/chars/valdoll/234.gif
+	offset 152 -2
+	frame data/chars/valdoll/235.gif
+	offset 141 3
+	frame data/chars/valdoll/236.gif
+	offset 152 6
+	frame data/chars/valdoll/237.gif
+
+
+anim freespecial40045
+	delay 4
+	offset 113 116
+	frame data/chars/valdoll/239.gif
+	offset 126 108
+	frame data/chars/valdoll/240.gif
+	offset 135 114
+	frame data/chars/valdoll/241.gif
+	delay 22
+	offset 135 114
+	frame data/chars/valdoll/242.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/243.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/244.gif
+
+
+anim freespecial40046
+	delay 6
+	offset 137 119
+	frame data/chars/valdoll/245.gif
+	delay 4
+	offset 139 111
+	frame data/chars/valdoll/246.gif
+	offset 151 114
+	frame data/chars/valdoll/247.gif
+	delay 22
+	offset 151 114
+	frame data/chars/valdoll/248.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/243.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/244.gif
+
+
+anim freespecial40051
+	delay 6
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -53 93
+	frame data/chars/valdoll/577.gif
+	delay 4
+	offset -52 63
+	frame data/chars/valdoll/579.gif
+	offset -52 70
+	frame data/chars/valdoll/580.gif
+	offset -52 72
+	frame data/chars/valdoll/581.gif
+	offset -52 72
+	frame data/chars/valdoll/582.gif
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	offset -49 90
+	frame data/chars/valdoll/584.gif
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -52 84
+	frame data/chars/valdoll/586.gif
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -52 86
+	frame data/chars/valdoll/576.gif
+	offset -53 93
+	frame data/chars/valdoll/577.gif
+	offset -53 93
+	frame data/chars/valdoll/578.gif
+	offset -52 63
+	frame data/chars/valdoll/579.gif
+	offset -52 70
+	frame data/chars/valdoll/580.gif
+	offset -52 72
+	frame data/chars/valdoll/581.gif
+	offset -52 72
+	frame data/chars/valdoll/582.gif
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	offset -49 90
+	frame data/chars/valdoll/584.gif
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -52 84
+	frame data/chars/valdoll/586.gif
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -52 86
+	frame data/chars/valdoll/576.gif
+	delay 2
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	delay 4
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -84 36
+	frame data/chars/valdoll/587.gif
+	offset -106 45
+	frame data/chars/valdoll/588.gif
+	delay 5
+	offset -125 34
+	frame data/chars/valdoll/589.gif
+
+
+anim freespecial40052
+
+
+anim freespecial40053
+
+
+anim freespecial40061
+	delay 6
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -53 93
+	frame data/chars/valdoll/577.gif
+	delay 4
+	offset -52 63
+	frame data/chars/valdoll/579.gif
+	offset -52 70
+	frame data/chars/valdoll/580.gif
+	offset -52 72
+	frame data/chars/valdoll/581.gif
+	offset -52 72
+	frame data/chars/valdoll/582.gif
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	offset -49 90
+	frame data/chars/valdoll/584.gif
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -52 84
+	frame data/chars/valdoll/586.gif
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -52 86
+	frame data/chars/valdoll/576.gif
+	offset -53 93
+	frame data/chars/valdoll/577.gif
+	offset -53 93
+	frame data/chars/valdoll/578.gif
+	offset -52 63
+	frame data/chars/valdoll/579.gif
+	offset -52 70
+	frame data/chars/valdoll/580.gif
+	offset -52 72
+	frame data/chars/valdoll/581.gif
+	offset -52 72
+	frame data/chars/valdoll/582.gif
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	offset -49 90
+	frame data/chars/valdoll/584.gif
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -52 84
+	frame data/chars/valdoll/586.gif
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -52 86
+	frame data/chars/valdoll/576.gif
+	delay 2
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	delay 4
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -84 36
+	frame data/chars/valdoll/587.gif
+	offset -106 45
+	frame data/chars/valdoll/588.gif
+	delay 5
+	offset -125 34
+	frame data/chars/valdoll/589.gif
+
+
+anim freespecial7300
+	delay 2
+	offset 30 25
+	frame data/chars/valdoll/852.gif
+	delay 4
+	offset 47 24
+	frame data/chars/valdoll/853.gif
+	offset 42 39
+	frame data/chars/valdoll/854.gif
+	offset 53 34
+	frame data/chars/valdoll/855.gif
+	offset 58 39
+	frame data/chars/valdoll/856.gif
+	offset 52 35
+	frame data/chars/valdoll/857.gif
+	offset 48 32
+	frame data/chars/valdoll/858.gif
+	offset 42 30
+	frame data/chars/valdoll/859.gif
+	offset 40 31
+	frame data/chars/valdoll/860.gif
+	offset 41 32
+	frame data/chars/valdoll/861.gif
+	offset 42 33
+	frame data/chars/valdoll/862.gif
+	offset 43 34
+	frame data/chars/valdoll/863.gif
+	offset 44 35
+	frame data/chars/valdoll/864.gif
+	offset 45 35
+	frame data/chars/valdoll/865.gif
+	offset 45 36
+	frame data/chars/valdoll/866.gif
+	delay 5
+	offset 46 36
+	frame data/chars/valdoll/867.gif
+
+
+anim freespecial1200
+	delay 6
+	offset 40 124
+	frame data/chars/valdoll/51.gif
+	offset 42 128
+	frame data/chars/valdoll/52.gif
+	offset 45 127
+	frame data/chars/valdoll/53.gif
+	offset 42 128
+	frame data/chars/valdoll/52.gif
+	offset 36 122
+	frame data/chars/valdoll/51.gif
+	delay 8
+	offset 82 127
+	frame data/chars/valdoll/90.gif
+	delay 6
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	offset 75 125
+	frame data/chars/valdoll/89.gif
+	offset 78 122
+	frame data/chars/valdoll/88.gif
+	offset 80 126
+	frame data/chars/valdoll/90.gif
+	delay 8
+	offset 43 123
+	frame data/chars/valdoll/76.gif
+
+
+anim freespecial1201
+	delay 6
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 106
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 106
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 106
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 106
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 106
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 106
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 106
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 106
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 106
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 106
+	frame data/chars/valdoll/77.gif
+	offset -58 107
+	frame data/chars/valdoll/77.gif
+	offset -58 108
+	frame data/chars/valdoll/77.gif
+
+
+anim pain5300
+	delay 10
+	offset 61 96
+	frame data/chars/valdoll/171.gif
+	delay 4
+	offset 61 98
+	frame data/chars/valdoll/172.gif
+	offset 61 99
+	frame data/chars/valdoll/173.gif
+	delay 10
+	offset 61 96
+	frame data/chars/valdoll/174.gif
+	offset 61 99
+	frame data/chars/valdoll/173.gif
+	offset 61 98
+	frame data/chars/valdoll/172.gif
+
+
+anim freespecial13500
+	delay 22
+	offset 100 104
+	frame data/chars/valdoll/566.gif
+	delay -1000
+	offset 100 104
+	frame data/chars/valdoll/566.gif
+
+
+anim freespecial13501
+	delay 28
+	offset 105 114
+	frame data/chars/valdoll/567.gif
+	delay -1000
+	offset 105 114
+	frame data/chars/valdoll/567.gif
+
+
+anim freespecial13502
+	delay 33
+	offset 105 114
+	frame data/chars/valdoll/567.gif
+	delay -1000
+	offset 105 114
+	frame data/chars/valdoll/567.gif
+
+
+anim freespecial13510
+	delay 22
+	offset 90 110
+	frame data/chars/valdoll/568.gif
+	delay -1000
+	offset 90 110
+	frame data/chars/valdoll/568.gif
+
+
+anim freespecial13511
+	delay 28
+	offset 83 127
+	frame data/chars/valdoll/569.gif
+	delay -1000
+	offset 83 127
+	frame data/chars/valdoll/569.gif
+
+
+anim freespecial13512
+	delay 33
+	offset 83 127
+	frame data/chars/valdoll/569.gif
+	delay -1000
+	offset 83 127
+	frame data/chars/valdoll/569.gif
+
+
+anim freespecial13530
+	delay 6
+	offset 95 109
+	frame data/chars/valdoll/570.gif
+	offset 104 95
+	frame data/chars/valdoll/571.gif
+	offset 87 107
+	frame data/chars/valdoll/572.gif
+	offset 78 125
+	frame data/chars/valdoll/573.gif
+	delay 22
+	offset 63 134
+	frame data/chars/valdoll/574.gif
+	delay -1000
+	offset 63 134
+	frame data/chars/valdoll/574.gif
+
+
+anim freespecial11500
+	delay 22
+	offset 100 104
+	frame data/chars/valdoll/366.gif
+	delay -1000
+	offset 100 104
+	frame data/chars/valdoll/366.gif
+
+
+anim freespecial11501
+	delay 28
+	offset 105 114
+	frame data/chars/valdoll/367.gif
+	delay -1000
+	offset 105 114
+	frame data/chars/valdoll/367.gif
+
+
+anim freespecial11502
+	delay 33
+	offset 105 114
+	frame data/chars/valdoll/367.gif
+	delay -1000
+	offset 105 114
+	frame data/chars/valdoll/367.gif
+
+
+anim freespecial11510
+	delay 22
+	offset 90 110
+	frame data/chars/valdoll/368.gif
+	delay -1000
+	offset 90 110
+	frame data/chars/valdoll/368.gif
+
+
+anim freespecial11511
+	delay 28
+	offset 83 127
+	frame data/chars/valdoll/369.gif
+	delay -1000
+	offset 83 127
+	frame data/chars/valdoll/369.gif
+
+
+anim freespecial11512
+	delay 33
+	offset 83 127
+	frame data/chars/valdoll/369.gif
+	delay -1000
+	offset 83 127
+	frame data/chars/valdoll/369.gif
+
+
+anim freespecial32000
+
+
+anim freespecial32001
+	delay 5
+	offset 26 89
+	frame data/chars/valdoll/1267.gif
+	delay 6
+	offset 36 92
+	frame data/chars/valdoll/1268.gif
+	offset 33 98
+	frame data/chars/valdoll/1269.gif
+
+
+anim freespecial11530
+	delay 6
+	offset 95 109
+	frame data/chars/valdoll/370.gif
+	offset 104 95
+	frame data/chars/valdoll/371.gif
+	offset 87 107
+	frame data/chars/valdoll/372.gif
+	offset 78 125
+	frame data/chars/valdoll/373.gif
+	delay 22
+	offset 63 134
+	frame data/chars/valdoll/374.gif
+	delay -1000
+	offset 63 134
+	frame data/chars/valdoll/374.gif
+
+
+anim freespecial32011
+	delay 5
+	offset 26 89
+	frame data/chars/valdoll/1267.gif
+	delay 6
+	offset 36 92
+	frame data/chars/valdoll/1268.gif
+	offset 33 98
+	frame data/chars/valdoll/1269.gif
+
+
+anim freespecial1300
+	delay 6
+	offset 77 6
+	frame data/chars/valdoll/745.gif
+	delay 5
+	offset 86 -1
+	frame data/chars/valdoll/746.gif
+	offset 89 1
+	frame data/chars/valdoll/747.gif
+	offset 91 3
+	frame data/chars/valdoll/748.gif
+	offset 73 6
+	frame data/chars/valdoll/749.gif
+	offset 69 -14
+	frame data/chars/valdoll/750.gif
+	offset 74 -13
+	frame data/chars/valdoll/751.gif
+	offset 80 -13
+	frame data/chars/valdoll/752.gif
+	delay 2
+	offset 64 -46
+	frame data/chars/valdoll/753.gif
+
+
+anim freespecial1301
+	delay -1000
+	offset 44 123
+	frame data/chars/valdoll/3.gif
+
+
+anim freespecial1302
+	delay 6
+	offset 77 6
+	frame data/chars/valdoll/745.gif
+	delay 5
+	offset 86 -1
+	frame data/chars/valdoll/746.gif
+	offset 89 1
+	frame data/chars/valdoll/747.gif
+	offset 91 3
+	frame data/chars/valdoll/748.gif
+	offset 73 6
+	frame data/chars/valdoll/749.gif
+	offset 69 -14
+	frame data/chars/valdoll/750.gif
+	offset 74 -13
+	frame data/chars/valdoll/751.gif
+	offset 80 -13
+	frame data/chars/valdoll/752.gif
+	delay 2
+	offset 64 -46
+	frame data/chars/valdoll/753.gif
+
+
+anim freespecial30000
+
+
+anim freespecial30001
+	delay -1000
+	offset 21 46
+	frame data/chars/valdoll/1242.gif
+
+
+anim freespecial32050
+
+
+anim freespecial32051
+	delay 5
+	offset 26 89
+	frame data/chars/valdoll/1267.gif
+	delay 6
+	offset 36 92
+	frame data/chars/valdoll/1268.gif
+	offset 33 98
+	frame data/chars/valdoll/1269.gif
+
+
+anim freespecial30010
+
+
+anim freespecial30011
+	delay -1000
+	offset 32 18
+	frame data/chars/valdoll/1243.gif
+
+
+anim pain5002
+
+
+anim freespecial30020
+
+
+anim freespecial30021
+	delay 6
+	offset 20 50
+	frame data/chars/valdoll/1244.gif
+	offset 19 53
+	frame data/chars/valdoll/1245.gif
+	offset 17 52
+	frame data/chars/valdoll/1246.gif
+	offset 21 50
+	frame data/chars/valdoll/1247.gif
+	offset 20 52
+	frame data/chars/valdoll/1248.gif
+	offset 20 52
+	frame data/chars/valdoll/1249.gif
+
+
+anim freespecial1350
+	delay 5
+	offset 80 -13
+	frame data/chars/valdoll/752.gif
+	offset 74 -13
+	frame data/chars/valdoll/751.gif
+	offset 69 -14
+	frame data/chars/valdoll/750.gif
+	offset 73 6
+	frame data/chars/valdoll/749.gif
+	offset 91 3
+	frame data/chars/valdoll/748.gif
+	offset 89 1
+	frame data/chars/valdoll/747.gif
+	offset 86 -1
+	frame data/chars/valdoll/746.gif
+	delay 8
+	offset 77 6
+	frame data/chars/valdoll/745.gif
+
+
+anim freespecial1352
+	delay 5
+	offset 80 -13
+	frame data/chars/valdoll/752.gif
+	offset 74 -13
+	frame data/chars/valdoll/751.gif
+	offset 69 -14
+	frame data/chars/valdoll/750.gif
+	offset 73 6
+	frame data/chars/valdoll/749.gif
+	offset 91 3
+	frame data/chars/valdoll/748.gif
+	offset 89 1
+	frame data/chars/valdoll/747.gif
+	offset 86 -1
+	frame data/chars/valdoll/746.gif
+	delay 8
+	offset 77 6
+	frame data/chars/valdoll/745.gif
+
+
+anim freespecial10002
+	delay 8
+	offset 108 102
+	frame data/chars/valdoll/200.gif
+	offset 108 91
+	frame data/chars/valdoll/201.gif
+	offset 104 91
+	frame data/chars/valdoll/202.gif
+	offset 95 91
+	frame data/chars/valdoll/203.gif
+	offset 70 91
+	frame data/chars/valdoll/204.gif
+	offset 52 91
+	frame data/chars/valdoll/205.gif
+	offset 40 91
+	frame data/chars/valdoll/206.gif
+	offset 55 99
+	frame data/chars/valdoll/207.gif
+	offset 70 108
+	frame data/chars/valdoll/208.gif
+	offset 95 128
+	frame data/chars/valdoll/209.gif
+	offset 92 138
+	frame data/chars/valdoll/210.gif
+	offset 103 115
+	frame data/chars/valdoll/211.gif
+	offset 108 102
+	frame data/chars/valdoll/212.gif
+
+
+anim freespecial30050
+
+
+anim freespecial30051
+	delay 5
+	offset 24 66
+	frame data/chars/valdoll/1250.gif
+	delay 6
+	offset 26 61
+	frame data/chars/valdoll/1251.gif
+	delay -1000
+	offset 24 66
+	frame data/chars/valdoll/1250.gif
+
+
+anim freespecial40301
+
+
+anim pain5012
+
+
+anim pain5015
+	delay -1000
+	offset 42 120
+	frame data/chars/valdoll/106.gif
+
+
+anim pain5016
+	delay -1000
+	offset 42 120
+	frame data/chars/valdoll/106.gif
+
+
+anim pain5017
+	delay -1000
+	offset 42 120
+	frame data/chars/valdoll/106.gif
+
+
+anim freespecial7068
+	delay 2
+	offset 12 10
+	frame data/chars/valdoll/1051.gif
+	offset 12 10
+	frame data/chars/valdoll/1051.gif
+	offset 12 10
+	frame data/chars/valdoll/1052.gif
+	offset 12 10
+	frame data/chars/valdoll/1052.gif
+	offset 12 10
+	frame data/chars/valdoll/1053.gif
+	offset 12 10
+	frame data/chars/valdoll/1053.gif
+
+
+anim freespecial33010
+
+
+anim freespecial7069
+	delay 2
+	offset 19 15
+	frame data/chars/valdoll/1054.gif
+	offset 19 15
+	frame data/chars/valdoll/1054.gif
+	offset 19 16
+	frame data/chars/valdoll/1055.gif
+	offset 19 16
+	frame data/chars/valdoll/1055.gif
+	offset 20 17
+	frame data/chars/valdoll/1056.gif
+	offset 20 17
+	frame data/chars/valdoll/1056.gif
+
+
+anim freespecial33011
+	delay 5
+	offset 19 18
+	frame data/chars/valdoll/1274.gif
+	delay -1000
+	offset 15 24
+	frame data/chars/valdoll/1275.gif
+
+
+anim freespecial7070
+	delay 5
+	offset 19 26
+	frame data/chars/valdoll/1057.gif
+	offset 18 25
+	frame data/chars/valdoll/1058.gif
+	offset 18 25
+	frame data/chars/valdoll/1059.gif
+	offset 19 24
+	frame data/chars/valdoll/1060.gif
+	offset 19 26
+	frame data/chars/valdoll/1061.gif
+	offset 18 26
+	frame data/chars/valdoll/1062.gif
+	offset 19 25
+	frame data/chars/valdoll/1063.gif
+	offset 19 24
+	frame data/chars/valdoll/1064.gif
+	offset 19 26
+	frame data/chars/valdoll/1065.gif
+	offset 19 26
+	frame data/chars/valdoll/1066.gif
+	offset 24 25
+	frame data/chars/valdoll/1067.gif
+	offset 23 24
+	frame data/chars/valdoll/1068.gif
+	offset 24 26
+	frame data/chars/valdoll/1069.gif
+	offset 23 26
+	frame data/chars/valdoll/1070.gif
+	offset 24 25
+	frame data/chars/valdoll/1071.gif
+	offset 17 24
+	frame data/chars/valdoll/1072.gif
+	offset 19 26
+	frame data/chars/valdoll/1057.gif
+	offset 18 25
+	frame data/chars/valdoll/1058.gif
+	offset 18 25
+	frame data/chars/valdoll/1059.gif
+	offset 19 24
+	frame data/chars/valdoll/1060.gif
+
+
+anim freespecial7073
+	delay 5
+	offset 26 20
+	frame data/chars/valdoll/1105.gif
+	offset 25 19
+	frame data/chars/valdoll/1106.gif
+	offset 26 18
+	frame data/chars/valdoll/1107.gif
+	offset 26 18
+	frame data/chars/valdoll/1108.gif
+	offset 26 20
+	frame data/chars/valdoll/1109.gif
+	offset 26 19
+	frame data/chars/valdoll/1110.gif
+	offset 26 19
+	frame data/chars/valdoll/1111.gif
+	offset 24 18
+	frame data/chars/valdoll/1112.gif
+	offset 26 20
+	frame data/chars/valdoll/1113.gif
+	offset 26 19
+	frame data/chars/valdoll/1114.gif
+	offset 25 19
+	frame data/chars/valdoll/1115.gif
+	offset 24 18
+	frame data/chars/valdoll/1116.gif
+	offset 26 20
+	frame data/chars/valdoll/1117.gif
+	offset 26 19
+	frame data/chars/valdoll/1118.gif
+	offset 24 18
+	frame data/chars/valdoll/1119.gif
+	offset 24 18
+	frame data/chars/valdoll/1120.gif
+	offset 26 20
+	frame data/chars/valdoll/1105.gif
+	offset 25 19
+	frame data/chars/valdoll/1106.gif
+	offset 26 18
+	frame data/chars/valdoll/1107.gif
+	offset 26 18
+	frame data/chars/valdoll/1108.gif
+
+
+anim freespecial7074
+	delay 5
+	offset 34 7
+	frame data/chars/valdoll/1121.gif
+	offset 33 7
+	frame data/chars/valdoll/1122.gif
+	offset 36 7
+	frame data/chars/valdoll/1123.gif
+	offset 35 6
+	frame data/chars/valdoll/1124.gif
+	offset 34 6
+	frame data/chars/valdoll/1125.gif
+	offset 34 6
+	frame data/chars/valdoll/1126.gif
+	offset 36 6
+	frame data/chars/valdoll/1127.gif
+	offset 35 12
+	frame data/chars/valdoll/1128.gif
+	offset 34 12
+	frame data/chars/valdoll/1129.gif
+	offset 33 14
+	frame data/chars/valdoll/1130.gif
+	offset 36 13
+	frame data/chars/valdoll/1131.gif
+	offset 35 14
+	frame data/chars/valdoll/1132.gif
+	offset 34 13
+	frame data/chars/valdoll/1133.gif
+	offset 33 13
+	frame data/chars/valdoll/1134.gif
+	offset 36 7
+	frame data/chars/valdoll/1135.gif
+	offset 35 7
+	frame data/chars/valdoll/1136.gif
+	offset 34 7
+	frame data/chars/valdoll/1121.gif
+	offset 33 7
+	frame data/chars/valdoll/1122.gif
+	offset 36 7
+	frame data/chars/valdoll/1123.gif
+	offset 35 6
+	frame data/chars/valdoll/1124.gif
+
+
+anim freespecial22000
+	delay 4
+	offset 32 19
+	frame data/chars/valdoll/754.gif
+	offset 77 56
+	frame data/chars/valdoll/755.gif
+	offset 94 80
+	frame data/chars/valdoll/756.gif
+	offset 82 80
+	frame data/chars/valdoll/757.gif
+	offset 92 49
+	frame data/chars/valdoll/758.gif
+	offset 96 64
+	frame data/chars/valdoll/759.gif
+	offset 89 70
+	frame data/chars/valdoll/760.gif
+	offset 95 74
+	frame data/chars/valdoll/761.gif
+	delay 5
+	offset 98 76
+	frame data/chars/valdoll/762.gif
+
+
+anim freespecial22001
+	delay 4
+	offset 32 19
+	frame data/chars/valdoll/754.gif
+	offset 77 56
+	frame data/chars/valdoll/755.gif
+	offset 94 80
+	frame data/chars/valdoll/756.gif
+	offset 82 80
+	frame data/chars/valdoll/757.gif
+	offset 92 49
+	frame data/chars/valdoll/758.gif
+	offset 96 64
+	frame data/chars/valdoll/759.gif
+	offset 89 70
+	frame data/chars/valdoll/760.gif
+	offset 95 74
+	frame data/chars/valdoll/761.gif
+	delay 5
+	offset 98 76
+	frame data/chars/valdoll/762.gif
+
+
+anim freespecial9741
+
+
+anim freespecial43055
+
+
+anim freespecial32010
+
+
+anim freespecial3000
+	delay 6
+	offset 53 121
+	frame data/chars/valdoll/63.gif
+	offset 71 130
+	frame data/chars/valdoll/64.gif
+	offset 66 129
+	frame data/chars/valdoll/65.gif
+	offset 69 126
+	frame data/chars/valdoll/66.gif
+	offset 58 170
+	frame data/chars/valdoll/67.gif
+	offset 61 171
+	frame data/chars/valdoll/68.gif
+	offset 46 166
+	frame data/chars/valdoll/69.gif
+	offset 47 160
+	frame data/chars/valdoll/70.gif
+	offset 48 151
+	frame data/chars/valdoll/71.gif
+	offset 46 151
+	frame data/chars/valdoll/72.gif
+	offset 47 152
+	frame data/chars/valdoll/73.gif
+	offset 48 151
+	frame data/chars/valdoll/74.gif
+
+
+anim freespecial22100
+	delay 4
+	offset 32 19
+	frame data/chars/valdoll/778.gif
+	offset 77 56
+	frame data/chars/valdoll/779.gif
+	offset 94 80
+	frame data/chars/valdoll/780.gif
+	offset 82 80
+	frame data/chars/valdoll/781.gif
+	offset 92 49
+	frame data/chars/valdoll/782.gif
+	offset 96 64
+	frame data/chars/valdoll/783.gif
+	offset 89 70
+	frame data/chars/valdoll/784.gif
+	offset 95 74
+	frame data/chars/valdoll/785.gif
+	delay 5
+	offset 98 76
+	frame data/chars/valdoll/786.gif
+
+
+anim freespecial22101
+	delay 4
+	offset 32 19
+	frame data/chars/valdoll/778.gif
+	offset 77 56
+	frame data/chars/valdoll/779.gif
+	offset 94 80
+	frame data/chars/valdoll/780.gif
+	offset 82 80
+	frame data/chars/valdoll/781.gif
+	offset 92 49
+	frame data/chars/valdoll/782.gif
+	offset 96 64
+	frame data/chars/valdoll/783.gif
+	offset 89 70
+	frame data/chars/valdoll/784.gif
+	offset 95 74
+	frame data/chars/valdoll/785.gif
+	delay 5
+	offset 98 76
+	frame data/chars/valdoll/786.gif
+
+
+anim freespecial7098
+	delay 2
+	offset 11 9
+	frame data/chars/valdoll/1236.gif
+	offset 11 9
+	frame data/chars/valdoll/1236.gif
+	offset 10 9
+	frame data/chars/valdoll/1237.gif
+	offset 10 9
+	frame data/chars/valdoll/1237.gif
+	offset 11 9
+	frame data/chars/valdoll/1238.gif
+	offset 11 9
+	frame data/chars/valdoll/1238.gif
+
+
+anim pain5051
+	delay 6
+	offset 69 114
+	frame data/chars/valdoll/154.gif
+
+
+anim freespecial32020
+
+
+anim freespecial32021
+	delay 5
+	offset 26 89
+	frame data/chars/valdoll/1267.gif
+	delay 6
+	offset 36 92
+	frame data/chars/valdoll/1268.gif
+	offset 33 98
+	frame data/chars/valdoll/1269.gif
+
+
+anim freespecial22200
+	delay 4
+	offset 32 19
+	frame data/chars/valdoll/787.gif
+	offset 77 56
+	frame data/chars/valdoll/788.gif
+	offset 94 80
+	frame data/chars/valdoll/789.gif
+	offset 82 80
+	frame data/chars/valdoll/790.gif
+	offset 92 49
+	frame data/chars/valdoll/791.gif
+	offset 96 64
+	frame data/chars/valdoll/792.gif
+	offset 89 70
+	frame data/chars/valdoll/793.gif
+	offset 95 74
+	frame data/chars/valdoll/794.gif
+	delay 5
+	offset 98 76
+	frame data/chars/valdoll/795.gif
+
+
+anim freespecial22201
+	delay 4
+	offset 68 54
+	frame data/chars/valdoll/796.gif
+	offset 68 55
+	frame data/chars/valdoll/797.gif
+	offset 66 57
+	frame data/chars/valdoll/798.gif
+	offset 66 57
+	frame data/chars/valdoll/799.gif
+	offset 68 57
+	frame data/chars/valdoll/800.gif
+	offset 66 56
+	frame data/chars/valdoll/801.gif
+	offset 66 54
+	frame data/chars/valdoll/802.gif
+	offset 67 54
+	frame data/chars/valdoll/803.gif
+	offset 70 55
+	frame data/chars/valdoll/804.gif
+	offset 69 56
+	frame data/chars/valdoll/805.gif
+	offset 68 56
+	frame data/chars/valdoll/806.gif
+	offset 69 56
+	frame data/chars/valdoll/807.gif
+	offset 72 56
+	frame data/chars/valdoll/808.gif
+	offset 70 56
+	frame data/chars/valdoll/809.gif
+	offset 68 52
+	frame data/chars/valdoll/810.gif
+	offset 65 51
+	frame data/chars/valdoll/811.gif
+
+
+anim freespecial22202
+	delay 4
+	offset 86 72
+	frame data/chars/valdoll/812.gif
+	offset 86 70
+	frame data/chars/valdoll/813.gif
+	offset 88 68
+	frame data/chars/valdoll/814.gif
+	offset 86 68
+	frame data/chars/valdoll/815.gif
+	offset 86 71
+	frame data/chars/valdoll/816.gif
+	offset 84 72
+	frame data/chars/valdoll/817.gif
+	offset 82 71
+	frame data/chars/valdoll/818.gif
+	offset 82 69
+	frame data/chars/valdoll/819.gif
+	offset 85 71
+	frame data/chars/valdoll/820.gif
+	offset 88 69
+	frame data/chars/valdoll/821.gif
+	offset 88 68
+	frame data/chars/valdoll/822.gif
+	offset 90 69
+	frame data/chars/valdoll/823.gif
+	offset 93 70
+	frame data/chars/valdoll/824.gif
+	offset 92 71
+	frame data/chars/valdoll/825.gif
+	offset 91 71
+	frame data/chars/valdoll/826.gif
+	offset 86 72
+	frame data/chars/valdoll/827.gif
+
+
+anim freespecial22203
+	delay 5
+	offset 15 13
+	frame data/chars/valdoll/828.gif
+	offset 13 13
+	frame data/chars/valdoll/829.gif
+	offset 15 13
+	frame data/chars/valdoll/830.gif
+	offset 14 11
+	frame data/chars/valdoll/831.gif
+	offset 15 11
+	frame data/chars/valdoll/832.gif
+	offset 15 12
+	frame data/chars/valdoll/833.gif
+	delay 4
+	offset 14 13
+	frame data/chars/valdoll/834.gif
+	delay 2
+	offset 15 13
+	frame data/chars/valdoll/835.gif
+	offset 15 13
+	frame data/chars/valdoll/835.gif
+	offset 15 13
+	frame data/chars/valdoll/828.gif
+	offset 13 13
+	frame data/chars/valdoll/829.gif
+	offset 13 13
+	frame data/chars/valdoll/829.gif
+	offset 15 13
+	frame data/chars/valdoll/830.gif
+	offset 14 11
+	frame data/chars/valdoll/831.gif
+	offset 14 11
+	frame data/chars/valdoll/831.gif
+	offset 15 11
+	frame data/chars/valdoll/832.gif
+	offset 15 12
+	frame data/chars/valdoll/833.gif
+	offset 15 12
+	frame data/chars/valdoll/833.gif
+	offset 14 13
+	frame data/chars/valdoll/834.gif
+
+
+anim freespecial22204
+	delay 5
+	offset 28 23
+	frame data/chars/valdoll/836.gif
+	offset 28 23
+	frame data/chars/valdoll/837.gif
+	offset 28 23
+	frame data/chars/valdoll/838.gif
+	offset 28 23
+	frame data/chars/valdoll/839.gif
+	offset 29 23
+	frame data/chars/valdoll/840.gif
+	offset 29 21
+	frame data/chars/valdoll/841.gif
+	delay 4
+	offset 29 23
+	frame data/chars/valdoll/842.gif
+	delay 2
+	offset 28 23
+	frame data/chars/valdoll/843.gif
+	offset 28 23
+	frame data/chars/valdoll/843.gif
+	offset 28 23
+	frame data/chars/valdoll/836.gif
+	offset 28 23
+	frame data/chars/valdoll/837.gif
+	offset 28 23
+	frame data/chars/valdoll/837.gif
+	offset 28 23
+	frame data/chars/valdoll/838.gif
+	offset 28 23
+	frame data/chars/valdoll/839.gif
+	offset 28 23
+	frame data/chars/valdoll/839.gif
+	offset 29 23
+	frame data/chars/valdoll/840.gif
+	offset 29 21
+	frame data/chars/valdoll/841.gif
+	offset 29 21
+	frame data/chars/valdoll/841.gif
+	offset 29 23
+	frame data/chars/valdoll/842.gif
+
+
+anim freespecial22205
+	delay 5
+	offset 45 36
+	frame data/chars/valdoll/844.gif
+	offset 44 36
+	frame data/chars/valdoll/845.gif
+	offset 43 32
+	frame data/chars/valdoll/846.gif
+	offset 43 34
+	frame data/chars/valdoll/847.gif
+	offset 46 35
+	frame data/chars/valdoll/848.gif
+	offset 47 36
+	frame data/chars/valdoll/849.gif
+	delay 4
+	offset 46 36
+	frame data/chars/valdoll/850.gif
+	delay 2
+	offset 45 36
+	frame data/chars/valdoll/851.gif
+	offset 45 36
+	frame data/chars/valdoll/851.gif
+	offset 45 36
+	frame data/chars/valdoll/844.gif
+	offset 44 36
+	frame data/chars/valdoll/845.gif
+	offset 44 36
+	frame data/chars/valdoll/845.gif
+	offset 43 32
+	frame data/chars/valdoll/846.gif
+	offset 43 34
+	frame data/chars/valdoll/847.gif
+	offset 43 34
+	frame data/chars/valdoll/847.gif
+	offset 46 35
+	frame data/chars/valdoll/848.gif
+	offset 47 36
+	frame data/chars/valdoll/849.gif
+	offset 47 36
+	frame data/chars/valdoll/849.gif
+	offset 46 36
+	frame data/chars/valdoll/850.gif
+
+
+anim freespecial22210
+	delay 4
+	offset 32 19
+	frame data/chars/valdoll/787.gif
+	offset 77 56
+	frame data/chars/valdoll/788.gif
+	offset 94 80
+	frame data/chars/valdoll/789.gif
+	offset 82 80
+	frame data/chars/valdoll/790.gif
+	offset 92 49
+	frame data/chars/valdoll/791.gif
+	offset 96 64
+	frame data/chars/valdoll/792.gif
+	offset 89 70
+	frame data/chars/valdoll/793.gif
+	offset 95 74
+	frame data/chars/valdoll/794.gif
+	delay 5
+	offset 98 76
+	frame data/chars/valdoll/795.gif
+
+
+anim freespecial22211
+
+
+anim freespecial22212
+
+
+anim freespecial31010
+
+
+anim freespecial20181
+	delay 4
+	offset 14 15
+	frame data/chars/valdoll/619.gif
+	offset 12 64
+	frame data/chars/valdoll/620.gif
+	offset 10 145
+	frame data/chars/valdoll/621.gif
+	offset 13 77
+	frame data/chars/valdoll/622.gif
+	offset 12 94
+	frame data/chars/valdoll/623.gif
+	offset 12 110
+	frame data/chars/valdoll/624.gif
+	offset 12 119
+	frame data/chars/valdoll/625.gif
+	offset 11 130
+	frame data/chars/valdoll/626.gif
+	offset 11 133
+	frame data/chars/valdoll/627.gif
+	offset 11 136
+	frame data/chars/valdoll/628.gif
+	offset 10 141
+	frame data/chars/valdoll/629.gif
+	offset 9 142
+	frame data/chars/valdoll/630.gif
+	offset 8 145
+	frame data/chars/valdoll/631.gif
+	offset 8 147
+	frame data/chars/valdoll/632.gif
+	offset 7 148
+	frame data/chars/valdoll/633.gif
+	delay 5
+	offset 5 150
+	frame data/chars/valdoll/634.gif
+
+
+anim freespecial20190
+	delay -1000
+	offset 9 8
+	frame data/chars/valdoll/635.gif
+
+
+anim freespecial20191
+	delay 4
+	offset 7 6
+	frame data/chars/valdoll/636.gif
+	offset 7 7
+	frame data/chars/valdoll/637.gif
+	offset 6 6
+	frame data/chars/valdoll/638.gif
+	offset 5 5
+	frame data/chars/valdoll/639.gif
+	offset 5 5
+	frame data/chars/valdoll/640.gif
+	offset 4 4
+	frame data/chars/valdoll/641.gif
+
+
+anim freespecial20192
+	delay -1000
+	offset 9 8
+	frame data/chars/valdoll/635.gif
+
+
+anim freespecial20193
+	delay 4
+	offset 7 6
+	frame data/chars/valdoll/636.gif
+	offset 7 7
+	frame data/chars/valdoll/637.gif
+	offset 6 6
+	frame data/chars/valdoll/638.gif
+	offset 5 5
+	frame data/chars/valdoll/639.gif
+	offset 5 5
+	frame data/chars/valdoll/640.gif
+	offset 4 4
+	frame data/chars/valdoll/641.gif
+
+
+anim freespecial12002
+	delay 8
+	offset 108 102
+	frame data/chars/valdoll/400.gif
+	offset 108 91
+	frame data/chars/valdoll/401.gif
+	offset 104 91
+	frame data/chars/valdoll/402.gif
+	offset 95 91
+	frame data/chars/valdoll/403.gif
+	offset 70 91
+	frame data/chars/valdoll/404.gif
+	offset 52 91
+	frame data/chars/valdoll/405.gif
+	offset 40 91
+	frame data/chars/valdoll/406.gif
+	offset 55 99
+	frame data/chars/valdoll/407.gif
+	offset 70 108
+	frame data/chars/valdoll/408.gif
+	offset 95 128
+	frame data/chars/valdoll/409.gif
+	offset 92 138
+	frame data/chars/valdoll/410.gif
+	offset 103 115
+	frame data/chars/valdoll/411.gif
+	offset 108 102
+	frame data/chars/valdoll/412.gif
+
+
+anim freespecial12005
+	delay 6
+	offset 68 93
+	frame data/chars/valdoll/413.gif
+	offset 81 102
+	frame data/chars/valdoll/414.gif
+	offset 77 104
+	frame data/chars/valdoll/415.gif
+	offset 92 99
+	frame data/chars/valdoll/416.gif
+	delay 8
+	offset 97 96
+	frame data/chars/valdoll/417.gif
+
+
+anim freespecial12010
+	delay 15
+	offset 95 128
+	frame data/chars/valdoll/384.gif
+
+
+anim freespecial12011
+	delay 18
+	offset 95 128
+	frame data/chars/valdoll/384.gif
+
+
+anim freespecial12020
+	delay -1000
+	offset 108 102
+	frame data/chars/valdoll/387.gif
+
+
+anim freespecial12021
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/418.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/419.gif
+	delay 4
+	offset 80 92
+	frame data/chars/valdoll/420.gif
+	delay 10
+	offset 88 97
+	frame data/chars/valdoll/421.gif
+	offset 97 93
+	frame data/chars/valdoll/422.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/423.gif
+
+
+anim freespecial12022
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/418.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/419.gif
+	delay 2
+	offset 54 110
+	frame data/chars/valdoll/424.gif
+	delay 10
+	offset 52 108
+	frame data/chars/valdoll/425.gif
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/422.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/423.gif
+
+
+anim freespecial12023
+	delay 4
+	offset 94 103
+	frame data/chars/valdoll/426.gif
+	delay 5
+	offset 128 118
+	frame data/chars/valdoll/427.gif
+	delay 4
+	offset 117 112
+	frame data/chars/valdoll/428.gif
+	offset 128 79
+	frame data/chars/valdoll/429.gif
+	offset 62 127
+	frame data/chars/valdoll/430.gif
+	delay 10
+	offset 63 124
+	frame data/chars/valdoll/431.gif
+	delay 6
+	offset 69 102
+	frame data/chars/valdoll/432.gif
+	delay 5
+	offset 104 96
+	frame data/chars/valdoll/433.gif
+
+
+anim freespecial12030
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/434.gif
+	offset 152 -2
+	frame data/chars/valdoll/435.gif
+	offset 141 3
+	frame data/chars/valdoll/436.gif
+	offset 152 6
+	frame data/chars/valdoll/437.gif
+	offset 153 1
+	frame data/chars/valdoll/434.gif
+	offset 152 -2
+	frame data/chars/valdoll/435.gif
+	offset 141 3
+	frame data/chars/valdoll/436.gif
+	offset 152 6
+	frame data/chars/valdoll/437.gif
+
+
+anim freespecial12031
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/422.gif
+	delay 6
+	offset 99 95
+	frame data/chars/valdoll/423.gif
+
+
+anim freespecial12035
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/434.gif
+	offset 152 -2
+	frame data/chars/valdoll/435.gif
+	offset 141 3
+	frame data/chars/valdoll/436.gif
+	offset 152 6
+	frame data/chars/valdoll/437.gif
+	offset 153 1
+	frame data/chars/valdoll/434.gif
+	offset 152 -2
+	frame data/chars/valdoll/435.gif
+	offset 141 3
+	frame data/chars/valdoll/436.gif
+	offset 152 6
+	frame data/chars/valdoll/437.gif
+
+
+anim freespecial12040
+	delay -1000
+	offset 98 118
+	frame data/chars/valdoll/438.gif
+
+
+anim freespecial12041
+	delay 5
+	offset 137 119
+	frame data/chars/valdoll/445.gif
+
+
+anim freespecial12045
+	delay 4
+	offset 113 116
+	frame data/chars/valdoll/439.gif
+	offset 126 108
+	frame data/chars/valdoll/440.gif
+	offset 135 114
+	frame data/chars/valdoll/441.gif
+	delay 22
+	offset 135 114
+	frame data/chars/valdoll/442.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/443.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/444.gif
+
+
+anim freespecial12046
+	delay 6
+	offset 137 119
+	frame data/chars/valdoll/445.gif
+	delay 4
+	offset 139 111
+	frame data/chars/valdoll/446.gif
+	offset 151 114
+	frame data/chars/valdoll/447.gif
+	delay 22
+	offset 151 114
+	frame data/chars/valdoll/448.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/443.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/444.gif
+
+
+anim freespecial9999
+
+
+anim freespecial10000
+	delay 8
+	offset 71 108
+	frame data/chars/valdoll/183.gif
+	offset 95 128
+	frame data/chars/valdoll/184.gif
+	offset 92 138
+	frame data/chars/valdoll/185.gif
+	offset 103 115
+	frame data/chars/valdoll/186.gif
+	offset 108 102
+	frame data/chars/valdoll/175.gif
+	offset 108 89
+	frame data/chars/valdoll/176.gif
+	offset 104 80
+	frame data/chars/valdoll/177.gif
+	offset 95 80
+	frame data/chars/valdoll/178.gif
+	offset 70 80
+	frame data/chars/valdoll/179.gif
+	offset 52 81
+	frame data/chars/valdoll/180.gif
+	offset 51 84
+	frame data/chars/valdoll/181.gif
+	offset 55 99
+	frame data/chars/valdoll/182.gif
+
+
+anim freespecial10001
+	delay 8
+	offset 108 102
+	frame data/chars/valdoll/187.gif
+	offset 108 91
+	frame data/chars/valdoll/188.gif
+	offset 104 91
+	frame data/chars/valdoll/189.gif
+	offset 95 91
+	frame data/chars/valdoll/190.gif
+	offset 70 91
+	frame data/chars/valdoll/191.gif
+	offset 56 91
+	frame data/chars/valdoll/192.gif
+	offset 56 91
+	frame data/chars/valdoll/193.gif
+	offset 56 99
+	frame data/chars/valdoll/194.gif
+	offset 71 108
+	frame data/chars/valdoll/195.gif
+	offset 95 128
+	frame data/chars/valdoll/196.gif
+	offset 92 138
+	frame data/chars/valdoll/197.gif
+	offset 103 115
+	frame data/chars/valdoll/198.gif
+	offset 108 102
+	frame data/chars/valdoll/199.gif
+
+
+anim freespecial12050
+	delay 8
+	offset 98 103
+	frame data/chars/valdoll/449.gif
+	offset 74 116
+	frame data/chars/valdoll/450.gif
+	offset 108 110
+	frame data/chars/valdoll/451.gif
+	offset 116 106
+	frame data/chars/valdoll/452.gif
+	delay 14
+	offset 99 128
+	frame data/chars/valdoll/453.gif
+	delay 10
+	offset 91 140
+	frame data/chars/valdoll/454.gif
+	offset 94 129
+	frame data/chars/valdoll/455.gif
+	offset 91 140
+	frame data/chars/valdoll/454.gif
+	offset 94 129
+	frame data/chars/valdoll/455.gif
+	offset 91 140
+	frame data/chars/valdoll/454.gif
+	offset 94 129
+	frame data/chars/valdoll/455.gif
+	offset 91 140
+	frame data/chars/valdoll/454.gif
+	offset 94 129
+	frame data/chars/valdoll/455.gif
+	delay 6
+	offset 91 140
+	frame data/chars/valdoll/454.gif
+	delay 10
+	offset 101 106
+	frame data/chars/valdoll/418.gif
+
+
+anim freespecial12051
+	delay 6
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	offset -48 66
+	frame data/chars/valdoll/599.gif
+	offset -47 63
+	frame data/chars/valdoll/600.gif
+	offset -47 66
+	frame data/chars/valdoll/601.gif
+	offset -48 67
+	frame data/chars/valdoll/602.gif
+	offset -47 63
+	frame data/chars/valdoll/603.gif
+	offset -48 66
+	frame data/chars/valdoll/604.gif
+	offset -48 67
+	frame data/chars/valdoll/605.gif
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	offset -47 63
+	frame data/chars/valdoll/600.gif
+	offset -48 67
+	frame data/chars/valdoll/602.gif
+	offset -48 66
+	frame data/chars/valdoll/604.gif
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	delay 2
+	offset -48 66
+	frame data/chars/valdoll/599.gif
+
+
+anim freespecial12052
+
+
+anim freespecial10005
+	delay 6
+	offset 68 93
+	frame data/chars/valdoll/213.gif
+	offset 81 102
+	frame data/chars/valdoll/214.gif
+	offset 77 104
+	frame data/chars/valdoll/215.gif
+	offset 92 99
+	frame data/chars/valdoll/216.gif
+	delay 8
+	offset 97 96
+	frame data/chars/valdoll/217.gif
+
+
+anim freespecial12054
+
+
+anim freespecial12055
+
+
+anim freespecial10010
+	delay 15
+	offset 95 128
+	frame data/chars/valdoll/184.gif
+
+
+anim freespecial10011
+	delay 18
+	offset 95 128
+	frame data/chars/valdoll/184.gif
+
+
+anim freespecial12061
+	delay 6
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	offset -48 66
+	frame data/chars/valdoll/599.gif
+	offset -47 63
+	frame data/chars/valdoll/600.gif
+	offset -47 66
+	frame data/chars/valdoll/601.gif
+	offset -48 67
+	frame data/chars/valdoll/602.gif
+	offset -47 63
+	frame data/chars/valdoll/603.gif
+	offset -48 66
+	frame data/chars/valdoll/604.gif
+	offset -48 67
+	frame data/chars/valdoll/605.gif
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	offset -47 63
+	frame data/chars/valdoll/600.gif
+	offset -48 67
+	frame data/chars/valdoll/602.gif
+	offset -48 66
+	frame data/chars/valdoll/604.gif
+	offset -47 66
+	frame data/chars/valdoll/598.gif
+	delay 2
+	offset -48 66
+	frame data/chars/valdoll/599.gif
+
+
+anim freespecial30500
+
+
+anim freespecial30501
+	delay -1000
+	offset 53 52
+	frame data/chars/valdoll/1252.gif
+
+
+anim freespecial10022
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/218.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/219.gif
+	delay 2
+	offset 54 110
+	frame data/chars/valdoll/224.gif
+	delay 10
+	offset 52 108
+	frame data/chars/valdoll/225.gif
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/222.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/223.gif
+
+
+anim freespecial10023
+	delay 4
+	offset 94 103
+	frame data/chars/valdoll/226.gif
+	delay 5
+	offset 128 118
+	frame data/chars/valdoll/227.gif
+	delay 4
+	offset 117 112
+	frame data/chars/valdoll/228.gif
+	offset 128 79
+	frame data/chars/valdoll/229.gif
+	offset 62 127
+	frame data/chars/valdoll/230.gif
+	delay 10
+	offset 63 124
+	frame data/chars/valdoll/231.gif
+	delay 6
+	offset 69 102
+	frame data/chars/valdoll/232.gif
+	delay 5
+	offset 104 96
+	frame data/chars/valdoll/233.gif
+
+
+anim freespecial10030
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/234.gif
+	offset 152 -2
+	frame data/chars/valdoll/235.gif
+	offset 141 3
+	frame data/chars/valdoll/236.gif
+	offset 152 6
+	frame data/chars/valdoll/237.gif
+
+
+anim freespecial10031
+	delay 4
+	offset 97 93
+	frame data/chars/valdoll/222.gif
+	delay 6
+	offset 99 95
+	frame data/chars/valdoll/223.gif
+
+
+anim freespecial10035
+	delay 5
+	offset 153 1
+	frame data/chars/valdoll/234.gif
+	offset 152 -2
+	frame data/chars/valdoll/235.gif
+	offset 141 3
+	frame data/chars/valdoll/236.gif
+	offset 152 6
+	frame data/chars/valdoll/237.gif
+	offset 153 1
+	frame data/chars/valdoll/234.gif
+	offset 152 -2
+	frame data/chars/valdoll/235.gif
+	offset 141 3
+	frame data/chars/valdoll/236.gif
+	offset 152 6
+	frame data/chars/valdoll/237.gif
+
+
+anim freespecial10040
+	delay -1000
+	offset 98 118
+	frame data/chars/valdoll/238.gif
+
+
+anim freespecial10041
+	delay 5
+	offset 137 119
+	frame data/chars/valdoll/245.gif
+
+
+anim freespecial10045
+	delay 4
+	offset 113 116
+	frame data/chars/valdoll/239.gif
+	offset 126 108
+	frame data/chars/valdoll/240.gif
+	offset 135 114
+	frame data/chars/valdoll/241.gif
+	delay 22
+	offset 135 114
+	frame data/chars/valdoll/242.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/243.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/244.gif
+
+
+anim freespecial10046
+	delay 6
+	offset 137 119
+	frame data/chars/valdoll/245.gif
+	delay 4
+	offset 139 111
+	frame data/chars/valdoll/246.gif
+	offset 151 114
+	frame data/chars/valdoll/247.gif
+	delay 22
+	offset 151 114
+	frame data/chars/valdoll/248.gif
+	delay 4
+	offset 107 76
+	frame data/chars/valdoll/243.gif
+	delay 6
+	offset 114 95
+	frame data/chars/valdoll/244.gif
+
+
+anim freespecial10050
+	delay 8
+	offset 98 103
+	frame data/chars/valdoll/249.gif
+	offset 74 116
+	frame data/chars/valdoll/250.gif
+	offset 108 110
+	frame data/chars/valdoll/251.gif
+	offset 116 106
+	frame data/chars/valdoll/252.gif
+	delay 14
+	offset 99 128
+	frame data/chars/valdoll/253.gif
+	delay 10
+	offset 91 140
+	frame data/chars/valdoll/254.gif
+	offset 94 129
+	frame data/chars/valdoll/255.gif
+	offset 91 140
+	frame data/chars/valdoll/254.gif
+	offset 94 129
+	frame data/chars/valdoll/255.gif
+	offset 91 140
+	frame data/chars/valdoll/254.gif
+	offset 94 129
+	frame data/chars/valdoll/255.gif
+	offset 91 140
+	frame data/chars/valdoll/254.gif
+	offset 94 129
+	frame data/chars/valdoll/255.gif
+	delay 6
+	offset 91 140
+	frame data/chars/valdoll/254.gif
+	delay 10
+	offset 101 106
+	frame data/chars/valdoll/218.gif
+
+
+anim freespecial10051
+	delay 6
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -53 93
+	frame data/chars/valdoll/577.gif
+	delay 4
+	offset -52 63
+	frame data/chars/valdoll/579.gif
+	offset -52 70
+	frame data/chars/valdoll/580.gif
+	offset -52 72
+	frame data/chars/valdoll/581.gif
+	offset -52 72
+	frame data/chars/valdoll/582.gif
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	offset -49 90
+	frame data/chars/valdoll/584.gif
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -52 84
+	frame data/chars/valdoll/586.gif
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -52 86
+	frame data/chars/valdoll/576.gif
+	offset -53 93
+	frame data/chars/valdoll/577.gif
+	offset -53 93
+	frame data/chars/valdoll/578.gif
+	offset -52 63
+	frame data/chars/valdoll/579.gif
+	offset -52 70
+	frame data/chars/valdoll/580.gif
+	offset -52 72
+	frame data/chars/valdoll/581.gif
+	offset -52 72
+	frame data/chars/valdoll/582.gif
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	offset -49 90
+	frame data/chars/valdoll/584.gif
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -52 84
+	frame data/chars/valdoll/586.gif
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -52 86
+	frame data/chars/valdoll/576.gif
+	delay 2
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	delay 4
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -84 36
+	frame data/chars/valdoll/587.gif
+	offset -106 45
+	frame data/chars/valdoll/588.gif
+	delay 5
+	offset -125 34
+	frame data/chars/valdoll/589.gif
+
+
+anim freespecial10052
+
+
+anim freespecial10053
+
+
+anim freespecial10061
+	delay 6
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -53 93
+	frame data/chars/valdoll/577.gif
+	delay 4
+	offset -52 63
+	frame data/chars/valdoll/579.gif
+	offset -52 70
+	frame data/chars/valdoll/580.gif
+	offset -52 72
+	frame data/chars/valdoll/581.gif
+	offset -52 72
+	frame data/chars/valdoll/582.gif
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	offset -49 90
+	frame data/chars/valdoll/584.gif
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -52 84
+	frame data/chars/valdoll/586.gif
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -52 86
+	frame data/chars/valdoll/576.gif
+	offset -53 93
+	frame data/chars/valdoll/577.gif
+	offset -53 93
+	frame data/chars/valdoll/578.gif
+	offset -52 63
+	frame data/chars/valdoll/579.gif
+	offset -52 70
+	frame data/chars/valdoll/580.gif
+	offset -52 72
+	frame data/chars/valdoll/581.gif
+	offset -52 72
+	frame data/chars/valdoll/582.gif
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	offset -49 90
+	frame data/chars/valdoll/584.gif
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -52 84
+	frame data/chars/valdoll/586.gif
+	offset -52 86
+	frame data/chars/valdoll/575.gif
+	offset -52 86
+	frame data/chars/valdoll/576.gif
+	delay 2
+	offset -49 84
+	frame data/chars/valdoll/583.gif
+	delay 4
+	offset -52 84
+	frame data/chars/valdoll/585.gif
+	offset -84 36
+	frame data/chars/valdoll/587.gif
+	offset -106 45
+	frame data/chars/valdoll/588.gif
+	delay 5
+	offset -125 34
+	frame data/chars/valdoll/589.gif
+
+
+anim freespecial42301
+
+
+anim freespecial10021
+	delay 8
+	offset 101 106
+	frame data/chars/valdoll/218.gif
+	delay 6
+	offset 95 103
+	frame data/chars/valdoll/219.gif
+	delay 4
+	offset 80 92
+	frame data/chars/valdoll/220.gif
+	delay 10
+	offset 88 97
+	frame data/chars/valdoll/221.gif
+	offset 97 93
+	frame data/chars/valdoll/222.gif
+	delay 5
+	offset 99 95
+	frame data/chars/valdoll/223.gif
+
+
+anim freespecial1012
+	delay 6
+	offset 40 41
+	frame data/chars/valdoll/654.gif
+	offset 36 43
+	frame data/chars/valdoll/655.gif
+	offset 57 77
+	frame data/chars/valdoll/656.gif
+	offset 57 71
+	frame data/chars/valdoll/657.gif
+	delay 2
+	offset -8 92
+	frame data/chars/valdoll/658.gif
+	offset -8 113
+	frame data/chars/valdoll/659.gif
+	offset -8 134
+	frame data/chars/valdoll/660.gif
+	offset -3 162
+	frame data/chars/valdoll/661.gif
+	offset -3 183
+	frame data/chars/valdoll/662.gif
+	offset -6 191
+	frame data/chars/valdoll/663.gif
+	offset -6 212
+	frame data/chars/valdoll/664.gif
+	delay 4
+	offset -8 235
+	frame data/chars/valdoll/665.gif
+	offset -3 235
+	frame data/chars/valdoll/666.gif
+	offset -6 231
+	frame data/chars/valdoll/667.gif
+	offset -8 235
+	frame data/chars/valdoll/665.gif
+	offset -3 235
+	frame data/chars/valdoll/666.gif
+	offset -6 231
+	frame data/chars/valdoll/667.gif
+	offset -8 235
+	frame data/chars/valdoll/665.gif
+	offset -3 235
+	frame data/chars/valdoll/666.gif
+	offset -6 231
+	frame data/chars/valdoll/667.gif
+	offset -8 235
+	frame data/chars/valdoll/665.gif
+	offset -3 235
+	frame data/chars/valdoll/666.gif
+	offset -6 231
+	frame data/chars/valdoll/667.gif
+	offset -8 235
+	frame data/chars/valdoll/665.gif
+	offset -3 235
+	frame data/chars/valdoll/666.gif
+	delay 2
+	offset -6 231
+	frame data/chars/valdoll/667.gif
+	delay 5
+	offset -9 80
+	frame data/chars/valdoll/668.gif
+	delay 8
+	offset -8 56
+	frame data/chars/valdoll/669.gif
+
+
+anim freespecial2000
+	delay 6
+	offset 43 123
+	frame data/chars/valdoll/78.gif
+	offset 40 120
+	frame data/chars/valdoll/79.gif
+	offset 38 124
+	frame data/chars/valdoll/80.gif
+	offset 41 123
+	frame data/chars/valdoll/81.gif
+	offset 38 124
+	frame data/chars/valdoll/82.gif
+	offset 41 123
+	frame data/chars/valdoll/83.gif
+	offset 38 124
+	frame data/chars/valdoll/82.gif
+	offset 41 123
+	frame data/chars/valdoll/83.gif
+	offset 45 125
+	frame data/chars/valdoll/84.gif
+	offset 74 165
+	frame data/chars/valdoll/85.gif
+	offset 69 174
+	frame data/chars/valdoll/86.gif
+	offset 74 181
+	frame data/chars/valdoll/87.gif
+	delay 2
+	offset 74 181
+	frame data/chars/valdoll/87.gif
+	delay 6
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	delay 10
+	offset 43 123
+	frame data/chars/valdoll/91.gif
+	offset 43 140
+	frame data/chars/valdoll/92.gif
+	delay 8
+	offset 43 143
+	frame data/chars/valdoll/93.gif
+
+
+anim freespecial2001
+	delay 10
+	offset 18 19
+	frame data/chars/valdoll/763.gif
+	offset 38 115
+	frame data/chars/valdoll/764.gif
+	offset 38 211
+	frame data/chars/valdoll/765.gif
+	delay 22
+	offset 38 227
+	frame data/chars/valdoll/766.gif
+	delay 10
+	offset 38 211
+	frame data/chars/valdoll/765.gif
+	offset 38 179
+	frame data/chars/valdoll/767.gif
+	offset 38 115
+	frame data/chars/valdoll/764.gif
+	delay 13
+	offset 25 35
+	frame data/chars/valdoll/768.gif
+
+
+anim freespecial2002
+	delay 2
+	offset 52 3
+	frame data/chars/valdoll/769.gif
+	offset 53 7
+	frame data/chars/valdoll/770.gif
+	offset 55 8
+	frame data/chars/valdoll/771.gif
+	offset 56 11
+	frame data/chars/valdoll/772.gif
+	offset 57 15
+	frame data/chars/valdoll/773.gif
+	offset 59 21
+	frame data/chars/valdoll/774.gif
+	offset 62 27
+	frame data/chars/valdoll/775.gif
+	offset 64 33
+	frame data/chars/valdoll/776.gif
+	delay 75
+	offset 65 37
+	frame data/chars/valdoll/777.gif
+	delay 4
+	offset 64 33
+	frame data/chars/valdoll/776.gif
+	offset 62 27
+	frame data/chars/valdoll/775.gif
+	offset 59 21
+	frame data/chars/valdoll/774.gif
+	offset 57 15
+	frame data/chars/valdoll/773.gif
+	offset 56 11
+	frame data/chars/valdoll/772.gif
+	offset 55 8
+	frame data/chars/valdoll/771.gif
+	offset 53 7
+	frame data/chars/valdoll/770.gif
+	delay 5
+	offset 52 3
+	frame data/chars/valdoll/769.gif
+
+
+anim freespecial2003
+	delay 10
+	offset 18 19
+	frame data/chars/valdoll/763.gif
+	offset 38 115
+	frame data/chars/valdoll/764.gif
+	offset 38 211
+	frame data/chars/valdoll/765.gif
+	delay 22
+	offset 38 227
+	frame data/chars/valdoll/766.gif
+	delay 10
+	offset 38 211
+	frame data/chars/valdoll/765.gif
+	offset 38 179
+	frame data/chars/valdoll/767.gif
+	offset 38 115
+	frame data/chars/valdoll/764.gif
+	delay 13
+	offset 25 35
+	frame data/chars/valdoll/768.gif
+
+
+anim freespecial2004
+	delay 2
+	offset 52 3
+	frame data/chars/valdoll/769.gif
+	offset 53 7
+	frame data/chars/valdoll/770.gif
+	offset 55 8
+	frame data/chars/valdoll/771.gif
+	offset 56 11
+	frame data/chars/valdoll/772.gif
+	offset 57 15
+	frame data/chars/valdoll/773.gif
+	offset 59 21
+	frame data/chars/valdoll/774.gif
+	offset 62 27
+	frame data/chars/valdoll/775.gif
+	offset 64 33
+	frame data/chars/valdoll/776.gif
+	delay 75
+	offset 65 37
+	frame data/chars/valdoll/777.gif
+	delay 4
+	offset 64 33
+	frame data/chars/valdoll/776.gif
+	offset 62 27
+	frame data/chars/valdoll/775.gif
+	offset 59 21
+	frame data/chars/valdoll/774.gif
+	offset 57 15
+	frame data/chars/valdoll/773.gif
+	offset 56 11
+	frame data/chars/valdoll/772.gif
+	offset 55 8
+	frame data/chars/valdoll/771.gif
+	offset 53 7
+	frame data/chars/valdoll/770.gif
+	delay 5
+	offset 52 3
+	frame data/chars/valdoll/769.gif
+
+
+anim freespecial2010
+	delay 6
+	offset 43 123
+	frame data/chars/valdoll/78.gif
+	offset 40 120
+	frame data/chars/valdoll/79.gif
+	delay 4
+	offset 38 124
+	frame data/chars/valdoll/80.gif
+	offset 41 123
+	frame data/chars/valdoll/81.gif
+	offset 38 124
+	frame data/chars/valdoll/82.gif
+	offset 45 125
+	frame data/chars/valdoll/84.gif
+	delay 2
+	offset 74 165
+	frame data/chars/valdoll/85.gif
+	delay 6
+	offset 74 165
+	frame data/chars/valdoll/85.gif
+	offset 69 174
+	frame data/chars/valdoll/86.gif
+	offset 74 181
+	frame data/chars/valdoll/87.gif
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	offset 72 124
+	frame data/chars/valdoll/88.gif
+	offset 69 127
+	frame data/chars/valdoll/89.gif
+	offset 74 128
+	frame data/chars/valdoll/90.gif
+	delay 10
+	offset 43 123
+	frame data/chars/valdoll/91.gif
+	offset 43 140
+	frame data/chars/valdoll/92.gif
+	delay 8
+	offset 43 143
+	frame data/chars/valdoll/93.gif
+
+
+anim freespecial2011
+	delay 10
+	offset 18 19
+	frame data/chars/valdoll/763.gif
+	offset 38 115
+	frame data/chars/valdoll/764.gif
+	offset 38 211
+	frame data/chars/valdoll/765.gif
+	delay 22
+	offset 38 227
+	frame data/chars/valdoll/766.gif
+	delay 10
+	offset 38 211
+	frame data/chars/valdoll/765.gif
+	offset 38 179
+	frame data/chars/valdoll/767.gif
+	offset 38 115
+	frame data/chars/valdoll/764.gif
+	delay 13
+	offset 25 35
+	frame data/chars/valdoll/768.gif
+
+
+anim freespecial2012
+	delay 2
+	offset 52 3
+	frame data/chars/valdoll/769.gif
+	offset 53 7
+	frame data/chars/valdoll/770.gif
+	offset 55 8
+	frame data/chars/valdoll/771.gif
+	offset 56 11
+	frame data/chars/valdoll/772.gif
+	offset 57 15
+	frame data/chars/valdoll/773.gif
+	offset 59 21
+	frame data/chars/valdoll/774.gif
+	offset 62 27
+	frame data/chars/valdoll/775.gif
+	offset 64 33
+	frame data/chars/valdoll/776.gif
+	delay 75
+	offset 65 37
+	frame data/chars/valdoll/777.gif
+	delay 4
+	offset 64 33
+	frame data/chars/valdoll/776.gif
+	offset 62 27
+	frame data/chars/valdoll/775.gif
+	offset 59 21
+	frame data/chars/valdoll/774.gif
+	offset 57 15
+	frame data/chars/valdoll/773.gif
+	offset 56 11
+	frame data/chars/valdoll/772.gif
+	offset 55 8
+	frame data/chars/valdoll/771.gif
+	offset 53 7
+	frame data/chars/valdoll/770.gif
+	delay 5
+	offset 52 3
+	frame data/chars/valdoll/769.gif
+
+
+anim freespecial2013
+	delay 10
+	offset 18 19
+	frame data/chars/valdoll/763.gif
+	offset 38 115
+	frame data/chars/valdoll/764.gif
+	offset 38 211
+	frame data/chars/valdoll/765.gif
+	delay 22
+	offset 38 227
+	frame data/chars/valdoll/766.gif
+	delay 10
+	offset 38 211
+	frame data/chars/valdoll/765.gif
+	offset 38 179
+	frame data/chars/valdoll/767.gif
+	offset 38 115
+	frame data/chars/valdoll/764.gif
+	delay 13
+	offset 25 35
+	frame data/chars/valdoll/768.gif
+
+
+anim freespecial2014
+	delay 2
+	offset 52 3
+	frame data/chars/valdoll/769.gif
+	offset 53 7
+	frame data/chars/valdoll/770.gif
+	offset 55 8
+	frame data/chars/valdoll/771.gif
+	offset 56 11
+	frame data/chars/valdoll/772.gif
+	offset 57 15
+	frame data/chars/valdoll/773.gif
+	offset 59 21
+	frame data/chars/valdoll/774.gif
+	offset 62 27
+	frame data/chars/valdoll/775.gif
+	offset 64 33
+	frame data/chars/valdoll/776.gif
+	delay 75
+	offset 65 37
+	frame data/chars/valdoll/777.gif
+	delay 4
+	offset 64 33
+	frame data/chars/valdoll/776.gif
+	offset 62 27
+	frame data/chars/valdoll/775.gif
+	offset 59 21
+	frame data/chars/valdoll/774.gif
+	offset 57 15
+	frame data/chars/valdoll/773.gif
+	offset 56 11
+	frame data/chars/valdoll/772.gif
+	offset 55 8
+	frame data/chars/valdoll/771.gif
+	offset 53 7
+	frame data/chars/valdoll/770.gif
+	delay 5
+	offset 52 3
+	frame data/chars/valdoll/769.gif
+
+

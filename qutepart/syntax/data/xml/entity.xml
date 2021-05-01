@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language SYSTEM "language.dtd">
+<language name="Entity" section="Sources"
+          version="1.47" kateversion="5.0"
+          indenter="cstyle"
+          extensions="*.c;*.C;*.h"
+          mimetype="text/x-csrc;text/x-c++src;text/x-chdr"
+          priority="5">
+<!--
+##########################################################################
+## Fixes by Sebastian Pipping (webmaster@hartwork.org)
+##
+## NOTE: Keep in sync with C++ highlighter! (cpp.xml)
+##########################################################################
+-->
+  <highlighting>
+    <list name="keywords">
+      <item> break </item>
+      <item> case </item>
+      <item> continue </item>
+      <item> default </item>
+      <item> do </item>
+      <item> else </item>
+      <item> enum </item>
+      <item> extern </item>
+      <item> for </item>
+      <item> goto </item>
+      <item> if </item>
+      <item> inline </item>
+      <item> return </item>
+      <item> sizeof </item>
+      <item> struct </item>
+      <item> switch </item>
+      <item> typedef </item>
+      <item> union </item>
+      <item> while </item>
+      
+
+    </list>
+    
+        <list name="boldKeys">
+		<item> anim </item>
+     
+      
+
+	</list>
+	
+	<list name="attacks">
+		<item> attack </item>
+		<item> attack1 </item>
+		<item> attack2 </item>
+		<item> attack3 </item>
+		<item> attack4 </item>
+		<item> attack16 </item>
+		<item> blast </item>
+		<item> shock </item>
+		<item> burn </item>
+		<item> freeze </item>
+		<item> steal </item>
+		<item> fastattack </item>
+		<item> forcedirection </item>
+		<item> dropv </item>
+		<item> hitflash </item>
+		<item> hitfx </item>
+     
+      
+
+	</list>
+    
+    <list name="commands">
+<!--       <item> frame </item> -->
+      <item> offset </item>
+      <item> delay </item>
+      <item> bbox </item>
+      <item> sound </item>
+    </list>
+    <list name="types">
+      <item> auto </item>
+      <item> char </item>
+      <item> const </item>
+      <item> double </item>
+      <item> float </item>
+      <item> int </item>
+      <item> long </item>
+      <item> register </item>
+      <item> restrict </item>
+      <item> short </item>
+      <item> signed </item>
+      <item> static </item>
+      <item> unsigned </item>
+      <item> void </item>
+      <item> volatile </item>
+      <item> int8_t </item>
+      <item> int16_t </item>
+      <item> int32_t </item>
+      <item> int64_t </item>
+      <item> uint8_t </item>
+      <item> uint16_t </item>
+      <item> uint32_t </item>
+      <item> uint64_t </item>
+      <item> wchar_t </item>
+      <item> _Imaginary </item>
+      <item> _Complex </item>
+      <item> _Bool </item>
+    </list>
+    <contexts>
+      <context attribute="Normal Text" lineEndContext="#stay" name="Normal">
+        <DetectSpaces />
+	<keyword attribute="Command" context="#stay" String="commands"/>
+	<DetectChar attribute="Comment" char="#" context="Hash comment"/>
+	<keyword attribute="Keyword" context="#stay" String="keywords"/>
+	
+<!--	<RegExpr attribute="Preprocessor" context="Outscoped" String="#\s*if\s+0\s*$" beginRegion="PP" firstNonSpace="true" />
+        <DetectChar context="AfterHash" char="#" firstNonSpace="true" lookAhead="true" />
+        <StringDetect attribute="Region Marker" context="Region Marker" String="//BEGIN" beginRegion="Region1" firstNonSpace="true" />
+        <StringDetect attribute="Region Marker" context="Region Marker" String="//END" endRegion="Region1" firstNonSpace="true" />
+        
+        <keyword attribute="Data Type" context="#stay" String="types"/>
+        <DetectIdentifier />
+        <DetectChar attribute="Symbol" context="#stay" char="{" beginRegion="Brace1" />
+        <DetectChar attribute="Symbol" context="#stay" char="}" endRegion="Brace1" />
+        <Float attribute="Float" context="#stay">
+          <AnyChar String="fF" attribute="Float" context="#stay"/>
+        </Float>
+        <HlCOct attribute="Octal" context="#stay"/>
+        <HlCHex attribute="Hex" context="#stay"/>
+        <RegExpr attribute="Binary" context="#stay" String="0b[01]+[ul]{0,3}" insensitive="true" />-->
+	
+	
+<!--        <Int attribute="Decimal" context="#stay" >
+          <StringDetect attribute="Decimal" context="#stay" String="ULL" insensitive="true"/>
+          <StringDetect attribute="Decimal" context="#stay" String="LUL" insensitive="true"/>
+          <StringDetect attribute="Decimal" context="#stay" String="LLU" insensitive="true"/>
+          <StringDetect attribute="Decimal" context="#stay" String="UL" insensitive="true"/>
+          <StringDetect attribute="Decimal" context="#stay" String="LU" insensitive="true"/>
+          <StringDetect attribute="Decimal" context="#stay" String="LL" insensitive="true"/>
+          <StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/>
+          <StringDetect attribute="Decimal" context="#stay" String="L" insensitive="true"/>
+        </Int>-->
+	
+	
+<!--         <HlCChar attribute="Char" context="#stay"/> -->
+<!--         <DetectChar attribute="String" context="String" char="&quot;"/> -->
+<!--         <IncludeRules context="##Doxygen" /> -->
+        <Detect2Chars attribute="Comment" context="Commentar 2" char="/" char1="*" beginRegion="Comment"/>
+	<StringDetect attribute="Frame" context="Frame" String="frame " insensitive="true" firstNonSpace="true"/>
+	<StringDetect attribute="Keyword" context="Anim" String="anim\s" insensitive="true" firstNonSpace="true"/>
+	<keyword attribute="Keyword" context="Anim" String="boldKeys"/>
+	
+<!-- 	<StringDetect attribute="Attack" context="Attack" String="attack " insensitive="true" firstNonSpace="true"/> -->
+	<keyword attribute="Attack" context="Attack" String="attacks" firstNonSpace="true"/>
+	
+	<StringDetect attribute="Script" context="Script" String="@script" insensitive="true"/>
+	<StringDetect attribute="@cmd" context="@cmd" String="@cmd" insensitive="true"/>
+<!--         <AnyChar attribute="Symbol" context="#stay" String=":!%&amp;()+,-/.*&lt;=&gt;?[]|~^&#59;"/> -->
+      </context>
+
+     <!-- <context attribute="String" lineEndContext="#pop" name="String">
+        <LineContinue attribute="String" context="#stay"/>
+        <HlCStringChar attribute="String Char" context="#stay"/>
+        <DetectChar attribute="String" context="#pop" char="&quot;"/>
+      </context>
+
+      <context attribute="Region Marker" lineEndContext="#pop" name="Region Marker">
+      </context>-->
+      
+	<context name="@cmd" attribute="@cmd" lineEndContext="#pop">
+      </context>
+
+      <context name="Hash comment" attribute="Comment" lineEndContext="#pop">
+        <LineContinue attribute="Comment" context="#stay"/>
+        <IncludeRules context="##Alerts" />
+      </context>
+      
+      	<context name="Anim" attribute="Keyword" lineEndContext="#pop">
+      </context>
+      
+	<context name="Frame" attribute="Frame" lineEndContext="#pop">
+<!--         <LineContinue attribute="Frame" context="#stay"/> -->
+      </context>
+      
+      	<context name="Attack" attribute="Attack" lineEndContext="#pop">
+<!--         <LineContinue attribute="Frame" context="#stay"/> -->
+      </context>
+      
+      <context name="Script" attribute="Script text" lineEndContext="#stay" >
+	      <IncludeRules context="##C" />
+<!-- 	      <LineContinue attribute="Script" context="#stay"/> -->
+		<StringDetect attribute="Script" context="#pop" String="@end_script" insensitive="true" endRegion="Script"/>
+		<Detect2Chars attribute="Keyword" context="#pop" char="*" char1="/" endRegion="Script"/>
+	</context>
+
+      <context attribute="Comment" lineEndContext="#stay" name="Commentar 2">
+        <Detect2Chars attribute="Comment" context="#pop" char="*" char1="/" endRegion="Comment"/>
+        <IncludeRules context="##Alerts" />
+      </context>
+
+
+
+      <context attribute="Comment" lineEndContext="#stay" name="Commentar/Preprocessor">
+        <Detect2Chars attribute="Comment" context="#pop" char="*" char1="/" endRegion="Comment2" />
+      </context>
+
+      <context attribute="Comment" lineEndContext="#stay" name="Outscoped" >
+        <DetectSpaces />
+        <IncludeRules context="##Alerts" />
+        <DetectIdentifier />
+        <DetectChar attribute="String" context="String" char="&quot;"/>
+        <IncludeRules context="##Doxygen" />
+        <Detect2Chars attribute="Comment" context="Commentar 1" char="/" char1="/"/>
+        <Detect2Chars attribute="Comment" context="Commentar 2" char="/" char1="*" beginRegion="Comment"/>
+        <RegExpr attribute="Comment" context="Outscoped intern" String="#\s*if" beginRegion="PP" firstNonSpace="true" />
+        <RegExpr attribute="Preprocessor" context="#pop" String="#\s*el(?:se|if)" firstNonSpace="true" />
+        <RegExpr attribute="Preprocessor" context="#pop" String="#\s*endif" endRegion="PP" firstNonSpace="true" />
+      </context>
+
+      <context attribute="Comment" lineEndContext="#stay" name="Outscoped intern">
+        <DetectSpaces />
+        <IncludeRules context="##Alerts" />
+        <DetectIdentifier />
+        <DetectChar attribute="String" context="String" char="&quot;"/>
+        <IncludeRules context="##Doxygen" />
+        <Detect2Chars attribute="Comment" context="Commentar 1" char="/" char1="/"/>
+        <Detect2Chars attribute="Comment" context="Commentar 2" char="/" char1="*" beginRegion="Comment"/>
+        <RegExpr attribute="Comment" context="Outscoped intern" String="#\s*if" beginRegion="PP" firstNonSpace="true" />
+        <RegExpr attribute="Comment" context="#pop" String="#\s*endif" endRegion="PP" firstNonSpace="true" />
+      </context>
+      
+	<!--<context name="Script" attribute="Script" lineEndContext="#stay">
+		<StringDetect attribute="Script" String="u@script" insensitive="true" firstNonSpace="false" context="Tripple A-comment" beginRegion="Script region"/>
+		<IncludeRules context="##Alerts" />
+		<IncludeRules context="##Modelines" />
+	</context>-->
+      
+      
+    </contexts>
+    <itemDatas>
+      <itemData name="Normal Text"  defStyleNum="dsNormal" spellChecking="false"/>
+       <itemData name="Script Text"  color="#5555FF" defStyleNum="dsNormal" spellChecking="false"/>
+      <itemData name="Keyword"      defStyleNum="dsKeyword" spellChecking="false"/>
+       <itemData name="Command"     color="#0B2161" spellChecking="false"/>
+        <itemData name="@cmd"     italic="true" color="#886A08" spellChecking="false"/>
+	  <itemData name="Script"      defStyleNum="dsRegionMarker" spellChecking="false"/>
+	
+         <itemData name="Frame"      color="#21610B" defStyleNum="dsNormal" spellChecking="false"/>
+	 <itemData name="Attack"      color="#DF013A" defStyleNum="dsNormal" spellChecking="false"/>
+       
+      <itemData name="Data Type"    defStyleNum="dsDataType" spellChecking="false"/>
+      <itemData name="Decimal"      defStyleNum="dsDecVal" spellChecking="false"/>
+      <itemData name="Octal"        defStyleNum="dsBaseN" spellChecking="false"/>
+      <itemData name="Hex"          defStyleNum="dsBaseN" spellChecking="false"/>
+      <itemData name="Binary"       defStyleNum="dsBaseN" spellChecking="false"/>
+      <itemData name="Float"        defStyleNum="dsFloat" spellChecking="false"/>
+      <itemData name="Char"         defStyleNum="dsChar" spellChecking="false"/>
+      <itemData name="String"       defStyleNum="dsString"/>
+      <itemData name="String Char"  defStyleNum="dsSpecialChar"/>
+      <itemData name="Comment"      defStyleNum="dsComment"/>
+      <itemData name="Symbol"       defStyleNum="dsNormal" spellChecking="false"/>
+      <itemData name="Preprocessor" defStyleNum="dsPreprocessor" spellChecking="false"/>
+      <itemData name="Prep. Lib"    defStyleNum="dsImport" spellChecking="false"/>
+      <itemData name="Alert"        defStyleNum="dsAlert" spellChecking="false"/>
+      <itemData name="Region Marker" defStyleNum="dsRegionMarker" spellChecking="false"/>
+      <itemData name="Error"        defStyleNum="dsError" spellChecking="false"/>
+    </itemDatas>
+  </highlighting>
+  <general>
+    <comments>
+      <comment name="singleLine" start="#" />
+      <comment name="multiLine" start="/*" end="*/" />
+    </comments>
+    <keywords casesensitive="1" additionalDeliminator="'&quot;" />
+  </general>
+</language>

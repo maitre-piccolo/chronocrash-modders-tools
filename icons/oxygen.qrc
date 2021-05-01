@@ -1,0 +1,16 @@
+<RCC>
+  <qresource>
+	<file alias="document-save">32x32/document-save.png</file>
+	<file>32x32/document-save-all.png</file>
+	<file>32x32/document-save-as.png</file>
+	<file alias="media-playback-start">32x32/media-playback-start.png</file>
+	<file>32x32/media-playback-stop.png</file>
+	<file>32x32/media-playback-pause.png</file>
+	<file alias="accessories-text-editor">32x32/accessories-text-editor.png</file>
+    <file alias="folder">64x64/folder.png</file>
+	<file>64x64/folder-black.png</file>
+	<file>64x64/go-next.png</file>
+	<file>64x64/go-previous.png</file>
+	<file>64x64/transform-move.png</file>
+  </qresource>
+</RCC>

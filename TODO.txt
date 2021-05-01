@@ -1,0 +1,39 @@
+Text Editor (à la Kate, possibilité de sider etc)
+
+Entities
+
+Scripts
+
+
+
+ 
+Select Project
+
+
+Entities
+
+Levels
+
+Scripts
+
+
+
+
+
+TODO
+
+
+
+frame/script view button
+
+levels, scripts, with tab
+
+
+Future :
+
+drop file open (TODO in editor)
+Un bon historique Ctrl+Z (associé à chaque fd)
+
+
+
+Please don't edit sensible files with it (make a copy of your mod)
