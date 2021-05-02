@@ -1,4 +1,4 @@
-import os
+import os, logging
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
@@ -508,34 +508,38 @@ class FileSelector(QtWidgets.QWidget):
 				part = pLine.next()
 				if part is None : continue
 				if part.lower() == 'know' or part.lower() == 'load':
-					name = pLine.next()
-					path = pLine.next()
-					
-					
-					
-					
-					fullPath = os.path.join(FileSelector.ROOT_PATH, path)
-					if not os.path.exists(fullPath) : continue
-					print(fullPath)
-					f = open(fullPath)
-					lines2 = f.read().split('\n')
-					f.close()
-					type = 'none'
-					icon = None
-					for i, line2 in enumerate(lines2):
-						pLine2 = ParsedLine(line2)
-						part = pLine2.next()
-						if part == 'type':
-							type = pLine2.next().lower()
-						if part == 'icon':
-							icon = pLine2.next()
-							
-						if i > 100:
-							break
-					
-					#print(name, type)
-					currentData = {'pos':i, 'label':name, 'path':path, 'type':type, 'icon':icon}
-					data.append(currentData)
+					print(pLine.line, pLine.getNumberOfParts())
+					if(pLine.getNumberOfParts() < 3) :
+						logging.debug('Incomplete line : ' + pLine.line)
+					else:
+						name = pLine.next()
+						path = pLine.next()
+						
+						
+						
+						
+						fullPath = os.path.join(FileSelector.ROOT_PATH, path)
+						if not os.path.exists(fullPath) : continue
+						print(fullPath)
+						f = open(fullPath)
+						lines2 = f.read().split('\n')
+						f.close()
+						type = 'none'
+						icon = None
+						for i, line2 in enumerate(lines2):
+							pLine2 = ParsedLine(line2)
+							part = pLine2.next()
+							if part == 'type':
+								type = pLine2.next().lower()
+							if part == 'icon':
+								icon = pLine2.next()
+								
+							if i > 100:
+								break
+						
+						#print(name, type)
+						currentData = {'pos':i, 'label':name, 'path':path, 'type':type, 'icon':icon}
+						data.append(currentData)
 				
 			categories = ['player', 'enemy', 'npc', 'obstacle', 'panel', 'none', 'text', 'endlevel', 'trap', 'item', 'unknown']
 			categorieNodes = {}

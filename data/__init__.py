@@ -48,6 +48,20 @@ class ParsedLine:
 			return self.line.split('#')[-1]
 		return ''
 	
+	def getNumberOfParts(self):
+		i = 0
+		count = 0
+		
+		while i < len(self.parts):
+			if self.parts[i].startswith('#'):
+				return count
+			if not isSpace(self.parts[i]):
+				count += 1
+			i+=1
+		return count
+			
+		
+	
 	
 class BBox:
 	def __init__(self, params=None):
