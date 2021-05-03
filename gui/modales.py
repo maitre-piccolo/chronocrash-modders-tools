@@ -7,7 +7,73 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from gui.util import FileInput
 from gui.settings.fontselector import FontSelector
 
-VERSION = '0.3.5 (01/11/20)'
+VERSION = '0.3.6 (03/05/21)'
+
+
+class ShortcutSettingsWidget(QtWidgets.QWidget):
+	def __init__(self):
+		QtWidgets.QWidget.__init__(self)
+		lay = QtWidgets.QFormLayout()
+
+		#self.basePath = QtWidgets.QLineEdit()
+		#self.basePath.setText(settings.get_option('general/datapath', ''))
+		
+		lay.addRow(_("<p style='color:red;font-weight:bold;'>You need to reload the app for</p>"), QtWidgets.QLabel(_("<p style='color:red;font-weight:bold;'>the new shortcuts to be in effect</p>")))
+		
+		self.bodyBox = QtWidgets.QLineEdit()
+		self.attackBox = QtWidgets.QLineEdit()
+		self.bodyBox.setText(settings.get_option('shortcuts/set_body_box', 'B'))
+		self.attackBox.setText(settings.get_option('shortcuts/set_attack_box', 'A'))
+		
+		lay.addRow(_('[Local] Set body box') + ' : ', self.bodyBox)
+		lay.addRow(_('[Local] Set attack box') + ' : ', self.attackBox)
+		
+		self.zoomIn = QtWidgets.QLineEdit()
+		self.zoomIn.setText(settings.get_option('shortcuts/zoom-in', '+'))
+		lay.addRow(_('[Local] Zoom-out sprite') + ' : ', self.zoomIn)
+		self.zoomOut = QtWidgets.QLineEdit()
+		self.zoomOut.setText(settings.get_option('shortcuts/zoom-out', '-'))
+		lay.addRow(_('[Local] Zoom-out sprite') + ' : ', self.zoomOut)
+		
+		self.zoomInGlobal = QtWidgets.QLineEdit()
+		self.zoomInGlobal.setText(settings.get_option('shortcuts/zoom-in_global', 'Ctrl++'))
+		lay.addRow(_('[Global] Zoom-out sprite') + ' : ', self.zoomInGlobal)
+		self.zoomOutGlobal = QtWidgets.QLineEdit()
+		self.zoomOutGlobal.setText(settings.get_option('shortcuts/zoom-out_global', 'Ctrl+-'))
+		lay.addRow(_('[Global] Zoom-out sprite') + ' : ', self.zoomOutGlobal)
+		
+		self.playAnim = QtWidgets.QLineEdit()
+		self.playAnim.setText(settings.get_option('shortcuts/play_animation', 'P'))
+		lay.addRow(_('[Local] Play/stop animation') + ' : ', self.playAnim)
+		
+		self.playAnimGlobal = QtWidgets.QLineEdit()
+		self.playAnimGlobal.setText(settings.get_option('shortcuts/play_animation_global', 'Ctr+P'))
+		lay.addRow(_('[Global] Play/stop animation') + ' : ', self.playAnimGlobal)
+		
+		self.previousFrame = QtWidgets.QLineEdit()
+		self.previousFrame.setText(settings.get_option('shortcuts/previous_frame_global', 'Ctr+Left'))
+		lay.addRow(_('[Global] Previous frame') + ' : ', self.previousFrame)
+		
+		self.nextFrame = QtWidgets.QLineEdit()
+		self.nextFrame.setText(settings.get_option('shortcuts/next_frame_global', 'Ctr+Right'))
+		lay.addRow(_('[Global] Next frame') + ' : ', self.nextFrame)
+		
+		self.setLayout(lay)
+		
+	def save(self):
+		settings.set_option('shortcuts/set_body_box', self.bodyBox.text())
+		settings.set_option('shortcuts/set_attack_box', self.attackBox.text())
+		
+		settings.set_option('shortcuts/zoom-in', self.zoomIn.text())
+		settings.set_option('shortcuts/zoom-out', self.zoomOut.text())
+		settings.set_option('shortcuts/zoom-in_global', self.zoomInGlobal.text())
+		settings.set_option('shortcuts/zoom-out_global', self.zoomOutGlobal.text())
+		
+		settings.set_option('shortcuts/play_animation', self.playAnim.text())
+		settings.set_option('shortcuts/play_animation_global', self.playAnimGlobal.text())
+		
+		settings.set_option('shortcuts/previous_frame_global', self.previousFrame.text())
+		settings.set_option('shortcuts/next_frame_global', self.nextFrame.text())
 
 
 
@@ -80,6 +146,7 @@ class SettingsEditor(QtWidgets.QDialog):
 		addSection('editor', _('Fonts and colors'), None, editorNode)
 		addSection('dialog', _('Dialog editor'))
 		addSection('level', _('Level editor'))
+		addSection('shortcuts', _('Keyboard shortcuts'))
 		addSection('misc', _('Miscellaneous'))
 		treeView.setModel(self.sections)
 		treeView.clicked.connect(self.sectionActivated)
@@ -135,6 +202,11 @@ class SettingsEditor(QtWidgets.QDialog):
 		w.hide()
 		self.widgets['level'] = w
 		
+		w = ShortcutSettingsWidget()
+		self.widgetLayout.addWidget(w, 1)
+		w.hide()
+		self.widgets['shortcuts'] = w
+		
 		w = MiscSettingsWidget()
 		self.widgetLayout.addWidget(w, 1)
 		w.hide()
@@ -154,6 +226,7 @@ class SettingsEditor(QtWidgets.QDialog):
 		
 		self.widgets['editor'].save()
 		self.widgets['level'].save()
+		self.widgets['shortcuts'].save()
 		self.widgets['misc'].save()
 		
 		settings.MANAGER.save()

@@ -156,6 +156,8 @@ class Anim:
 		if 'range' in self.frames[i]:
 			xMin, xMax = self.frames[i]['range']
 		return xMin, xMax
+	
+
 
 		
 class EntityEditorWidget(QtWidgets.QWidget):
@@ -914,14 +916,26 @@ class FrameEditor(QtWidgets.QWidget):
 		self.buttonBar.addAction('Set Platform', lambda:self.setMode('platform'))
 		self.onionSkinAction = self.buttonBar.addAction('Onion skin', self.setOnionSkin)
 		self.onionSkinAction.setCheckable(True)
-		self.exportAnimation = self.buttonBar.addAction('Export', self.exportAnimation)
+		self.exportAnimationAction = self.buttonBar.addAction('Export', self.exportAnimation)
+		self.reloadSpritesAction = self.buttonBar.addAction('Reload sprites', self.reloadSprites)
 		#self.buttonBar.addAction(QtGui.QIcon.fromTheme('go-next'), None, self.loadNext)
 		#self.buttonBar.addAction(QtGui.QIcon.fromTheme('edit-clear'), None, self.clear)
 		
-		QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl++"), self.graphicView, self.graphicView.zoomIn)
-		QtWidgets.QShortcut(QtGui.QKeySequence("Ctrl+-"), self.graphicView, self.graphicView.zoomOut)
-		QtWidgets.QShortcut(QtGui.QKeySequence("+"), self.graphicView, self.graphicView.zoomIn, context=QtCore.Qt.WidgetShortcut)
-		QtWidgets.QShortcut(QtGui.QKeySequence("-"), self.graphicView, self.graphicView.zoomOut, context=QtCore.Qt.WidgetShortcut)
+		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/zoom-in_global', 'Ctrl++')), self.parent, self.graphicView.zoomIn)
+		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/zoom-out_global', 'Ctrl+-')), self.parent, self.graphicView.zoomOut)
+		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/zoom-in', '+')), self.graphicView, self.graphicView.zoomIn, context=QtCore.Qt.WidgetShortcut)
+		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/zoom-out', '+')), self.graphicView, self.graphicView.zoomOut, context=QtCore.Qt.WidgetShortcut)
+		
+		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/set_body_box', 'B')), self.graphicView,  lambda:self.setMode('bbox'), context=QtCore.Qt.WidgetShortcut)
+		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/set_attack_box', 'A')), self.graphicView,  lambda:self.setMode('attack'), context=QtCore.Qt.WidgetShortcut)
+		
+		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/play_animation', 'P')), self.graphicView,  self.playFrames, context=QtCore.Qt.WidgetShortcut)
+		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/play_animation_global', 'Ctrl+P')), self.parent, self.playFrames)
+		
+		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/next_frame_global', 'Ctrl+Right')), self.parent, self.nextFrame, self.nextFrame)
+		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/previous_frame_global', 'Ctrl+Left')), self.parent, self.previousFrame, self.previousFrame)
+		
+		
 
 		
 		leftLayout.addWidget(self.buttonBar, 0)
@@ -1012,6 +1026,21 @@ class FrameEditor(QtWidgets.QWidget):
 		if(path is not None and path != ''):
 			args.append(path)
 			subprocess.call(args)
+			
+			
+	def reloadSprites(self):
+		frames = self.parent.anim.frames
+		for frame in self.parent.anim.frames:
+			key = frame['frame']
+			if key in self.parent.pixmapCache:
+				del self.parent.pixmapCache[key]
+		self.loadFrame()
+		
+		# icon viewer at the bottom
+		self.parent.frameViewer.clear()
+		for frame in frames:
+			path = os.path.join(EntityEditorWidget.ROOT_PATH, frame['frame'])
+			self.parent.frameViewer.model.append(Portrait.fromPath(path))
 			
 		
 	def setMode(self, mode):
@@ -1172,6 +1201,18 @@ class FrameEditor(QtWidgets.QWidget):
 		
 		self.looping = True
 		play()
+		
+	def nextFrame(self):
+		self.parent.currentFrame += 1
+		if( self.parent.currentFrame >= len(self.parent.anim)):
+			self.parent.currentFrame = 0
+		self.refresh.emit()
+		
+	def previousFrame(self):
+		self.parent.currentFrame -= 1
+		if( self.parent.currentFrame < 0):
+			self.parent.currentFrame = len(self.parent.anim)-1
+		self.refresh.emit()
 		
 		
 	def setOnionSkin(self, frameNumber=None):
@@ -1338,7 +1379,7 @@ class ImageWidget(QtWidgets.QGraphicsView):
 		
 		self.centerOn(e.x(), e.y())
 		print(self.zoom)
-		print(e.delta())
+		#print(e.delta())
 		print ('')
 	
 	def scaleImage(self, factor):

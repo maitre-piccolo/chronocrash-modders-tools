@@ -1,4 +1,4 @@
-import os, re
+import os, re, logging
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
@@ -10,6 +10,8 @@ from data import ParsedLine
 
 class Entity(QtWidgets.QGraphicsPixmapItem):
 	def __init__(self, entName='rugal'):
+		
+		print(entName)
 		fName = 'data/chars/rugal/2.gif'
 		
 		ROOT_PATH = os.path.dirname(settings.get_option('general/data_path', '/home/piccolo/workspace/OpenBOR/data')) + os.sep
@@ -19,6 +21,7 @@ class Entity(QtWidgets.QGraphicsPixmapItem):
 		f = open(path)
 		lines = f.read().split('\n')
 		f.close()
+		entityModelFound = False
 		for i, line in enumerate(lines):
 			pLine = ParsedLine(line)
 			part = pLine.next()
@@ -52,9 +55,14 @@ class Entity(QtWidgets.QGraphicsPixmapItem):
 						self.yOffset = int(pLine2.next().lower())
 					elif part == 'frame' and inIdleAnim:
 						fName = pLine2.next().lower()
+						entityModelFound = True
 						break
 						
-							
+		
+		if not entityModelFound:
+			self.xOffset = 0
+			self.yOffset = 0
+			logging.debug('Level Editor : entity model not found for : ' + entName + ' (watch for case sensitivity)')
 
 		
 		image = loadSprite(os.path.join(ROOT_PATH, fName))
