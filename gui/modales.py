@@ -47,15 +47,15 @@ class ShortcutSettingsWidget(QtWidgets.QWidget):
 		lay.addRow(_('[Local] Play/stop animation') + ' : ', self.playAnim)
 		
 		self.playAnimGlobal = QtWidgets.QLineEdit()
-		self.playAnimGlobal.setText(settings.get_option('shortcuts/play_animation_global', 'Ctr+P'))
+		self.playAnimGlobal.setText(settings.get_option('shortcuts/play_animation_global', 'Ctrl+P'))
 		lay.addRow(_('[Global] Play/stop animation') + ' : ', self.playAnimGlobal)
 		
 		self.previousFrame = QtWidgets.QLineEdit()
-		self.previousFrame.setText(settings.get_option('shortcuts/previous_frame_global', 'Ctr+Left'))
+		self.previousFrame.setText(settings.get_option('shortcuts/previous_frame_global', 'Ctrl+Left'))
 		lay.addRow(_('[Global] Previous frame') + ' : ', self.previousFrame)
 		
 		self.nextFrame = QtWidgets.QLineEdit()
-		self.nextFrame.setText(settings.get_option('shortcuts/next_frame_global', 'Ctr+Right'))
+		self.nextFrame.setText(settings.get_option('shortcuts/next_frame_global', 'Ctrl+Right'))
 		lay.addRow(_('[Global] Next frame') + ' : ', self.nextFrame)
 		
 		self.setLayout(lay)
