@@ -877,8 +877,8 @@ class Qutepart(QPlainTextEdit):
             # if block height not added to rect, last line number sometimes is not drawn
             blockHeight = self.blockBoundingRect(self.firstVisibleBlock()).height()
 
-            self._lineNumberArea.update(0, rect.y(), self._lineNumberArea.width(), rect.height() + blockHeight)
-            self._lineNumberArea.update(0, rect.y(), self._markArea.width(), rect.height() + blockHeight)
+            self._lineNumberArea.update(0, rect.y(), self._lineNumberArea.width(), int(rect.height() + blockHeight))
+            self._lineNumberArea.update(0, rect.y(), self._markArea.width(), int(rect.height() + blockHeight))
         self._countCache = (self.blockCount(), self.textCursor().block().lineCount())
 
         if rect.contains(self.viewport().rect()):
