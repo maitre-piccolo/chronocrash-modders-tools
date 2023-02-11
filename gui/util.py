@@ -4,6 +4,8 @@ from common import settings, xdg
 import PIL.Image
 #from PIL import Image
 
+FORCE_TRANSPARENCY = False
+
 class FileInput(QtWidgets.QWidget):
 	
 	changed = QtCore.pyqtSignal()
@@ -76,17 +78,36 @@ def getSpriteShowingPath(path):
 def loadSprite(path):
 	path = getSpriteShowingPath(path)
 
-		
+
 	image = QtGui.QImage(path)
 	#print('BITPLANE', image.bitPlaneCount())
+	# if('idle.gif' in path): print('\n\nframe', image.bitPlaneCount(), len(image.colorTable()))
+	
+	# image = image.createMaskFromColor(image.color(0), QtCore.Qt.MaskOutColor)
+
+	
 	if(image.bitPlaneCount() < 32 or len(image.colorTable()) != 0):
 		#print(image.colorTable())
 		image = image.convertToFormat(QtGui.QImage.Format_Indexed8)
-		#table = image.colorTable()
-		#print(img.colorCount())
-		#print('FIRST COLOR', table[0])
+		table = image.colorTable()
+		# if('idle.gif' in path): print('\n\ncolorCount', image.colorCount())
+		# if('idle.gif' in path) : print('FIRST COLOR', table[0])
 		image.setColor(0, QtGui.qRgba(255, 255, 255, 0))
 		#image.setColor(1, QtGui.qRgba(255, 255, 255, 0))
 		#image.setColor(len(table), QtGui.qRgba(255, 255, 255, 0))
-	#image = image.createMaskFromColor(image.color(0), QtCore.Qt.MaskOutColor)
+		#for i in range(len(table)):
+			#image.setColor(i, QtGui.qRgba(255, 255, 255, 0))
+	# image = image.createMaskFromColor(image.color(0), QtCore.Qt.MaskOutColor)
+	# image.setColor(0, QtGui.qRgba(255, 255, 255, 0))
+	elif(FORCE_TRANSPARENCY):
+		transColor = image.pixelColor(0,0)
+		# image = image.createMaskFromColor(transColor.value(), QtCore.Qt.MaskOutColor)
+		for y in range (image.height()):
+			for x in range(image.width()):
+				if image.pixelColor(x,y) == transColor:
+				# color.setAlpha(image.pixelColor(x,y).alpha())
+					image.setPixelColor(x,y,QtGui.QColor(255, 0, 0, 0))
+ 
+	# pixmap = QPixmap::fromImage(tmp);
+	
 	return image

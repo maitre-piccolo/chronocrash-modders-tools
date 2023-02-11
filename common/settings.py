@@ -110,6 +110,8 @@ class SettingsManager(RawConfigParser):
 
 		return value
 		
+	def delete(self):
+		os.remove(self.location)
 	
 	def save(self):
 		"""
@@ -181,6 +183,7 @@ class SettingsManager(RawConfigParser):
 			kind, value = value.split(': ', 1)
 		except ValueError:
 			return ''
+			
 
 		# Lists and dictionaries are special case
 		if kind in ('L', 'D'):
@@ -206,3 +209,4 @@ MANAGER = SettingsManager(os.path.join(xdg.get_config_dir(), "settings.ini" ))
 
 get_option = MANAGER.get_option
 set_option = MANAGER.set_option
+delete = MANAGER.delete

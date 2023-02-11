@@ -2,9 +2,11 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtCore import Qt
 
 expandedRole = Qt.UserRole+1
+expandedRoleWithoutFilter = Qt.UserRole+3
 
 class FilterModel(QtCore.QSortFilterProxyModel):
 	
+
 	def filterAcceptsRow(self, sourceRow, sourceParent):
 		col0 = self.sourceModel().index(sourceRow, 0, sourceParent)
 		# do bottom to top filtering
@@ -12,25 +14,42 @@ class FilterModel(QtCore.QSortFilterProxyModel):
 			
 			for i in range(self.sourceModel().rowCount(col0)):
 				if (self.filterAcceptsRow(i, col0)):
-					self.sourceModel().setData(col0, True, expandedRole)
+                                        # WARNING the following line alter nodes state
+					if(self.filterRegExp().pattern() != ''):
+						# isExpanded = self.sourceModel().data(col0, expandedRole)
+						# self.sourceModel().setData(col0, isExpanded, expandedRoleWithoutFilter) # saving general state (without filter)
+						self.sourceModel().setData(col0, True, expandedRole)
+						# pass
+					else:
+						# wasExpanded = self.sourceModel().data(col0, expandedRoleWithoutFilter)
+						# print(self.sourceModel().data(col0, Qt.DisplayRole), wasExpanded)
+						# self.sourceModel().setData(col0, wasExpanded, expandedRole)
+						pass
 					return True
+					# pass
 				#return False
 		else:
 			pass
 
 		
 		data = self.sourceModel().data(col0, Qt.DisplayRole)
+		# print(data)
 		if data is None : return False
+		# if data is None : return True
 		contains = self.filterRegExp().pattern() in data
-		if(contains) : self.sourceModel().setData(col0, True, expandedRole)
+		if(contains and self.filterRegExp().pattern() != '') :
+			# print(data)
+			self.sourceModel().setData(col0, True, expandedRole)
 		#print(contains, self.sourceModel().data(col0, Qt.DisplayRole))
 		return contains
+		# return True
 
 class TreeItem(object):
     def __init__(self, data, parent=None):
         self.parentItem = parent
         self.itemData = data
         self.isExpanded = False
+        self.isExpandedWithoutFilter = False
         self.childItems = []
 
     def append(self, item):

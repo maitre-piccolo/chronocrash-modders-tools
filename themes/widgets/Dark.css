@@ -75,3 +75,22 @@ QTabBar::tab:left, QTabBar::tab:right {
     background-color : #2E2E2E;
     border-color: gray;
 }*/
+
+
+QComboBox, #fileTypeCB, #entityModelCB, #entityAnimCB {
+    background-color: #2E2E2E;
+}
+
+.valid, #entityModelCB-valid{
+background: rgb(0, 100, 0);
+}
+
+.invalid, #entityModelCB-invalid{
+background: rgb(100, 0, 0);
+}
+
+QComboBox QAbstractItemView, #fileTypeCB QAbstractItemView {
+  border: 1px solid grey;
+  background: #2E2E2E;
+  selection-background-color: blue;
+}

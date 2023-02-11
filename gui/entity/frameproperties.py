@@ -1,9 +1,367 @@
-import os, re, time
+import os, re, time, logging
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
 
-from data import AttackBox, BBox
+from common import settings
+
+from data import AttackBox, BBox, BindData
+
+from gui.level.items import Entity
+
+
+
+class BindingEditor(QtWidgets.QWidget):
+	def __init__(self, parent):
+		QtWidgets.QWidget.__init__(self)
+		self.setMaximumSize(300,2000)
+		self.parent = parent
+		self.layout = QtWidgets.QVBoxLayout()
+		self.layout.setContentsMargins(0, 0, 0, 0)
+		self.setLayout(self.layout)
+		
+		self.widgets = {}
+		
+		layout = QtWidgets.QGridLayout()
+		
+		offsetGB = QtWidgets.QGroupBox(_('Entity'))
+		self.showOpponent = QtWidgets.QCheckBox(_('Show opponent'))
+		self.showOpponent.stateChanged.connect(self.showOpponentChanged)
+		layout.addWidget(self.showOpponent, 0, 0)
+		
+		layout.addWidget(QLabel(_("Entity model")), 1, 0)
+		
+		self.entityModelEntry = QtWidgets.QComboBox() # get option
+		self.entityModelEntry.setEditable(True)
+		self.entityModelEntry.setObjectName("entityModelCB")
+		
+		
+		
+		self.entityModelEntry.currentTextChanged.connect(self.entityModelEntryChanged)
+		
+		layout.addWidget(self.entityModelEntry, 2, 0)
+		
+		layout.addWidget(QLabel(_("Entity animation")), 3, 0)
+		
+		self.entityAnimation = QtWidgets.QComboBox() # get option
+		self.entityAnimation.setEditable(True)
+		self.entityAnimation.setCurrentText(settings.get_option('entity/last_opponent_animation', 'idle'))
+		self.entityAnimation.currentTextChanged.connect(self.entityAnimationChanged)
+		self.entityAnimation.setObjectName("entityAnimCB")
+		layout.addWidget(self.entityAnimation, 4, 0)
+		
+		
+		
+		
+		
+		# self.toggleDragEntity = QtWidgets.QPushButton(_('Toggle drag entity'))
+		# self.toggleDragEntity.setCheckable(True)
+		# layout.addWidget(self.toggleDragEntity, 5, 0)
+		
+		offsetGB.setLayout(layout)
+		
+		self.layout.addWidget(offsetGB, 0)
+		
+		# Binding GB
+		self.bindingGB = CustomGroupBox(_('Binding settings'))
+		self.bindingGB.addClicked.connect(self.addBindData)
+		layout = QtWidgets.QGridLayout()
+		
+		self.bindingGB.setLayout(layout)
+		# self.bindingGB.addClicked.connect(self.addBox)
+		# self.bindingGB.deleteClicked.connect(self.deleteBox)
+		
+		x = QtWidgets.QSpinBox()
+		y = QtWidgets.QSpinBox()
+		z = QtWidgets.QSpinBox()
+		direction = QtWidgets.QSpinBox()
+		frame = QtWidgets.QSpinBox()
+		
+		self.widgets['bind'] = {'x':x, 'y':y, 'z':z, 'direction':direction, 'frame':frame}
+		
+		layout.addWidget(QLabel(_("X")), 0, 0)
+		layout.addWidget(x, 1, 0)
+		layout.addWidget(QLabel(_("Y")), 0, 1)
+		layout.addWidget(y, 1, 1)
+		
+		layout.addWidget(QLabel(_("Z")), 2, 0)
+		layout.addWidget(z, 3, 0)
+		layout.addWidget(QLabel(_("Direction")), 2, 1)
+		layout.addWidget(direction, 3, 1)
+		
+		layout.addWidget(QLabel(_("Frame")), 4, 0)
+		layout.addWidget(frame, 5, 0)
+		
+		self.layout.addWidget(self.bindingGB, 0)
+		
+		self.layout.addStretch(1)
+		
+		self.bindingGB.setDisabled(True)
+		
+		
+		maskGB = QtWidgets.QGroupBox(_('Text Mask'))
+		layout = QtWidgets.QGridLayout()
+		
+		self.maskEntry = QtWidgets.QLineEdit() # 
+		
+		self.mask = settings.get_option('entity/binding_mask', '')
+		self.maskEntry.setText(self.mask)
+		
+		self.maskEntry.textChanged.connect(self.maskChanged)
+		
+		
+		layout.addWidget(self.maskEntry, 0, 0)
+		
+		self.additionalTranslationsEntry = QtWidgets.QLineEdit() # 
+		self.additionalTranslationsEntry.setText(str(settings.get_option('entity/binding_additional_translations', {})))
+		
+		self.additionalTranslationsEntry.textChanged.connect(self.translationsChanged)
+		layout.addWidget(QLabel(_("Additional translations")), 1, 0)
+		layout.addWidget(self.additionalTranslationsEntry, 2, 0)
+		maskGB.setLayout(layout)
+		
+		
+		
+		self.layout.addWidget(maskGB, 0)
+		
+		
+
+		# self.entityModelEntry.currentTextChanged.emit('')
+		
+		for w in list(self.widgets['bind'].values()):
+			w.setRange(-1000,1000)
+			w.valueChanged.connect(self.valueChanged)
+			
+		self.widgets['bind']['direction'].setRange(-2, 2)
+		
+		self.loading = False
+		self.loadingModels = False
+		self.loadingAnims = False
+		
+		self.loadedModel = None
+		
+		
+	def addBindData(self):
+		if len(self.parent.anim) == 0 : return
+		
+		data = self.parent.frames[self.parent.currentFrame]
+		data['bind'] = BindData()
+		data['bind']['direction'] = -1
+		data['bind']['z'] = 1
+		
+		if(self.mask != ''):
+			self.parent.rebuildText()
+		self.parent.frameEditor.loadFrame()
+		
+		
+	def entityModelEntryChanged(self, widget):
+		print("entity model entry changed", self.entityModelEntry.currentText())
+		if (self.changeEntityModel()):
+			if (self.loadingModels):
+				self.parent.frameEditor.loadOpponent()
+				self.reloadAnims()
+				self.parent.frameEditor.opponent = None
+				
+			else:
+				self.showOpponent.setChecked(True)
+				self.parent.frameEditor.showOpponent(True)
+				self.reloadAnims()
+	
+	def entityAnimationChanged(self, widget):
+		print("entity animation changed", self.entityAnimation.currentText())
+		if self.loadingAnims : return
+		if self.changeEntityAnimation():
+			self.showOpponent.setChecked(True)
+			
+		
+	def maskChanged(self, widget):
+		mask = self.maskEntry.text()
+		settings.set_option('entity/binding_mask', mask)
+		self.mask = mask
+		
+		
+	def translationsChanged(self, widget):
+		try:
+			settings.set_option('entity/binding_additional_translations', eval(self.additionalTranslationsEntry.text()))
+		except:
+			QtWidgets.QMessageBox.warning(self, _('Formatting Error'), _('The data is not formatted right'))
+		
+		
+	def refreshEntPos(self):
+		
+		self.loading = True
+		opponent = self.parent.frameEditor.opponent
+		newX = int(opponent.pos().x()) + opponent.xOffset
+		self.widgets['bind']['x'].setValue(newX)
+		y = opponent.altitude
+		if(y == None): y = 0
+		print('pos y', int(opponent.pos().y()), y)
+		newY = -int(opponent.pos().y()) - opponent.yOffset + y
+		self.widgets['bind']['y'].setValue(newY)
+		print('\nrefresh', newX, newY)
+		opponent.setAt(0)
+		self.loading = False
+		self.valueChanged()
+		
+		
+	def changeEntityModel(self):
+		txt = self.entityModelEntry.currentText()
+		if(txt in Entity.AVAILABLE_MODELS and txt != self.loadedModel):
+			print("Loading opponent")
+			self.loadedModel = txt
+			self.parent.frameEditor.opponentModel = txt
+			settings.set_option('entity/last_opponent_model', txt)
+			# self.entityModelEntry.setProperty("class", "valid")
+			# self.entityModelEntry.setObjectName("entityModelCB-valid")
+			self.setColorState(self.entityModelEntry, 'valid')
+			
+			return True
+			
+		else:
+			# print("Refusing opponent", txt)
+			if(txt not in Entity.AVAILABLE_MODELS):
+				# if(self.loadedModel != None and not self.loadedModel.startswith(txt)):
+				# self.entityModelEntry.setProperty("class", "valid")
+				# self.entityModelEntry.setObjectName("entityModelCB-valid")
+				
+				self.setColorState(self.entityModelEntry, 'invalid')
+			else:
+				self.setColorState(self.entityModelEntry, 'valid')
+				# self.entityModelEntry.setProperty("class", "invalid")
+				# self.entityModelEntry.setObjectName("entityModelCB-invalid")
+			return False
+			
+			
+	def setColorState(self, CB, state):
+		theme = settings.get_option('gui/widgets_theme', None)
+		if(theme == 'Dark'):
+			if(state == 'valid'):
+				CB.setStyleSheet("QComboBox { background: rgb(0, 100, 0); selection-background-color: rgb(78, 99, 0);}");
+			else:
+				CB.setStyleSheet("QComboBox { background: rgb(100, 0, 0); selection-background-color: rgb(78, 99, 0); }");
+		else:
+			if(state == 'valid'):
+				CB.setStyleSheet("QComboBox { background: rgb(0, 255, 0); selection-background-color: rgb(233, 99, 0); }");
+			else:
+				CB.setStyleSheet("QComboBox { background: rgb(255, 0, 0); selection-background-color: rgb(233, 99, 0); }");
+			
+	def changeEntityAnimation(self):
+		
+		txt = self.entityAnimation.currentText()
+		opponent = self.parent.frameEditor.opponent
+		if opponent == None: return False
+		if(txt in opponent.anims):
+			opponent.changeAnimation(txt)
+			opponent.setAt(0)
+			opponent.actualizeFrame()
+			print("Loading animation")
+			
+			settings.set_option('entity/last_opponent_animation', txt)
+			self.entityAnimation.setStyleSheet("QComboBox { background: rgb(0, 255, 0); selection-background-color: rgb(233, 99, 0); }");
+			
+			return True
+			
+		else:
+			if(txt not in Entity.AVAILABLE_MODELS): self.entityAnimation.setStyleSheet("QComboBox { background: rgb(255, 0, 0); selection-background-color: rgb(233, 99, 0); }");
+			return False
+
+		
+	def loadData(self, data):
+		if(self.loading):
+			return
+		self.changeEntityModel()
+		
+		
+		self.loading = True
+		
+		if('bind' in data):
+			self.bindingGB.setDisabled(False)
+			data = data['bind']
+		else:
+			self.bindingGB.setDisabled(True)
+			data = []
+			
+		x = 0
+		y = 0
+		z = 0
+		direction = 0
+		frame = 0
+		
+		keys = ['x', 'y', 'z', 'direction', 'frame']
+		for key in keys:
+			val = 0 # default
+			if(key in data):
+				val = data[key]
+				try:
+					self.widgets['bind'][key].setValue(val)
+				except:
+					print('could not set value', val, 'for key', key)
+			
+		# 
+			
+
+			
+		
+		self.loading = False
+		
+	
+	def reloadModels(self):
+		self.loadingModels = True
+		lastModel = settings.get_option('entity/last_opponent_model', '')
+		print('last Model', lastModel)
+		self.entityModelEntry.clear()
+		sortAlpha = settings.get_option('entity/binding_models_sort_alphabetical', False)
+		models = Entity.AVAILABLE_MODELS
+		if(sortAlpha): models.sort()
+		
+		self.entityModelEntry.addItems(models)
+		# self.entityModelEntry.setEditText(settings.get_option('entity/last_opponent_model', ''))
+		self.entityModelEntry.setCurrentText(lastModel)
+		self.loadingModels = False
+		
+	def reloadAnims(self, default=None):
+		print('reloading anims')
+		self.loadingAnims = True
+		if(default == None): default = settings.get_option('entity/last_opponent_animation', '')
+		self.entityAnimation.clear()
+		opponent = self.parent.frameEditor.opponent
+		if(opponent != None):
+			self.entityAnimation.addItems(opponent.anims.keys())
+		self.entityAnimation.setCurrentText(default)
+		
+		self.loadingAnims = False
+	
+	def updateData(self, data=None):
+		if data is None:
+			data = self.parent.frames[self.parent.currentFrame]
+			
+			
+		if('bind' in data):
+			bindData = data['bind']
+			keys = ['x', 'y', 'z', 'direction', 'frame']
+			for key in keys:
+				bindData[key] = self.widgets['bind'][key].value()
+				
+	def showOpponentChanged(self):
+		showOpponent = self.showOpponent.isChecked()
+		self.parent.frameEditor.showOpponent(showOpponent)
+		
+	def valueChanged(self, *args):
+		# for
+		# blocker = QSignalBlocker(self.double_spin_box)
+		# blocker.__enter__()
+		
+		if not self.loading:
+			# print('value changed', args)
+			self.loading = True
+			self.updateData()
+			if(self.mask != ''):
+				self.parent.rebuildText()
+			
+			self.parent.frameEditor.loadFrame()
+			self.loading = False
+		
+		
 
 class FramePropertiesEditor(QtWidgets.QWidget):
 	def __init__(self, parent):
@@ -180,6 +538,7 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 		
 		
 	def loadData(self, data):
+		
 		self.loading = True
 		delay = 0
 		if 'delay' in data:
@@ -321,6 +680,7 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 
 
 	def valueChanged(self, *args):
+		# return
 		if not self.loading:
 			self.updateData()
 			self.parent.rebuildText()
@@ -348,6 +708,8 @@ class CustomGroupBox(QtWidgets.QGroupBox):
 	def __init__(self, label):
 		QtWidgets.QGroupBox.__init__(self, label)
 		self.disabled = False
+		
+		self.painter = None
 	
 	
 	def setDisabled(self, disabled):
@@ -376,7 +738,13 @@ class CustomGroupBox(QtWidgets.QGroupBox):
 	def paintEvent(self, e):
 		
 		QtWidgets.QGroupBox.paintEvent(self, e)
+		# if( self.painter != None): 
+			# self.painter.end()
+			# self.update()
+			# del self.painter
+			# pass
 		painter = QtGui.QPainter(self)
+		# painter = self.painter
 		painter.setRenderHint(QtGui.QPainter.Antialiasing);
 		
 		if self.disabled:
@@ -395,6 +763,6 @@ class CustomGroupBox(QtWidgets.QGroupBox):
 
 		painter.setPen(QtCore.Qt.darkGray);
 		painter.drawLine(2, 8, 6, 2);
-		
+		self.update()
 		#label = QtWidgets.QLabel("Hello")
 		#label.render(painter)

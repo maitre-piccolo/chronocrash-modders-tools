@@ -8,10 +8,11 @@ from guilib.treemodel import TreeModel, TreeItem, FilterModel
 from operator import attrgetter
 
 from common import settings, xdg
-from data import ParsedLine
+from data import ParsedLine, FileWrapper, Cache
 from gui.modales import CreateFileDialog
 
 from gui.util import FileInput, loadSprite
+from gui.level.items import Entity
 
 class File:
 	def __init__(self, path=None):
@@ -74,7 +75,7 @@ class File:
 		return False
 		
 	def loadFromDisk(self):
-		print('loading from disk', self.path)
+		# print('loading from disk', self.path)
 		try:
 			f = open(self.path)
 			lines = f.read().split("\n")
@@ -142,6 +143,8 @@ class FileSelector(QtWidgets.QWidget):
 		addIcon = QtGui.QIcon.fromTheme('list-add')
 		addAnim = self.buttonBar.addAction(addIcon, _('Create file'), self.createFile)
 		self.buttonBar.addSeparator()
+		self.buttonBar.addSeparator()
+		self.buttonBar.addSeparator()
 		libraryIcon = QtGui.QIcon(QtGui.QPixmap('icons/library.png'))
 		filesIcon = QtGui.QIcon(QtGui.QPixmap('icons/box.png'))
 		b1 = self.buttonBar.addAction(libraryIcon, 'Library', lambda:self.setMode('library'))
@@ -154,6 +157,14 @@ class FileSelector(QtWidgets.QWidget):
 		
 		self.libraryButton = b1
 		self.openedButton = b1bis
+		
+		self.buttonBar.addSeparator()
+		self.buttonBar.addSeparator()
+		self.buttonBar.addSeparator()
+		expandIcon = QtGui.QIcon(QtGui.QPixmap('icons/expand.png'))
+		collapseIcon = QtGui.QIcon(QtGui.QPixmap('icons/collapse.png'))
+		self.collapseAllButton = self.buttonBar.addAction(collapseIcon, 'Collapse All', self.collapseAll)
+		self.expandAllButton = self.buttonBar.addAction(expandIcon, 'Expand All', self.expandAll)
 		
 		actionGroup.addAction(b1)
 		actionGroup.addAction(b1bis)
@@ -217,7 +228,7 @@ class FileSelector(QtWidgets.QWidget):
 		self.folderNodes = {'':None}
 		
 		self.openedItem = None
-		print(self.metaObject().className())
+		# print(self.metaObject().className())
 		self.setObjectName( "FileSelector" )
 		
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F2", "Edit|Search")), self, self.focusForSearch)
@@ -225,6 +236,9 @@ class FileSelector(QtWidgets.QWidget):
 		self.mode = 'library'
 		self.libraryMode = 'Entities'
 		self.sessionName = None
+		self.isSavingSession = False
+		self.lastSaveTime = 0
+		self.lastSaveName = None
 		
 		
 		
@@ -249,7 +263,7 @@ class FileSelector(QtWidgets.QWidget):
 			fd = File(path)
 			self.loadedPaths.append(path)
 			self.loadedFiles[path] = fd
-			print('APPENDING', path)
+			# print('APPENDING', path)
 			fd.state = 1
 			if path.startswith('New'): fd.path = None
 			self.reloadFilesModel()
@@ -264,6 +278,7 @@ class FileSelector(QtWidgets.QWidget):
 		Open a file from library model
 	'''
 	def addFromLibrary(self, fd):
+		print('\n Opening file from Library...')
 		if fd.path not in self.loadedPaths:
 			self.loadedPaths.append(fd.path)
 			self.loadedFiles[fd.path] = fd
@@ -277,8 +292,28 @@ class FileSelector(QtWidgets.QWidget):
 		d = CreateFileDialog()
 		if d.exec() == 1:
 			print(d.filePath, d.category)
-			print('know xxx ' + d.filePath)
+			# print('know xxx ' + d.filePath)
 			
+			
+	def collapseAll(self, button=None, parentIndex=QtCore.QModelIndex()):
+		self.treeView.collapseAll()
+		# for i in range(self.filterModel.rowCount(parentIndex)):
+		# 	index = self.filterModel.index(i, 0, parentIndex)
+		# 	item = index.data(FileModel.itemRole)
+		# 	# print(i, item.isExpanded)
+		# 	# if item.isExpandedWithoutFilter:
+		# 	self.treeView.setExpanded(index, False)
+		# 	self.collapseAll(parentIndex=index)
+		
+	def expandAll(self, button=None, parentIndex=QtCore.QModelIndex()):
+		self.treeView.expandAll()
+		# for i in range(self.filterModel.rowCount(parentIndex)):
+		# 	index = self.filterModel.index(i, 0, parentIndex)
+		# 	item = index.data(FileModel.itemRole)
+		# 	# print(i, item.isExpanded)
+		# 	# if item.isExpandedWithoutFilter:
+		# 	self.treeView.setExpanded(index, True)
+		# 	self.expandAll(parentIndex=index)
 	
 	def focusForSearch(self):
 		self.enterEvent(None)
@@ -295,6 +330,7 @@ class FileSelector(QtWidgets.QWidget):
 	'''
 	def makeSureVisible(self, fd):
 		node = fd.node
+		print('Making sure ', node.label, ' is visible')
 		while node != None:
 			node.isExpanded = True
 			node = node.parent()
@@ -358,6 +394,7 @@ class FileSelector(QtWidgets.QWidget):
 			#self.treeView.setExpanded(index, True)
 		#print('APPEND', index.isValid())
 		item = model.append(parentNode, Item(parentNode, dataTuple), index)
+		#model.modelReset.emit()
 		return item
 	
 	'''
@@ -437,6 +474,7 @@ class FileSelector(QtWidgets.QWidget):
 		self.reloadFilesModel()
 	
 	def expandChange(self, index):
+		# print('expand change', self.treeView.isExpanded(index))
 		self.treeView.model().setData(index, self.treeView.isExpanded(index), FileModel.expandedRole)
 		#if self.mode == 'opened': # DEPRECATED ?
 			#item = index.data(FileModel.itemRole)
@@ -495,47 +533,76 @@ class FileSelector(QtWidgets.QWidget):
 			return
 		
 		if self.libraryMode == 'Entities':
-
+			
+			
+			
 			path = os.path.join(FileSelector.ROOT_PATH, 'data', 'models.txt')
+			print(path)
 			if not os.path.isfile(path):
-				print('not path')
+				print('WARNING : no models.txt')
 				return
-			f = open(path)
-			lines = f.read().split('\n')
-			f.close()
+				
+			
+			ent_cache = Cache('entities_data', FileSelector.ROOT_PATH)
+			
+			Entity.AVAILABLE_MODELS = []
+			
+			
+			f = FileWrapper(path)
+			lines = f.getLines()
+			
+			loadEntData = True
+			
+			
+			print("\nLoading entities...")
+			# print(len(lines))
+			# print(ent_cache.fullID)
+			
 			for i, line in enumerate(lines):
 				pLine = ParsedLine(line)
 				part = pLine.next()
 				if part is None : continue
 				if part.lower() == 'know' or part.lower() == 'load':
-					print(pLine.line, pLine.getNumberOfParts())
+					# print(pLine.line, pLine.getNumberOfParts())
 					if(pLine.getNumberOfParts() < 3) :
 						logging.debug('Incomplete line : ' + pLine.line)
 					else:
-						name = pLine.next()
+						name = pLine.next().lower()
+						Entity.AVAILABLE_MODELS.append(name)
 						path = pLine.next()
 						
 						
-						
-						
-						fullPath = os.path.join(FileSelector.ROOT_PATH, path)
-						if not os.path.exists(fullPath) : continue
-						print(fullPath)
-						f = open(fullPath)
-						lines2 = f.read().split('\n')
-						f.close()
 						type = 'none'
 						icon = None
-						for i, line2 in enumerate(lines2):
-							pLine2 = ParsedLine(line2)
-							part = pLine2.next()
-							if part == 'type':
-								type = pLine2.next().lower()
-							if part == 'icon':
-								icon = pLine2.next()
+						
+						
+						
+						if loadEntData:
+							if name in ent_cache.data :
+								ent_data = ent_cache.data[name]
+								type = ent_data['type']
+								icon = ent_data['icon']
+							else :
+						
+								fullPath = os.path.join(FileSelector.ROOT_PATH, path)
+								if not os.path.exists(fullPath) : continue
+								# print(fullPath)
+								f = FileWrapper(fullPath)
+								lines2 = f.getLines()
 								
-							if i > 100:
-								break
+								
+								for i, line2 in enumerate(lines2):
+									pLine2 = ParsedLine(line2)
+									part = pLine2.next()
+									if part == 'type':
+										type = pLine2.next().lower()
+									if part == 'icon':
+										icon = pLine2.next()
+										
+									if i > 100:
+										break
+										
+								ent_cache.data[name] = {'type':type, 'icon':icon}
 						
 						#print(name, type)
 						currentData = {'pos':i, 'label':name, 'path':path, 'type':type, 'icon':icon}
@@ -560,9 +627,15 @@ class FileSelector(QtWidgets.QWidget):
 				fd.category = 'Entity'
 				if d['type'] in categorieNodes : parentNode = categorieNodes[d['type']]
 				else : parentNode = categorieNodes['unknown']
+				#parentNode = categorieNodes['unknown']
 				self.append((d['label'], d['label'], i, path, d['icon'], fd), parentNode)
-				
-				
+			
+			self.libraryModels[self.libraryMode].modelReset.emit()
+			
+			# update cache
+			ent_cache.save()
+			self.mainEditor.entitiesHaveBeenReloaded()
+			
 				
 		elif self.libraryMode == 'Levels':
 			path = os.path.join(FileSelector.ROOT_PATH, 'data', 'levels.txt')
@@ -571,7 +644,7 @@ class FileSelector(QtWidgets.QWidget):
 			lines = f.read().split('\n')
 			f.close()
 			
-			
+			levelsAlreadyAdded = []
 			for i, line in enumerate(lines):
 				pLine = ParsedLine(line)
 				part = pLine.next()
@@ -582,10 +655,14 @@ class FileSelector(QtWidgets.QWidget):
 					#print(name)
 				elif part.lower() == 'file':
 					path = pLine.next()
+					if(path in levelsAlreadyAdded): continue
+					levelsAlreadyAdded.append(path)
 					path = os.path.join(FileSelector.ROOT_PATH, path)
 					fd = File(path)
 					fd.category = 'Level'
 					self.append((os.path.basename(path), os.path.basename(path), i, path, None, fd), parentNode)
+					
+			self.libraryModels[self.libraryMode].modelReset.emit()
 					
 		elif self.libraryMode == 'Scripts':
 			def scanDir(dir, parentNode):
@@ -603,6 +680,8 @@ class FileSelector(QtWidgets.QWidget):
 			#node = self.append(('scripts', 'scripts', 0, path, None, None), None)
 			scanDir(path, None)
 			
+			self.libraryModels[self.libraryMode].modelReset.emit()
+			
 		elif self.libraryMode == 'System':
 			
 			for name in ('models.txt', 'levels.txt', 'lifebar.txt', 'menu.txt', 'script.txt', 'video.txt'):
@@ -611,6 +690,8 @@ class FileSelector(QtWidgets.QWidget):
 				if not os.path.isfile(path): continue
 				node = self.append((name, name, 0, path, None, File(path)), None)
 				
+			self.libraryModels[self.libraryMode].modelReset.emit()
+			
 		model.isFilled = True
 		
 		if(self.mode == 'library'):
@@ -645,6 +726,7 @@ class FileSelector(QtWidgets.QWidget):
 			self.addFromLibrary(fd)
 		
 		self.setMode('opened')
+		self.saveExpandedStateWithoutFilters()
 		self.searchEntry.setText('')
 		self.search()
 		
@@ -711,10 +793,10 @@ class FileSelector(QtWidgets.QWidget):
 		#folders = sorted(folders, key=len)
 		folders.sort(key=lambda x: x.count(os.path.sep))
 		#folders = sorted(folders, key=lambda p: (-p.count(os.path.sep), p))
-		print(folders)
+		# print(folders)
 		
 		for f in folders:
-			print('\n*** Processing folder ***', f)
+			# print('\n*** Processing folder ***', f)
 			# How to handle a folder ?
 			if f in folderNodes : continue # Already present as a node, pass
 		
@@ -737,22 +819,22 @@ class FileSelector(QtWidgets.QWidget):
 					
 			
 			
-			print('Reason left', parent, '[parentNode exists :', parentNode is not None, '] [parent is root :', parent == os.path.dirname(parent), '] [same match with pParent:', match(parent) == match(os.path.dirname(parent)))
+			# print('Reason left', parent, '[parentNode exists :', parentNode is not None, '] [parent is root :', parent == os.path.dirname(parent), '] [same match with pParent:', match(parent) == match(os.path.dirname(parent)))
 			#if(parent not in parentsToAdd and parent not in folderNodes and  match(parent) > 0): # and match(parent) != match(os.path.dirname(parent)
 				#parentsToAdd.append(parent)
 				
 			
 			if len(parentsToAdd) > 0:
 				parentsToAdd.reverse()
-				print('toADD', parentsToAdd)
+				# print('toADD', parentsToAdd)
 				#print(parent, parentNode)
 				parentOfFirst = os.path.dirname(parentsToAdd[0])
 
-				print(folderNodes)
+				# print(folderNodes)
 				if parentOfFirst in folderNodes:
 					parentNode = folderNodes[parentOfFirst]
 
-				print('parentOfFirst', parentOfFirst, parentNode)
+				# print('parentOfFirst', parentOfFirst, parentNode)
 				
 				for parent in parentsToAdd:
 					if parent in previousFolderNodes : 
@@ -763,7 +845,7 @@ class FileSelector(QtWidgets.QWidget):
 						if parent in expandedFolders : node.isExpanded = True
 					folderNodes[parent] = node
 					parentNode = node
-				print(folderNodes)
+				# print(folderNodes)
 		
 			#return
 		
@@ -778,7 +860,7 @@ class FileSelector(QtWidgets.QWidget):
 				else:
 					parents.append(parent)
 				parent = os.path.dirname(parent)
-			print('PARENTS PHASE 2', parentNode, parents)		
+			# print('PARENTS PHASE 2', parentNode, parents)		
 			#print(parents)
 			
 			if parentNode is not None: # A noded parent found
@@ -844,16 +926,33 @@ class FileSelector(QtWidgets.QWidget):
 			del self.loadedFiles[path]
 			
 		
-			
-			
-	def restoreExpandedState(self, parentIndex=QtCore.QModelIndex()):
-
+	def saveExpandedStateWithoutFilters(self, parentIndex=QtCore.QModelIndex()):
 		for i in range(self.filterModel.rowCount(parentIndex)):
 			index = self.filterModel.index(i, 0, parentIndex)
 			item = index.data(FileModel.itemRole)
+			item.isExpandedWithoutFilter = item.isExpanded
+			self.saveExpandedStateWithoutFilters(index)
+			
+	def restoreExpandedState(self, parentIndex=QtCore.QModelIndex(), level=0):
+		# if(level == 0): print('\nrestoreExpandedState', parentIndex)
+		for i in range(self.filterModel.rowCount(parentIndex)):
+			index = self.filterModel.index(i, 0, parentIndex)
+			item = index.data(FileModel.itemRole)
+			# print(i, item.label, item.isExpanded)
 			if item.isExpanded:
 				self.treeView.setExpanded(index, item.isExpanded)
-			self.restoreExpandedState(index)
+			self.restoreExpandedState(index, level+1)
+		# if(level == 0): print('\n\n')
+	
+	def restoreExpandedStateWithoutFilters(self, parentIndex=QtCore.QModelIndex()):
+		# print('restoreExpandedState', parentIndex)
+		for i in range(self.filterModel.rowCount(parentIndex)):
+			index = self.filterModel.index(i, 0, parentIndex)
+			item = index.data(FileModel.itemRole)
+			# print(i, item.isExpanded)
+			# if item.isExpandedWithoutFilter:
+			self.treeView.setExpanded(index, item.isExpandedWithoutFilter)
+			self.restoreExpandedStateWithoutFilters(index)
 
 			
 			
@@ -887,19 +986,54 @@ class FileSelector(QtWidgets.QWidget):
 	
 	def search(self):
 		txt = self.searchEntry.text()
+		if(txt != ''):
+			self.saveExpandedStateWithoutFilters()
+			
 		self.treeView.model().setFilterRole(Qt.DisplayRole)
 		self.treeView.model().setFilterRole(Qt.DisplayRole)
 		regExp = QtCore.QRegExp(txt, QtCore.Qt.CaseInsensitive)
 		self.treeView.model().setFilterRegExp(regExp)
-		self.restoreExpandedState()
+		if(txt == ''):
+			self.restoreExpandedStateWithoutFilters()
+		else:
+			self.restoreExpandedState() # not really a restoring but a matching of visual expanding with expanded state in data
 		#self.treeView.expandAll()
 		
 		
 	def saveSession(self, name=None):
+		if self.isSavingSession:
+			return
+			
+		
+		import datetime
+		now = datetime.datetime.now()
+		
+			
+		# >>> now
+		# datetime.datetime(2009, 1, 6, 15, 8, 24, 78915)
+			
+		self.isSavingSession = True
 		if name is None:
 			name = self.sessionName
 		if name is None:
+			name = 'Default'
+		logging.debug(str(now) + ' STARTING SAVE SESSION : ' + str(name))
+		
+		
+		ts = now.timestamp()
+		if(name == self.lastSaveName and ts < self.lastSaveTime + 2):
+			logging.debug(str(now) + ' SAVE CANCEL because too close to last save')
+			self.isSavingSession = False
+			return
+		
+		self.lastSaveTime = ts
+		self.lastSaveName = name
+		settings.set_option('general/last_session', name)
+		
+		if name is None:
+			self.isSavingSession = False
 			return # TODO dialog for saving
+		
 		f = open(os.path.join(xdg.get_data_home(), 'sessions') + os.sep + name, 'w')
 		
 		#output = '\n'.join(map(str, self.loadedFiles.values()))
@@ -909,19 +1043,24 @@ class FileSelector(QtWidgets.QWidget):
 			if fd.path is not None and os.path.exists(fd.path):
 				fd.isVisible = os.path.dirname(fd.path) in self.expandedFolders
 				toSave.append(fd)
-				
+		
+		logging.debug('FILES TO SAVE : ' + str(toSave))
 		output = '\n'.join(map(str, toSave))
 		
 		output += '\n\n'
 		
+		
 		for fd in self.folderNodes.values():
 			if fd is not None and fd.isExpanded:
+				logging.debug(fd.path)
 				output += fd.path + '\n'
 		
 		#for path in self.loadedFiles:
 			#f.write(path + "\n")
 		f.write(output)
 		f.close()
+		logging.debug('END OF SAVE SESSION : ' + name)
+		self.isSavingSession = False
 		
 	def showContextMenu(self, pos):
 		index = self.sender().indexAt(pos)
@@ -976,6 +1115,7 @@ class FileModel(TreeModel):
 	
 	itemRole = Qt.UserRole+2
 	expandedRole = Qt.UserRole+1
+	expandedRoleWithoutFilter = Qt.UserRole+3
 	
 	def __init__(self):
 		TreeModel.__init__(self)
@@ -999,7 +1139,9 @@ class FileModel(TreeModel):
 		if role == self.itemRole:
 			return item
 		elif role == self.expandedRole:
-			return self.isExpanded
+			return item.isExpanded
+		elif role == self.expandedRoleWithoutFilter:
+			return item.isExpandedWithoutFilter
 		elif role == Qt.DisplayRole:
 			if index.column() == -1:
 				return item.pos
@@ -1045,7 +1187,7 @@ class FileModel(TreeModel):
 		
 		elif role == Qt.BackgroundRole and (item.fd is not None and item.fd.state > 0):
 			def tint(x):
-				return x + factor * (255-x)
+				return int(x + factor * (255-x))
 
 			factor = item.fd.state * 0.1
 			color = [215,223,1]
@@ -1054,6 +1196,9 @@ class FileModel(TreeModel):
 			return QtGui.QBrush(QtGui.QColor(*color))
 		elif role == Qt.FontRole and item.path is None:
 			return FileModel.bigFont
+		elif role == Qt.ForegroundRole and (item.fd is not None and item.fd.state > 0):
+			color = [0,0,0]
+			return QtGui.QBrush(QtGui.QColor(*color))
 		return None
 
 	def flags(self, index):
@@ -1094,6 +1239,9 @@ class FileModel(TreeModel):
 		
 		if role == self.expandedRole:
 			item.isExpanded = value
+			return 1
+		elif role == self.expandedRoleWithoutFilter:
+			item.isExpandedWithoutFilter = value
 			return 1
 		else:
 			return TreeModel.setData(self, index, value, role)

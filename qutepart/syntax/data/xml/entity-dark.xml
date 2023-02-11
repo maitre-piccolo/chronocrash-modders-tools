@@ -238,14 +238,14 @@
       <itemData name="Normal Text"  defStyleNum="dsNormal" spellChecking="false"/>
        <itemData name="Script Text"  color="#5555FF" defStyleNum="dsNormal" spellChecking="false"/>
       <itemData name="Keyword"      defStyleNum="dsKeyword" spellChecking="false"/>
-       <itemData name="Command"     color="#0B2161" spellChecking="false"/>
+       <itemData name="Command"     color="#7598ff" spellChecking="false"/>
 <!--          <itemData name="Command"     defStyleNum="dsCommand" spellChecking="false"/> -->
        
-        <itemData name="@cmd"     italic="true" color="#886A08" spellChecking="false"/>
+        <itemData name="@cmd"     italic="true" color="#bda249" spellChecking="false"/>
 	  <itemData name="Script"      defStyleNum="dsRegionMarker" spellChecking="false"/>
 	
-         <itemData name="Frame"      color="#21610B" defStyleNum="dsNormal" spellChecking="false"/>
-	 <itemData name="Attack"      color="#DF013A" defStyleNum="dsNormal" spellChecking="false"/>
+         <itemData name="Frame"      color="#69b54e" defStyleNum="dsNormal" spellChecking="false"/>
+	 <itemData name="Attack"      color="#ff7b9d" defStyleNum="dsNormal" spellChecking="false"/>
        
       <itemData name="Data Type"    defStyleNum="dsDataType" spellChecking="false"/>
       <itemData name="Decimal"      defStyleNum="dsDecVal" spellChecking="false"/>

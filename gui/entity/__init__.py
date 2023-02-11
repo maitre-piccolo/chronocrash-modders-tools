@@ -11,14 +11,14 @@ from gui.portrait import IconViewer, Portrait
 
 from qutepart import Qutepart, EverydayPart
 
-from data import ParsedLine, BBox, AttackBox
+from data import ParsedLine, ParsedLineMask, BBox, AttackBox, Cache, BindData
 from common.util import parseInt, parseFloat
 
 
 from gui.entity.animselector import AnimSelector
-from gui.entity.frameproperties import FramePropertiesEditor
+from gui.entity.frameproperties import FramePropertiesEditor, BindingEditor
 
-from gui.level.items import Wall
+from gui.level.items import Wall, Entity
 
 
 
@@ -42,9 +42,12 @@ def convertRect(x, y, x2, y2):
 
 class Platform:
 	def __init__(self, data=[]):
+		if(len(data) == 0):
+			data = [100,100, -50,-50,50,50, 30,30]
 		while len(data) < 8:
 			data.append(0)
 		self.data = data
+		self.wall = None
 		
 	def getWall(self, xOffset=0, yOffset=0):
 		data = list(self.data)
@@ -162,7 +165,10 @@ class Anim:
 		
 class EntityEditorWidget(QtWidgets.QWidget):
 	
-	ROOT_PATH = os.path.dirname(settings.get_option('general/data_path', '/home/piccolo/workspace/OpenBOR/data')) + os.sep
+	try:
+		ROOT_PATH = os.path.dirname(settings.get_option('general/data_path', '/home/piccolo/workspace/OpenBOR/data')) + os.sep
+	except AttributeError:
+		print("FATAL ERROR")
 	
 	def __init__(self):
 		QtWidgets.QWidget.__init__(self)
@@ -233,7 +239,11 @@ class EntityEditorWidget(QtWidgets.QWidget):
 
 		
 		editor = EverydayPart()
-		editor.detectSyntax(xmlFileName='entity.xml')
+		theme = settings.get_option('gui/editor_theme', None)
+		if(theme != None and 'dark' in theme.lower()):
+			editor.detectSyntax(xmlFileName='entity-dark.xml')
+		else:
+			editor.detectSyntax(xmlFileName='entity.xml')
 		self.editor = editor
 		self.editor.indentUseTabs = True
 		self.editor.cursorPositionChanged.connect(self.positionChanged)
@@ -267,6 +277,8 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		self.mainSplitter.setStretchFactor(0,0)
 		self.mainSplitter.setStretchFactor(1,1)
 		
+		
+		
 		self.updating = False
 		self.loadingAnim = False
 		
@@ -299,6 +311,9 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		#else:
 		return False
 		
+		
+
+	
 	def getFullLines(self):
 		self.processLines() # Update data to match current text
 		self.validateChanges() # Shouldn't be needed
@@ -338,7 +353,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		 fullData and dicData are linked (they share the same data)
 		 dicData exists to provide a key access to fullData
 	'''
-	def loadLines(self, lines):
+	def loadLines(self, lines, model=None):
 		self.updating = True
 		self.currentAnim = None
 		
@@ -346,9 +361,15 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		dicData = {'header':sectionLines}
 		fullData = [{'ID':'header', 'label':'', 'lines':sectionLines}]
 		
+		
+		ent_cache = Cache('entities_data', EntityEditorWidget.ROOT_PATH)
+		
+		name = None
+		
 		for line in lines:
 			pLine = ParsedLine(line)
 			part = pLine.next()
+			if part != None : part = part.lower()
 			if part == 'anim':
 				label = pLine.getCom()
 				#print(pLine.parts, pLine.pos)
@@ -356,6 +377,25 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				sectionLines = []
 				fullData.append({'ID':animID, 'label':label, 'lines': sectionLines})
 				dicData[animID] = sectionLines
+			elif part == 'name':
+				name = pLine.next().lower()
+				if(model is None): model = name
+			elif part == 'type':
+				type = pLine.next().lower()
+				if model is not None:
+					try:
+						ent_cache.data[model]['type'] = type
+						ent_cache.save()
+					except:
+						print("no model named ", model)
+			elif part == 'icon':
+				icon = pLine.next()
+				if model is not None:
+					try:
+						ent_cache.data[model]['icon'] = icon
+						ent_cache.save()
+					except:
+						print("no model named ", model)
 			sectionLines.append(line)
 			
 		self.dicData = dicData
@@ -508,18 +548,41 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		Animation text editor lines to data (serves as update)
 	'''
 	def processLines(self, lines=None):
+		
+		def checkForBindingMask():
+			if bindingMaskIdentifier == None: return
+			if(pLine.line.lstrip().startswith(bindingMaskIdentifier)):
+				print('processLines bindingMaskIdentifier FOUND')
+
+				bindData = BindData(pLineMask, ParsedLineMask(pLine.line))
+				frame['bind'] = bindData
+		
+		
 		if lines is None : lines = self.editor.lines
 		frame = {}
 		self.frames = []
 		#lines = text.split('\n')
 		
 		isInScript = False
+		
+		
+		bindingMask = settings.get_option('entity/binding_mask', '')
+		bindingMaskIdentifier = None
+		bindingMaskIdentifierIsComment = False
+		if(bindingMask != ''):
+			pLineMask = ParsedLineMask(bindingMask)
+			bindingMaskIdentifier = pLineMask.identifier
+			if(bindingMaskIdentifier.startswith('#')): bindingMaskIdentifierIsComment = True
+		print('processLines bindingMaskIdentifier', bindingMaskIdentifier)
+		
+		
 	
 		for line in lines:
 			pLine = ParsedLine(line)
 				
 			part = pLine.next()
 			if(part is None):
+				checkForBindingMask()
 				continue
 			
 			elif(part == '@script'):
@@ -579,14 +642,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				
 				commandParts = part.split('.')
 				if len(commandParts) == 1: # bbox legacy/main command (with multiple/all params)
-					data = []
-					while(pLine.next() != None):
-						data.append(parseInt(pLine.current()))
-					while len(data) < 4:
-						data.append(0)
-					# x, y, w, h
-					
-					frame['bbox'] = BBox(data)
+					frame['bbox'] = BBox(pLine)
 					
 				else: # e.g., bbox.position.x
 					if 'bbox' not in frame:
@@ -597,18 +653,24 @@ class EntityEditorWidget(QtWidgets.QWidget):
 						if commandParts[1] == 'position':
 							if commandParts[2] == 'x':
 								bbox.x = parseInt(pLine.next())
+								bbox.ogLineX = pLine
 							elif commandParts[2] == 'y':
 								bbox.y = parseInt(pLine.next())
+								bbox.ogLineY = pLine
 						elif commandParts[1] == 'size':
 							if commandParts[2] == 'x':
 								bbox.width = parseInt(pLine.next())
+								bbox.ogLineWidth = pLine
 							elif commandParts[2] == 'y':
 								bbox.height = parseInt(pLine.next())
+								bbox.ogLineHeight = pLine
 							elif commandParts[2] == 'z':
 								if commandParts[3] == '1':
 									bbox.z1 = parseInt(pLine.next())
+									bbox.ogLineZ1 = pLine
 								elif commandParts[3] == '2':
 									bbox.z2 = parseInt(pLine.next())
+									bbox.ogLineZ2 = pLine
 						
 								
 					except IndexError:
@@ -630,6 +692,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 						# x, y, w, h, d, p, block, noflash, pause, z
 						
 						frame['attack'] = AttackBox(data)
+						frame['attack'].ogLine = pLine
 				else: # e.g., abox.position.x
 					if 'attack' not in frame:
 						frame['attack'] = AttackBox()
@@ -639,55 +702,72 @@ class EntityEditorWidget(QtWidgets.QWidget):
 						if commandParts[1] == 'block':
 							if commandParts[2] == 'penetrate':
 								abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
+								abox.ogLines['.'.join(commandParts[1:])] = pLine
 								
 						elif commandParts[1] == 'damage':
 							if commandParts[2] == 'force':
 								abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
+								abox.ogLines['.'.join(commandParts[1:])] = pLine
 							if commandParts[2] == 'type':
 								abox.data['.'.join(commandParts[1:])] = pLine.next()
+								abox.ogLines['.'.join(commandParts[1:])] = pLine
 								
 						elif commandParts[1] == 'effect':
 							if commandParts[2] == 'hit':
 								if commandParts[3] == 'flash':
 									if commandParts[4] == 'disable':
 										abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
+										abox.ogLines['.'.join(commandParts[1:])] = pLine
 									elif commandParts[4] == 'model':
 										abox.data['.'.join(commandParts[1:])] = pLine.next()
+										abox.ogLines['.'.join(commandParts[1:])] = pLine
 								elif commandParts[3] == 'sound':
 									if commandParts[4] == 'path':
 										abox.data['.'.join(commandParts[1:])] = pLine.next()
+										abox.ogLines['.'.join(commandParts[1:])] = pLine
 								
 						elif commandParts[1] == 'position':
 							if commandParts[2] == 'x':
 								abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
+								abox.ogLines['.'.join(commandParts[1:])] = pLine
 							elif commandParts[2] == 'y':
 								abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
+								abox.ogLines['.'.join(commandParts[1:])] = pLine
 								
 						elif commandParts[1] == 'reaction':
 							if commandParts[2] == 'fall':
 								if commandParts[3] == 'force':
 									abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
+									abox.ogLines['.'.join(commandParts[1:])] = pLine
 								if commandParts[3] == 'velocity':
 									if commandParts[4] == 'x':
 										abox.data['.'.join(commandParts[1:])] = parseFloat(pLine.next())
+										abox.ogLines['.'.join(commandParts[1:])] = pLine
 									elif commandParts[4] == 'y':
 										abox.data['.'.join(commandParts[1:])] = parseFloat(pLine.next())
+										abox.ogLines['.'.join(commandParts[1:])] = pLine
 									elif commandParts[4] == 'z':
 										abox.data['.'.join(commandParts[1:])] = parseFloat(pLine.next())
+										abox.ogLines['.'.join(commandParts[1:])] = pLine
 							elif commandParts[2] == 'pause':
 								if commandParts[3] == 'time':
 									abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
+									abox.ogLines['.'.join(commandParts[1:])] = pLine
 									
 						elif commandParts[1] == 'size':
 							if commandParts[2] == 'x':
 								abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
+								abox.ogLines['.'.join(commandParts[1:])] = pLine
 							elif commandParts[2] == 'y':
 								abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
+								abox.ogLines['.'.join(commandParts[1:])] = pLine
 							elif commandParts[2] == 'z':
 								if commandParts[3] == '1':
 									abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
+									abox.ogLines['.'.join(commandParts[1:])] = pLine
 								elif commandParts[3] == '2':
 									abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
+									abox.ogLines['.'.join(commandParts[1:])] = pLine
 						
 						
 					except IndexError:
@@ -711,6 +791,11 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				prop = pLine.next()
 				if prop != None:
 					frame['drawmethod_' + prop] = pLine.next()
+					
+			elif(bindingMaskIdentifier != None):
+				checkForBindingMask()
+				
+				
 				
 				
 				
@@ -727,18 +812,32 @@ class EntityEditorWidget(QtWidgets.QWidget):
 	'''
 	def rebuildText(self):
 		
+		print('REBUILDING ANIM TEXT')
+		
 		legacy = settings.get_option('misc/legacy_commands', False)
 		self.updating = True
 		self.editor.saveScroll()
 		lines = self.editor.lines # self.editor.text.split('\n')
 		
-		filled = {'bbox':False, 'attack':False, 'delay':False, 'offset':False, 'range':False}
+		filled = {'bbox':False, 'attack':False, 'delay':False, 'offset':False, 'range':False, 'platform':False, 'bind':False}
 		
 		newLines = []
 		currentFrame = 0
 		inLineScript = False
 		inBBox = False
 		inAbox = False
+		
+		
+		bindingMask = settings.get_option('entity/binding_mask', '')
+		print('binding mask', bindingMask)
+		bindingMaskIdentifier = None
+		if(bindingMask != ''):
+			pLineMask = ParsedLineMask(bindingMask)
+			bindingMaskIdentifier = pLineMask.identifier
+			
+		print('binding id', bindingMaskIdentifier)
+			
+		
 		for line in lines:
 			
 			pLine = ParsedLine(line)
@@ -755,7 +854,14 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				inAbox = False
 			
 			
-			if part is None:
+			if(bindingMaskIdentifier != None and pLine.line.lstrip().startswith(bindingMaskIdentifier)):
+				
+				bindData = self.anim[currentFrame]['bind']
+				newLines.append(bindData.getText(pLineMask))
+				filled['bind'] = True
+				continue
+				
+			elif part is None:
 				pass
 			elif(part == '@script'):
 				inLineScript = True
@@ -769,8 +875,17 @@ class EntityEditorWidget(QtWidgets.QWidget):
 					#newLines.append('\tbbox ' + ' '.join(map(str, self.anim[currentFrame]['bbox'].getParams())) )
 				if not filled['attack'] and 'attack' in self.anim[currentFrame]:
 					newLines.append(self.anim[currentFrame]['attack'].getText())
+					
+				if not filled['platform'] and 'platform' in self.anim[currentFrame]:
+					platform = self.anim[currentFrame]['platform']
+					newLines.append(platform.getText())
+					
+				if not filled['bind'] and 'bind' in self.anim[currentFrame] and bindingMaskIdentifier != None:
+					bindData = self.anim[currentFrame]['bind']
+					newLines.append(bindData.getText(pLineMask))
+					
 				currentFrame += 1
-				filled = {'bbox':False, 'attack':False, 'delay':False, 'offset':False}
+				filled = {'bbox':False, 'attack':False, 'delay':False, 'offset':False, 'range':False, 'platform':False, 'bind':False}
 				
 			elif(part == 'offset'):
 				filled[part] = True
@@ -808,6 +923,10 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				#print(parts)
 				
 			elif(part.startswith('attack')): #  and len(pLine) > 6
+				if(currentFrame >= len(self.anim.frames)):
+					QtWidgets.QMessageBox.warning(self, _('Error'), _('An attackbox was declared after the last frame'))
+					return
+				
 				inAbox = True
 				filled['attack'] = True
 				pLine.next()
@@ -827,6 +946,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 					#pLine.parts = newParts
 					
 			elif part == 'platform':
+				filled['platform'] = True
 				if 'platform' in self.anim[currentFrame]:
 					newLines.extend(self.anim[currentFrame]['platform'].getText().split('\n'))
 					continue
@@ -872,7 +992,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 class FrameEditor(QtWidgets.QWidget):
 	
 	refresh = QtCore.pyqtSignal()
-	
+	endDrag = QtCore.pyqtSignal()
 	
 	
 	def __init__(self, parent):
@@ -889,9 +1009,21 @@ class FrameEditor(QtWidgets.QWidget):
 		view.setScene(scene)
 		self.graphicView = view
 		
+		
+		rightPanel = QtWidgets.QTabWidget()
+		
 		self.propEditor = FramePropertiesEditor(parent)
 		scrollArea = QtWidgets.QScrollArea()
 		scrollArea.setWidget(self.propEditor)
+		
+		rightPanel.addTab(scrollArea, _('Frame'))
+		
+		self.bindingEditor = BindingEditor(parent)
+		scrollArea = QtWidgets.QScrollArea()
+		scrollArea.setWidget(self.bindingEditor)
+		
+		rightPanel.addTab(scrollArea, _('Bindings'))
+		
 		
 		leftSide = QtWidgets.QWidget()
 		leftLayout = QtWidgets.QVBoxLayout()
@@ -899,7 +1031,7 @@ class FrameEditor(QtWidgets.QWidget):
 		leftSide.setLayout(leftLayout)
 		
 		layout.addWidget(leftSide, 1)
-		layout.addWidget(scrollArea, 0)
+		layout.addWidget(rightPanel, 0)
 		
 		
 		buttonGroup = QtWidgets.QButtonGroup()
@@ -916,10 +1048,18 @@ class FrameEditor(QtWidgets.QWidget):
 		self.buttonBar.addAction('Set Platform', lambda:self.setMode('platform'))
 		self.onionSkinAction = self.buttonBar.addAction('Onion skin', self.setOnionSkin)
 		self.onionSkinAction.setCheckable(True)
+	
 		self.exportAnimationAction = self.buttonBar.addAction('Export', self.exportAnimation)
 		self.reloadSpritesAction = self.buttonBar.addAction('Reload sprites', self.reloadSprites)
 		#self.buttonBar.addAction(QtGui.QIcon.fromTheme('go-next'), None, self.loadNext)
 		#self.buttonBar.addAction(QtGui.QIcon.fromTheme('edit-clear'), None, self.clear)
+		
+		
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.reloadSprites)
+		
+		# QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F3", "Flip Opponent")), self, self.flipOpponent)
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F6", "Flip Opponent")), self, self.flipOpponent)
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F4", "Next Frame")), self, self.nextFrameOpponent)
 		
 		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/zoom-in_global', 'Ctrl++')), self.parent, self.graphicView.zoomIn)
 		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/zoom-out_global', 'Ctrl+-')), self.parent, self.graphicView.zoomOut)
@@ -945,12 +1085,66 @@ class FrameEditor(QtWidgets.QWidget):
 		self.looping = False
 		self.refresh.connect(self.loadFrame)
 		self.onionSkin = None
+		self.opponentModel = None
+		self.opponent = None
 		self.grid = GridItem()
+		self.drawOpponent()
+		
+		self.endDrag.connect(self.endDragEvent)
 		
 		
 	def drawOnionSkin(self):
 		if self.onionSkin != None:
 			self.scene.addItem(self.onionSkin)
+			
+	def drawOpponent(self):
+		if self.opponent != None:
+			data = self.getCurrentFrame()
+			if('bind' in data):
+				bindData = data['bind']
+				self.opponent.setAt(0)
+				print(bindData['frame'])
+				self.opponent.setFrame( bindData['frame'])
+				self.opponent.actualizeFrame()
+				
+				direction = bindData['direction']
+				self.opponent.x = bindData['x']
+				self.opponent.altitude = bindData['y']
+				self.opponent.z = bindData['z']
+				
+				self.opponent.setZValue(self.opponent.z)
+				
+#				
+				if(direction == -1 or direction ==-2):
+					self.opponent.setDirection(False)
+				elif(direction == 1 or direction == 2):
+					self.opponent.setDirection(True)
+				else:
+					self.opponent.setDirection(self.opponent.facingRight)
+					# self.opponent.setAt(0)
+				
+				
+				# self.opponent.at = 0
+				
+				
+				# if(direction == -1):
+				# 	self.opponent.setDirection(False)
+				# else:
+				# 	self.opponent.setDirection(True)
+				# self.scene.addRect(self.opponent.xOffset, self.opponent.yOffset,10,10)
+				
+			self.scene.addItem(self.opponent)
+	
+	def nextFrameOpponent(self):
+		if self.opponent != None:
+			self.opponent.nextFrame()
+			self.opponent.actualizeFrame()
+			print(self.opponent.xOffset, self.opponent.yOffset)
+		
+	def flipOpponent(self):
+		if self.opponent != None:
+			self.opponent.setDirection(not self.opponent.facingRight)
+	
 		
 	def getCurrentFrame(self):
 		return self.parent.frames[self.parent.currentFrame]
@@ -1000,35 +1194,219 @@ class FrameEditor(QtWidgets.QWidget):
 		args.append('-loop')
 		args.append('0')
 		delay = 7
+		
+		pil_frames = []
+		pil_dur = []
+		pil_offsets = []
 		for i, frame in enumerate(self.parent.anim):
 			path = os.path.join(EntityEditorWidget.ROOT_PATH, frame['frame'])
+			pil_frames.append(path)
 			if 'delay' in frame:
 				delay = frame['delay']
+				if(delay < 0): delay = 10
+			pil_dur.append(int(delay)*10)
 			args.append('-delay')
 			args.append(str(delay))
 			
-			#args.append('-dispose')
-			#args.append('previous')
+			args.append('-dispose')
+			args.append('background')
 			args.append('-page')
 			x, y = self.parent.anim.getOffset(i)
+			pil_offsets.append((x,y))
 			args.append('-' + str(x-200) + '-' + str(y-200))
 			args.append(path)
 			
 			
+		lookFolder = EntityEditorWidget.ROOT_PATH
+		
+		import pathlib
+		
+		print(pil_frames)
 
+		# desktop = pathlib.Path.home() / 'Desktop'
+		home = pathlib.Path.home()
+		
+		# path =str(desktop) + os.sep+ 'animation.gif'
+		path =str(home) + os.sep+ 'animation.gif'
+		# print(path)
+		# print(args)
+
+		# import glob
+
+		
+		from PIL import Image
+		
+		print(len(pil_dur), len(pil_frames))
+		
+		print(pil_dur)
+		
+		print(pil_frames)
+		
+		print(pil_offsets)
+
+# 		def add_margin(pil_img, x, y, top, right, bottom, left, color):
+# 			width, height = pil_img.size
+# 			new_width = width + right + left
+# 			new_height = height + top + bottom
+# 			
+# 			x = int(new_width/2) - x
+# 			y = int(new_height/2) - y
+# 			
+# 			result = Image.new(pil_img.mode, (new_width+100, new_height+100))
+# 			if(pil_img.mode == "P"):
+# 				result.putpalette( pil_img.palette.getdata()[ 1 ] )
+# 			result.paste(pil_img, (x, y))
+# 			return result
+# 			
+# 			
+# 		# def canvas(srcImage):
+# 		# 	newImage = Image.new(srcImage.mode, (newWidth,newHeight))
+# 		# 	if(srcImage.mode == "P"):
+# 		# 		newImage.putpalette( srcImage.palette.getdata()[ 1 ] )
+# 		# 	newImage.paste(srcImage, (x1,y1,x1+oldWidth,y1+oldHeight))
+# 
+# 		def make_gif(path):
+# 			frames = [Image.open(image) for image in pil_frames]
+# 			maxWidth = 0
+# 			maxHeight = 0
+# 			for i in range(len(frames)):
+# 				im = frames[i]
+# 				x, y = pil_offsets[i]
+# 				width, height = im.size
+# 				width = width + x
+# 				height = height +x
+# 				if(width > maxWidth):
+# 					maxWidth = width
+# 				if(height > maxHeight):
+# 					maxHeight = height
+# 			for i in range(len(frames)):
+# 				im = frames[i]
+# 				x, y = pil_offsets[i]
+# 				
+# 				# frames[i] = ImageChops.offset(im, xoffset=x-200, yoffset=y-200)
+# 				frames[i] = add_margin(im, x, y, int(maxHeight/2), int(maxWidth/2), 0, int(maxWidth/2), (128, 0, 64))
+# 			frame_one = frames[0]
+# 			frame_one.save(path, format="GIF", append_images=frames[1:],
+# 				save_all=True, duration=pil_dur, loop=0, disposal=2)
+    
+
+		def add_margin(pil_img, x, y,canvasWidth, canvasHeight, minYMargin, maxYMargin):
+			width, height = pil_img.size
+			
+			
+			# x = int(new_width/2) - x
+			# y = int(new_height/2) - y
+			# print(canvasWidth, width, x)
+			# x =  canvasWidth - width + x -200
+			# y = canvasHeight - height + y -200
+			
+			# x -= int(canvasWidth / 2)
+			# y -= int(canvasHeight / 2)
+			
+			# x += 100
+			
+			# canvasWidth += 
+			
+			x = 0 + width - x + canvasWidth - width    - int(canvasWidth/2)
+			# y = 0 + height -y + canvasHeight - height - int(canvasHeight/2)
+			y = 0 + height -y + canvasHeight - height - minYMargin
+			
+			canvasHeight += maxYMargin
+			canvasHeight += -minYMargin
+			
+			
+			# rgb_im = pil_img.convert('RGB')
+			# color = rgb_im.getpixel((1, 1))
+			
+			# color = pil_img.getpixel((1, 1))
+			result = Image.new(pil_img.mode, (canvasWidth, canvasHeight))
+			# print(pil_img.mode)
+			
+			if(pil_img.mode == "P"):
+				result.putpalette( pil_img.palette.getdata()[ 1 ] )
+			result.paste(pil_img, (x, y))
+			return result
+			
+			
+		# def canvas(srcImage):
+		# 	newImage = Image.new(srcImage.mode, (newWidth,newHeight))
+		# 	if(srcImage.mode == "P"):
+		# 		newImage.putpalette( srcImage.palette.getdata()[ 1 ] )
+		# 	newImage.paste(srcImage, (x1,y1,x1+oldWidth,y1+oldHeight))
+
+		def make_gif(path):
+			frames = [Image.open(image) for image in pil_frames]
+			maxWidth = 0
+			maxHeight = 0
+			maxYMargin = 0
+			minYMargin = 0
+			for i in range(len(frames)):
+				im = frames[i]
+				x, y = pil_offsets[i]
+				width, height = im.size
+				yMargin = height - y
+				# width = width + int(width/2) - x
+				# height = height +y
+				# width =  la plus grosse moitié * 2
+				
+				
+				moitie1 = width - x
+				moitie2 = width - moitie1
+				biggestHalf = max(moitie1, moitie2)
+				width = biggestHalf * 2 + 1
+				
+				# moitie1 = height - y
+				# moitie2 = height - moitie1
+				# biggestHalf = max(moitie1, moitie2)
+				# height = biggestHalf * 2 + 1
+				
+				
+				
+				print('yMargin', yMargin, x, y)
+				if(width > maxWidth):
+					maxWidth = width
+				if(height > maxHeight):
+					maxHeight = height
+					
+				if(yMargin > maxYMargin):
+					maxYMargin = yMargin
+					
+				if(yMargin < minYMargin):
+					minYMargin = yMargin
+				
+			print('maxYMargin', maxYMargin, 'minYMargin', minYMargin)
+			
+			canvasWidth = maxWidth + 1 
+			canvasHeight = maxHeight + 1
+			for i in range(len(frames)):
+				im = frames[i]
+				x, y = pil_offsets[i]
+				
+				
+				
+				# frames[i] = ImageChops.offset(im, xoffset=x-200, yoffset=y-200)
+				frames[i] = add_margin(im, x, y, canvasWidth, canvasHeight, minYMargin, maxYMargin)
+			frame_one = frames[0]
+			frame_one.save(path, format="GIF", append_images=frames[1:],
+				save_all=True, duration=pil_dur, loop=0, disposal=0)
+		
+
+		# make_gif()
 		#args.append('-layers')
 		#args.append('Optimize')
 		
 		
-		lookFolder = EntityEditorWidget.ROOT_PATH
-			
-		path = QtWidgets.QFileDialog.getSaveFileName(self, directory=lookFolder + os.sep+ 'animation.gif')[0]
+		
+		path = QtWidgets.QFileDialog.getSaveFileName(self, directory=lookFolder+ os.sep+ 'animation.gif')[0]
 		if(path is not None and path != ''):
-			args.append(path)
-			subprocess.call(args)
+			make_gif(path)
+			# args.append(path)
+			# subprocess.call(args)
+			# pass
 			
 			
 	def reloadSprites(self):
+		print('\n*** Reloading Sprites ***\n')
 		frames = self.parent.anim.frames
 		for frame in self.parent.anim.frames:
 			key = frame['frame']
@@ -1062,6 +1440,18 @@ class FrameEditor(QtWidgets.QWidget):
 				wall = platform.wall
 				for dot in wall.dots:
 					dot.show()
+					
+			else : # add new platform
+				xOffset = 0
+				yOffset = 0
+				platform = anim.getPlatform(frameNumber)
+				anim[frameNumber]['platform'] = platform
+				wall = platform.getWall(xOffset, yOffset)
+				self.scene.addItem(wall)
+				for dot in wall.dots:
+					self.scene.addItem(dot)
+					#dot.hide()
+				self.parent.rebuildText() # so as to add platform in text
 		self.graphicView.setFocus()
 		self.loadFrame()
 		
@@ -1072,6 +1462,7 @@ class FrameEditor(QtWidgets.QWidget):
 		anim = self.parent.anim
 		if len(anim) == 0: return
 		
+		self.scene.removeItem(self.opponent)
 		self.scene.removeItem(self.grid)
 		self.scene.removeItem(self.onionSkin)
 		self.scene.clear()
@@ -1091,6 +1482,8 @@ class FrameEditor(QtWidgets.QWidget):
 		anim.currentFrame = frameNumber
 	
 		self.drawOnionSkin()
+		
+		self.drawOpponent()
 	
 		frame = anim[frameNumber]
 		
@@ -1173,8 +1566,9 @@ class FrameEditor(QtWidgets.QWidget):
 				self.scene.addItem(dot)
 				#dot.hide()
 			
-		self.scene.addRect(-5,-5,10,10)
+		self.scene.addRect(-5,-5,10,10) #offset
 		self.propEditor.loadData(frame)
+		self.bindingEditor.loadData(frame)
 		
 		
 
@@ -1214,6 +1608,26 @@ class FrameEditor(QtWidgets.QWidget):
 			self.parent.currentFrame = len(self.parent.anim)-1
 		self.refresh.emit()
 		
+		
+	def loadOpponent(self):
+		self.opponent = Entity(self.opponentModel, parentWidget=self, loadAllAnims = True, defaultAnim=settings.get_option('entity/last_opponent_animation', 'idle'), shadow=False, offset=True)
+	
+	def showOpponent(self, show): 
+		if not show: # Just unchecked
+			self.opponent = None
+			self.loadFrame()
+			return
+			
+		if(self.opponentModel not in Entity.AVAILABLE_MODELS):
+			return
+		self.loadOpponent()
+		self.loadFrame()
+		
+		
+	def endDragEvent(self):
+		print('opponent mouse release', self.opponent.pos().x(), self.opponent.pos().y())
+		self.bindingEditor.refreshEntPos()
+		self.opponent.update()
 		
 	def setOnionSkin(self, frameNumber=None):
 		if not self.onionSkinAction.isChecked(): # Just unchecked
@@ -1377,7 +1791,7 @@ class ImageWidget(QtWidgets.QGraphicsView):
 		self.zoomFunction(delta)
 
 		
-		self.centerOn(e.x(), e.y())
+		#self.centerOn(e.x(), e.y()) # Removed this because it messed up centering
 		print(self.zoom)
 		#print(e.delta())
 		print ('')

@@ -7,6 +7,55 @@ from common import settings
 from guilib.treemodel import TreeModel, TreeItem
 from operator import attrgetter
 
+import re
+
+
+
+class MultiFilterMode:
+    AND = 0
+    OR = 1
+
+
+class MultiFilterProxyModel(QtCore.QSortFilterProxyModel):    
+    def __init__(self, *args, **kwargs):
+        QtCore.QSortFilterProxyModel.__init__(self, *args, **kwargs)
+        self.filters = {}
+        self.multi_filter_mode = MultiFilterMode.AND
+
+    def setFilterByColumn(self, column, regex):
+        if isinstance(regex, str):
+            regex = re.compile(regex, re.IGNORECASE)
+        self.filters[column] = regex
+        self.invalidateFilter()
+
+    def clearFilter(self, column):
+        del self.filters[column]
+        self.invalidateFilter()
+
+    def clearFilters(self):
+        self.filters = {}
+        self.invalidateFilter()
+
+    def filterAcceptsRow(self, source_row, source_parent):
+        if not self.filters:
+            return True
+
+        results = []
+        for key, regex in self.filters.items():
+            text = ''
+            index = self.sourceModel().index(source_row, key, source_parent)
+            if index.isValid():
+                text = self.sourceModel().data(index, Qt.DisplayRole)
+                if text is None:
+                    text = ''
+            # results.append(regex.match(text))
+            results.append(regex.search(text))
+
+        if self.multi_filter_mode == MultiFilterMode.OR:
+            return any(results)
+        return all(results)
+
+
 class AnimSelector(QtWidgets.QWidget):
 	def __init__(self, parent):
 		self.mainEditor = parent
@@ -46,7 +95,7 @@ class AnimSelector(QtWidgets.QWidget):
 		
 		self.treeView = QtWidgets.QTreeView(self)
 		self.model = AnimModel()
-		self.filterModel = QtCore.QSortFilterProxyModel()
+		self.filterModel = MultiFilterProxyModel()
 		self.filterModel.setSourceModel(self.model)
 		self.treeView.setSortingEnabled(True)
 		self.treeView.setModel(self.filterModel)
@@ -72,6 +121,8 @@ class AnimSelector(QtWidgets.QWidget):
 		
 		#connect(timeLine, SIGNAL(frameChanged(int)), progressBar, SLOT(setValue(int)));
 		self.timeLine.frameChanged.connect(self.tmp)
+		
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F3", "Edit|Search Anim")), self, self.focusForSearch)
 		
 		
 	def tmp(self, val):
@@ -102,6 +153,14 @@ class AnimSelector(QtWidgets.QWidget):
 		self.timeLine.setFrameRange(self.mainEditor.mainSplitter.sizes()[0], 300);
 		self.timeLine.start()
 		
+		
+	def focusForSearch(self):
+		print('focus for search - Anim')
+		self.enterEvent(None)
+		
+		self.searchEntry.setFocus()
+		self.searchEntry.selectAll()
+		
 	def leaveEvent(self, e):
 		if self.rect().contains(self.mapFromGlobal(QtGui.QCursor.pos())):
 			return
@@ -122,11 +181,20 @@ class AnimSelector(QtWidgets.QWidget):
 		
 	def search(self):
 		txt = self.searchEntry.text()
-		self.treeView.model().setFilterRole(Qt.DisplayRole)
-		self.treeView.model().setFilterKeyColumn(1)
+		
+		# QT original filter function
+		# self.treeView.model().setFilterRole(Qt.DisplayRole)
+		# self.treeView.model().setFilterKeyColumn(1)
+		
 		#self.treeView.model().setFilterRegExp(text)
-		regExp = QtCore.QRegExp(txt, QtCore.Qt.CaseInsensitive)
-		self.treeView.model().setFilterRegExp(regExp)
+		# regExp = QtCore.QRegExp(txt, QtCore.Qt.CaseInsensitive)
+		# self.treeView.model().setFilterRegExp(regExp)
+		
+		# custom model filter function
+		self.treeView.model().multi_filter_mode = MultiFilterMode.OR
+		self.treeView.model().setFilterByColumn(1, txt)
+		self.treeView.model().setFilterByColumn(2, txt)
+		
 		#self.treeView.model().setFilterRegExp('/(.*)' + txt +'(.*)/i')
 		
 class AnimItem(TreeItem):

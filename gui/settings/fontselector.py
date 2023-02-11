@@ -51,7 +51,7 @@ class FontSelector(QtWidgets.QWidget):
 		
 	def changeSize(self, size):
 		f = self.textEdit.font()
-		f.setPointSize(float(size))
+		f.setPointSize(int(size))
 		self.textEdit.setFont(f)
 		
 	def save(self):

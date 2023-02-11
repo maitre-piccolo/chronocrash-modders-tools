@@ -5,82 +5,404 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from common import settings
 from gui.util import FileInput, loadSprite
 
-from data import ParsedLine
+from data import ParsedLine, FileWrapper
 
 
-class Entity(QtWidgets.QGraphicsPixmapItem):
-	def __init__(self, entName='rugal'):
+class Entity(QtWidgets.QGraphicsItemGroup):
+	
+	AVAILABLE_MODELS = []
+	PIXMAP_CACHE = {}
+	WARNED_NO_IDLE = []
+	LOADED_MODELS_REFERENCE = {}
+	
+	
+	
+	
+	def __init__(self, entName='rugal', line=-1, parentWidget=None, loadAllAnims=False, defaultAnim='idle', shadow=True, offset=False):
+		QtWidgets.QGraphicsItemGroup.__init__(self)
 		
-		print(entName)
-		fName = 'data/chars/rugal/2.gif'
+		self.x = None
+		self.z = None
+		self.altitude = None
+		self.at = None
 		
-		ROOT_PATH = os.path.dirname(settings.get_option('general/data_path', '/home/piccolo/workspace/OpenBOR/data')) + os.sep
+		self.reference = None
 		
-		path = os.path.join(ROOT_PATH, 'data', 'models.txt')
-		if not os.path.isfile(path): return
-		f = open(path)
-		lines = f.read().split('\n')
-		f.close()
-		entityModelFound = False
-		for i, line in enumerate(lines):
-			pLine = ParsedLine(line)
-			part = pLine.next()
-			if part is None : continue
-			if part.lower() == 'know' or part.lower() == 'load':
-				name = pLine.next()
-				path = pLine.next()
-				if name != entName : continue
+		self.allAnimLoaded = False
+
+		# print(entName)
+		self.parentWidget = parentWidget
+		entName = entName.lower()
+		self.name = entName
+		self.line = line
+		
+		if shadow : self.showShadow = True
+		else : self.showShadow =False
+		# self.showShadow = True
+		
+		if offset : self.showOffset = True
+		else : self.showOffset =False
+		fPath = 'data/chars/rugal/2.gif'
+		
+		if(entName in Entity.LOADED_MODELS_REFERENCE):
+			reference = Entity.LOADED_MODELS_REFERENCE[entName]
+			self.reference = reference
+			self.anims = reference.anims
+			self.allAnimLoaded = reference.allAnimLoaded
+			self.modelPath = reference.modelPath
+			self.entityModelFound = True
+			
+			self.xOffset = 0
+			self.yOffset = 0
+			self.fPath = None
+			self.currentFrame = 0
+			if(defaultAnim not in self.anims):
+				self.loadAnims(defaultAnim, loadAllAnims)
+		else:
+		
+			Entity.ROOT_PATH = os.path.dirname(settings.get_option('general/data_path', '/home/piccolo/workspace/OpenBOR/data')) + os.sep
+			
+			path = os.path.join(Entity.ROOT_PATH, 'data', 'models.txt')
+			if not os.path.isfile(path): return
+		
+			f = FileWrapper(path)
+			lines = f.getLines()
+			self.entityModelFound = False
+			
+			for i, line in enumerate(lines):
+				pLine = ParsedLine(line)
+				part = pLine.next()
+				if part is None : continue
+				if part.lower() == 'know' or part.lower() == 'load':
+					name = pLine.next().lower()
+					if name != entName : continue
+					self.modelPath = pLine.next()
+					
+					
+					
+					self.loadAnims(defaultAnim, loadAllAnims)
 				
+			Entity.LOADED_MODELS_REFERENCE[self.name] = self
 				
-				
-				
-				fullPath = os.path.join(ROOT_PATH, path)
-				if not os.path.exists(fullPath) : continue
-				print(fullPath)
-				f = open(fullPath)
-				lines2 = f.read().split('\n')
-				f.close()
-				inIdleAnim = False
-				self.xOffset = 0
-				self.yOffset = 0
-				for i, line2 in enumerate(lines2):
-					pLine2 = ParsedLine(line2)
-					part = pLine2.next()
-					if part == 'anim':
-						animName = pLine2.next().lower()
-						if animName == 'idle':
-							inIdleAnim = True
-					elif part == 'offset' and inIdleAnim:
-						self.xOffset = int(pLine2.next().lower())
-						self.yOffset = int(pLine2.next().lower())
-					elif part == 'frame' and inIdleAnim:
-						fName = pLine2.next().lower()
-						entityModelFound = True
-						break
 						
 		
-		if not entityModelFound:
+		
+		
+		if not self.entityModelFound:
 			self.xOffset = 0
 			self.yOffset = 0
 			logging.debug('Level Editor : entity model not found for : ' + entName + ' (watch for case sensitivity)')
+			return
+			
+		
+		if(defaultAnim in self.anims):
+			self.animUsed = defaultAnim
+		else:
+			if(self.name not in Entity.WARNED_NO_IDLE):
+				Entity.WARNED_NO_IDLE.append(self.name)
+				self.log('Entity ' + self.name + ' at line ' + str(self.line) + ' has no ' + defaultAnim + ' animation')
+				
+				
+			self.animUsed = list(self.anims.keys())[0]
+			
+		
+		self.changeAnimation(self.animUsed)
 
 		
-		image = loadSprite(os.path.join(ROOT_PATH, fName))
-		px = QtGui.QPixmap.fromImage(image)
-		QtWidgets.QGraphicsPixmapItem.__init__(self, px)
+		px = Entity.PIXMAP_CACHE[self.fPath]
+		self.frameWidth = px.width()
+		self.frameHeight = px.height()
+		self.frameItem = QtWidgets.QGraphicsPixmapItem(px)
 		
-		self.x = 0
-		self.y = 0
+		
+		if('shadow' not in Entity.PIXMAP_CACHE):
+			shadow = QtGui.QPixmap('icons/shadow.png').scaledToWidth(150)
+			Entity.PIXMAP_CACHE['shadow'] = shadow
+		else:
+			shadow = Entity.PIXMAP_CACHE['shadow']
+		# self.shadowWidth = shadow.width()
+		# self.shadowHeight = shadow.height()
+		
+		self.shadow = QtWidgets.QGraphicsPixmapItem(shadow)
+		# self.offset = QtWidgets.QGraphicsRectItem(self.xOffset, self.yOffset, 10, 10)
+		self.offset = QtWidgets.QGraphicsRectItem(0, 0, 10, 10)
+		self.offset.setBrush(QtGui.QBrush(QtGui.QColor(255,0,0)))
+		
+		# self.x = 0
+		# self.y = 0
+		
 		self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
 		self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
 		
+		
+		
+		if(self.showShadow):
+			self.addToGroup(self.shadow)
+		self.addToGroup(self.frameItem)
+		
+		if(self.showOffset):
+			self.addToGroup(self.offset)
+		
+		
+		# self.shadow.setPos(-self.shadowWidth/2 - self.xOffset, self.shadowHeight/2)
+		self.updateShadowPos()
+		
+		self.timer = 0
+		
+		self.facingRight = True
+		
+		
+		
+		
+	def loadAnims(self, defaultAnim, loadAllAnims=False):
+		if(self.allAnimLoaded) : return
+		fullPath = os.path.join(Entity.ROOT_PATH, self.modelPath)
+		if not os.path.exists(fullPath) : return
+	
+		# print("loadAnims", defaultAnim, loadAllAnims)
+		# print(fullPath)
+		f = open(fullPath)
+		lines2 = f.read().split('\n')
+		f.close()
+		inDefaultAnim = False
+		self.fPath = None
+		self.xOffset = 0
+		self.yOffset = 0
+		xOffset = 0
+		yOffset = 0
+		self.currentFrame = 0
+		delay = 7
+		
+		if(self.reference != None): self.anims = self.reference.anims
+		else : self.anims = {}
+		
+		skipAnim = False
+		for i, line2 in enumerate(lines2):
+			pLine2 = ParsedLine(line2)
+			part = pLine2.next()
+			if(part != None) : part = part.lower()
+			
+			if part == 'anim':
+				skipAnim = False
+				animName = pLine2.next().lower()
+				
+				
+				if animName == defaultAnim:
+					inDefaultAnim = True
+				elif inDefaultAnim and not loadAllAnims: # means we are leving default anim. And if not loadAllAnims, then we leave the loop when we leave default anim, there's no point to continue.
+					break
+					
+				if(animName in self.anims):
+					skipAnim = True
+					# print("will skip", animName, self.anims[animName])
+					
+					continue
+				
+				# print("will load", animName)
+				# if(animName != None) : animName = animName.lower()
+				currentAnim = []
+				self.anims[animName] = currentAnim
+				currentFrame = {}
+			
+			elif skipAnim:
+				continue
+			elif part == 'offset': 
+				xOffset = int(pLine2.next().lower())
+				yOffset = int(pLine2.next().lower())
+				
+				currentFrame['xOffset'] = xOffset
+				currentFrame['yOffset'] = yOffset
+			elif part == 'delay': 
+				delay = pLine2.next();
+				try:
+					delay = int(float(delay.lower()))
+				except:
+					self.log('Entity ' + self.name + ' at line ' + str(self.line) + ' has problem with delay ' + str(delay))
+					delay = 7
+				
+				currentFrame['delay'] = delay
+			elif part == 'frame': 
+				fPath = pLine2.next() # .lower() cause problem in Linux
+				
+				currentFrame['path'] = fPath
+				
+					
+				
+				if('delay' not in currentFrame): currentFrame['delay'] = delay
+				if('xOffset' not in currentFrame): currentFrame['xOffset'] = xOffset
+				if('yOffset' not in currentFrame): currentFrame['yOffset'] = yOffset
+				
+				currentAnim.append(currentFrame)
+				currentFrame = {}
+				self.entityModelFound = True
+				# break
+		
+		# if(self.reference != None):
+		# 	self.reference.anims = self.anims
+		if(loadAllAnims): self.allAnimLoaded = True
+		
+		
+		
+	def log(self, mess):
+		if(self.parentWidget != None):
+			try:
+				self.parentWidget.logWarning(mess)
+				
+			except:
+				print(mess)
+	
+	# def paint(self, painter, option, widget):
+	# 	QtWidgets.QGraphicsPixmapItem.paint(self, painter, option, widget)
+	# 	self.shadow.paint(painter, option, widget)
+	
+	def updateShadowPos(self):
+		if(self.showShadow):
+			self.shadow.setPos(self.xOffset - 72, self.yOffset - 54)
+			
+		if(self.showOffset):
+			alt = 0
+			# if(self.altitude != None): alt = self.altitude
+			self.offset.setPos(self.xOffset-5, self.yOffset-5-alt)
+		
+		
+	def actualizeFrame(self):
+		if(self.timer != 0) : return
+		# print('actualizing frame to ', self.frames[self.currentFrame]['path'])
+		px = Entity.PIXMAP_CACHE[self.frames[self.currentFrame]['path']]
+		self.frameWidth = px.width()
+		self.frameHeight = px.height()
+		
+		# self.frameWidth = px.width()
+		# self.frameHeight = px.height()
+		# self.removeFromGroup(self.frameItem)
+		self.frameItem.setPixmap(px)
+		# print(self.name, self.xOffset, self.yOffset)
+		self.xOffset = self.frames[self.currentFrame]['xOffset']
+		self.yOffset = self.frames[self.currentFrame]['yOffset']
+		self.setAt(self.at)
+		self.updateShadowPos()
+		# self.frameItem = QtWidgets.QGraphicsPixmapItem(px)
+		# self.addToGroup(self.frameItem)
+		
+		
+	def changeAnimation(self, animID, reloadAnims=False, reloadAllAnims=False):
+		if(reloadAnims):
+			self.loadAnims(animID, reloadAllAnims)
+		if(animID in self.anims):
+			# preload pixmaps
+			self.animUsed = animID
+			self.frames = self.anims[self.animUsed]
+			# print(self.name, animID,  self.anims[self.animUsed])
+			if('xOffset' in self.frames[0]):
+				if(self.xOffset == 0):
+					self.xOffset = self.frames[0]['xOffset']
+					self.yOffset = self.frames[0]['yOffset']
+					
+			if(self.fPath == None): self.fPath = self.frames[0]['path']
+			
+			
+			for frame in self.frames:
+				fPath = frame['path']
+				if(fPath not in Entity.PIXMAP_CACHE):
+					image = loadSprite(os.path.join(Entity.ROOT_PATH, fPath))
+					px = QtGui.QPixmap.fromImage(image)
+					Entity.PIXMAP_CACHE[fPath] = px
+			return True
+		else:
+			return False
+		
+		
+	def paint(self, painter, option, a):
+		# disable border select
+		option.state = QtWidgets.QStyle.State_None
+		return super(Entity, self).paint(painter, option)
+		
+	
+	def setDirection(self, right):
+		transform = QtGui.QTransform()
+		transform.translate(self.xOffset, self.yOffset)
+
+
+		
+		
+		if(right):
+			transform.scale(1,1)
+			# self.frameItem.setTransform(QtGui.QTransform.fromScale(1, 1))
+		else:
+			transform.scale(-1, 1)
+			# self.frameItem.setTransform(QtGui.QTransform.fromScale(-1, 1))
+			
+		transform.translate(-self.xOffset, -self.yOffset)
+		self.frameItem.setTransform(transform)
+		self.facingRight = right
+		self.setAt(self.at)
+	
+	def tick(self):
+		self.timer += 1
+		if(self.timer == self.frames[self.currentFrame]['delay']):
+			self.timer = 0
+			self.nextFrame()
+			
+	def nextFrame(self):
+		self.timer = 0
+		self.currentFrame += 1
+		if( self.currentFrame >= len(self.frames)):
+			self.currentFrame = 0
+		# print('changing frame to ', self.currentFrame)
+			
+
+	def setFrame(self, frame):
+		self.currentFrame = frame
+		if( self.currentFrame >= len(self.frames)):
+			self.currentFrame = 0
+		if( self.currentFrame < 0):
+			self.currentFrame = 0
+		
+		
 	def setAt(self, at):
+		# print('shadow width', self.shadowWidth)
 		self.at = at
-		self.setPos(self.x + self.at - self.xOffset, self.y - self.yOffset)
+		x = self.x
+		y = self.z
+		if(x == None):
+			x = 0
+			y = 0
+		
+		xOffset = self.xOffset
+		yOffset = self.yOffset
+		# print("HERE", x, y, self.at, xOffset, yOffset)
+		# if(not self.facingRight):
+		# 	xOffset =   -self.xOffset - self.frameWidth
+		self.setPos(x + self.at - xOffset, y - yOffset)
+		# self.shadow.setPos(self.x + self.at - self.xOffset, self.z - self.yOffset)
+		if(self.altitude != None and self.entityModelFound):
+			self.frameItem.setPos(0, -self.altitude)
+			offsetX = self.offset.pos().x()
+			offsetY = self.offset.pos().y()
+			self.offset.setPos(offsetX, offsetY-self.altitude)
+			
 		
 	def getCoords(self):
-		return int(self.pos().x()) - self.at + self.xOffset, int(self.pos().y() + self.yOffset)
-
+		if(self.at != None):
+			
+			data = [int(self.pos().x()) - self.at + self.xOffset, int(self.pos().y() + self.yOffset)]
+		else :
+			data = [int(self.pos().x()) - 0 + self.xOffset, int(self.pos().y() + self.yOffset)]
+		# if(self.altitude != None):
+		data.append(self.altitude)
+		return data
+		
+		
+	def mouseReleaseEvent(self, event):
+		QtWidgets.QGraphicsItemGroup.mouseReleaseEvent(self, event)
+		try:
+			self.parentWidget.endDrag.emit()
+		except:
+			pass
+		
+		
+	def width(self):
+		return self.frameWidth
 
 
 class Bar(QtWidgets.QGraphicsItemGroup):
@@ -196,7 +518,7 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 	DOT_SIZE = settings.get_option('level/dot_size', 10)
 	updated = QtCore.pyqtSignal()
 
-	def __init__(self, levelEditor, xOffset, zOffset, upperLeft, lowerLeft, upperRight, lowerRight, depth, alt=100):
+	def __init__(self, levelEditor, xOffset, zOffset, upperLeft, lowerLeft, upperRight, lowerRight, depth, alt=100, type=None):
 		self.updating = False
 		self.movingDot = None
 	
@@ -217,6 +539,8 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 		self.dot4 = DraggingDot(self, 'upperRight')
 		self.dot5 = DraggingDot(self, 'depth', False)
 		self.dot6 = DraggingDot(self, 'alt', False)
+		
+		self.type = type
 		
 		#self.dot5.setPixmap(QtGui.QPixmap('icons/arrow3.png'))
 		
@@ -318,7 +642,7 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 				dot.move(xDist, yDist)
 			
 			#self.dot1.setPos(newPos)
-			#self.dot2.setPos(newPos)
+			#self.dot2.setPos(newPos)anim    freespecial11 #Light Hadouken but no need for repeating execution
 			#self.dot3.setPos(newPos)
 			#self.dot4.setPos(newPos)
 			self.updating = False
@@ -347,14 +671,14 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 			line.setPen(pen)
 		
 	def updatePolygon(self):
-		x1 = self.xOffset+self.coords['upperLeft']
-		x2 = self.xOffset+self.coords['lowerLeft']
-		x3 = self.xOffset+self.coords['lowerRight']
-		x4 = self.xOffset+self.coords['upperRight']
-		alt = self.coords['alt']
+		x1 = int(self.xOffset+self.coords['upperLeft'])
+		x2 = int(self.xOffset+self.coords['lowerLeft'])
+		x3 = int(self.xOffset+self.coords['lowerRight'])
+		x4 = int(self.xOffset+self.coords['upperRight'])
+		alt = int(self.coords['alt'])
 		
-		z1 = self.zOffset-self.coords['depth']
-		z2 = self.zOffset
+		z1 = int(self.zOffset-self.coords['depth'])
+		z2 = int(self.zOffset)
 		self.mainItem.setPolygon(QtGui.QPolygonF([
 				QtCore.QPoint(x1, z1), 
 				QtCore.QPoint(x2, z2),
@@ -471,11 +795,15 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 		#self.dot4.paint(painter, option, widget) 
 		
 	def getParams(self):
-		return self.xOffset + int(self.x()), self.zOffset + int(self.y()), int(self.coords['upperLeft']), int(self.coords['lowerLeft']), int(self.coords['upperRight']), int(self.coords['lowerRight']), int(self.coords['depth']), int(self.coords['alt'])
+		return self.xOffset + int(self.x()), self.zOffset + int(self.y()), int(self.coords['upperLeft']), int(self.coords['lowerLeft']), int(self.coords['upperRight']), int(self.coords['lowerRight']), int(self.coords['depth']), int(self.coords['alt']), self.type
 	
 		
 	def __str__(self):
-		return str(self.xOffset + int(self.x())) + ' ' + str(self.zOffset + int(self.y())) + ' ' + str(int(self.coords['upperLeft'])) + ' ' + str(int(self.coords['lowerLeft'])) + ' ' + str(int(self.coords['upperRight'])) +  ' ' + str(int(self.coords['lowerRight'])) + ' ' + str(int(self.coords['depth'])) + ' ' + str(int(self.coords['alt']))
+		txt = str(self.xOffset + int(self.x())) + ' ' + str(self.zOffset + int(self.y())) + ' ' + str(int(self.coords['upperLeft'])) + ' ' + str(int(self.coords['lowerLeft'])) + ' ' + str(int(self.coords['upperRight'])) +  ' ' + str(int(self.coords['lowerRight'])) + ' ' + str(int(self.coords['depth'])) + ' ' + str(int(self.coords['alt']))
+		if(self.type != None):
+			txt += ' ' + str(self.type)
+			
+		return txt
 	
 class Item2(QtWidgets.QGraphicsPolygonItem): # TODO qgraphicsitemgroup
 	def __init__(self, levelEditor, xOffset, zOffset, upperLeft, lowerLeft, upperRight, lowerRight, depth):
@@ -564,8 +892,12 @@ class Hole(Wall):
 	BASE_ONLY = True
 	COLOR = (0,85,211)
 	
-	def __init__(self, levelEditor, xOffset, zOffset, upperLeft, lowerLeft, upperRight, lowerRight, depth):
+	def __init__(self, levelEditor, xOffset, zOffset, upperLeft, lowerLeft, upperRight, lowerRight, depth, alt, type):
 		Wall.__init__(self, levelEditor, xOffset, zOffset, upperLeft, lowerLeft, upperRight, lowerRight, depth)
+		
+		self.alt = alt
+		self.type = type
+		self.com = ''
 		
 		self.mainItem.setOpacity(0.2)
 		self.mainItem.setBrush(QtGui.QColor(0,0,0))
@@ -577,7 +909,16 @@ class Hole(Wall):
 			dot.setBrush(brush)
 			
 	def __str__(self):
-		return str(self.xOffset + int(self.x())) + ' ' + str(self.zOffset + int(self.y())) + ' ' + str(int(self.coords['upperLeft'])) + ' ' + str(int(self.coords['lowerLeft'])) + ' ' + str(int(self.coords['upperRight'])) +  ' ' + str(int(self.coords['lowerRight'])) + ' ' + str(int(self.coords['depth']))
+		line = str(self.xOffset + int(self.x())) + ' ' + str(self.zOffset + int(self.y())) + ' ' + str(int(self.coords['upperLeft'])) + ' ' + str(int(self.coords['lowerLeft'])) + ' ' + str(int(self.coords['upperRight'])) +  ' ' + str(int(self.coords['lowerRight'])) + ' ' + str(int(self.coords['depth']))
+		if(self.alt != None):
+			line += ' ' + str(self.alt)
+		if(self.type != None):
+			line += ' ' + str(self.type)
+			
+		if(self.com != ''):
+			line += ' #' + self.com
+			
+		return line
 	
 class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 

@@ -1,4 +1,4 @@
-import os, re, time, mimetypes
+import os, re, time, mimetypes, logging
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import *
@@ -19,6 +19,7 @@ class ProjectSelector(QtWidgets.QWidget):
 		self.layout = QtWidgets.QVBoxLayout()
 		
 		self.projectLayout = QtWidgets.QVBoxLayout()
+		self.projectLayout.setContentsMargins(100, 100, 100, 100)
 		
 		buttonLayout = QtWidgets.QHBoxLayout()
 		
@@ -43,13 +44,26 @@ class ProjectSelector(QtWidgets.QWidget):
 		
 		self.layout.addWidget(self.label, 0)
 		self.layout.addLayout(buttonLayout)
-		self.layout.addLayout(self.projectLayout, 1)
+		
+		projectWidget = QtWidgets.QWidget()
+		
+		projectWidget.setLayout(self.projectLayout)
+		# self.projectLayout.addStretch(1)
+		# projectWidget.setMaximumSize(300,2000)
+		# projectWidget.setMinimumSize(-1, 800)
+		self.projectLayout.addWidget(QtWidgets.QLabel(_('Register a game project by clicking the add button\nand selecting the game data folder')))
+		
+		scrollArea = QtWidgets.QScrollArea()
+		scrollArea.setWidgetResizable(True) # CRITICAL
+		scrollArea.setWidget(projectWidget)
+		self.layout.addWidget(scrollArea, 1)
 		
 		self.setLayout(self.layout)
 		
 		self.layout.setAlignment(self.label, QtCore.Qt.AlignCenter)
 		self.layout.setAlignment(buttonLayout, QtCore.Qt.AlignCenter)
-		self.layout.setAlignment(self.projectLayout, QtCore.Qt.AlignCenter)
+		# self.layout.setAlignment(self.projectLayout, QtCore.Qt.AlignCenter)
+		# self.layout.setAlignment(scrollArea, QtCore.Qt.AlignCenter)
 		
 		self.projects = settings.get_option('general/projects', [])
 		if len(self.projects) > 0:
@@ -58,6 +72,12 @@ class ProjectSelector(QtWidgets.QWidget):
 		self.loadProjectsList()
 		
 		self.mode = 'load'
+		
+		# button = QtWidgets.QPushButton("test")
+		# button.pressed.connect(self.projectClicked)
+		
+		# self.projectLayout.addWidget(button)
+		# self.projectLayout.addSpacing(50)
 			
 
 
@@ -71,20 +91,23 @@ class ProjectSelector(QtWidgets.QWidget):
 			return
 		
 		self.projects.append(path)
+		# self.projects.append("test")
 		
 		settings.set_option('general/projects', self.projects)
-		self.loadProjectsList()
+		# self.loadProjectsList()
 		
 
 		
 		
 	def loadProject(self, project):
+		self.label.setText(_('Now loading projet...'))
 		settings.set_option('general/data_path', project)
 		
 		self.hide()
 		self.mainFrame.meWidget.loadProject(project)
 		self.mainFrame.setMode('mainEditor')
-		self.mainFrame.setSession(settings.get_option('general/last_session', 'Default'))
+		logging.debug("Setting session from project manager...")
+		self.mainFrame.setSession(settings.get_option('general/last_session', 'Default'), savePrevious=False)
 		
 		
 	def loadProjectsList(self):
@@ -122,6 +145,7 @@ class ProjectSelector(QtWidgets.QWidget):
 			settings.set_option('general/projects', self.projects)
 			self.sender().deleteLater()
 			self.mode = 'load' # set click mode back to 'load'
+			self.label.setText(_(self.LOAD_TEXT))
 			
 	def removeProject(self):
 		if self.mode == 'remove':

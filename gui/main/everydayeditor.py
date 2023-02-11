@@ -242,7 +242,11 @@ class EverydayEditor(AbstractEverydayEditor):
 		def detectSyntax():
 			if extension == '.txt':
 				#self.editor.detectSyntax(xmlFileName='c.xml')
-				editor.detectSyntax(xmlFileName='entity.xml')
+				theme = settings.get_option('gui/editor_theme', None)
+				if(theme != None and 'dark' in theme.lower()):
+					editor.detectSyntax(xmlFileName='entity-dark.xml')
+				else:
+					editor.detectSyntax(xmlFileName='entity.xml')
 			else:
 				editor.detectSyntax(sourceFilePath=fd.path)
 				
@@ -386,6 +390,28 @@ class EverydayEditor(AbstractEverydayEditor):
 		#self.editor.current = fd
 		#self.updating = False
 		
+	def extractData(self, command, pLine):
+		if(command not in('bglayer', 'fglayer', 'background')):
+			return ''
+		params = {
+	    'bglayer':["path" ,"xratio" ,"zratio" ,"xposition" ,"zposition" ,"xspacing" ,"zspacing" ,"xrepeat" ,"zrepeat" ,"transparency" ,"alpha" ,"watermode" ,"amplitude" ,"wavelength" ,"wavespeed" ,"bgspeedratio"],
+	    
+	    'fglayer':['path' ,"z" ,"xratio" ,"zratio" ,"xposition" ,"zposition" ,"xspacing" ,"zspacing" ,"xrepeat" ,"zrepeat" ,"transparency" ,"alpha" ,"watermode" ,"amplitude" ,"wavelength" ,"wavespeed" ,"bgspeedratio"],
+	    
+	    'background':["path" ,"xratio" ,"zratio" ,"xposition" ,"zposition" ,"xspacing" ,"zspacing" ,"xrepeat" ,"zrepeat" ,"transparency" ,"alpha"]
+		}
+		
+		i = 1
+		txt = '<ul>'
+		while(pLine.next() != None):
+			txt += '<li>' + params[command][i] + ' = ' + pLine.current() + '</li>'
+			i+= 1
+			
+		notSet = params[command][i:]
+		if(len(notSet) > 0):
+			txt += '<li>Not set : ' + ', '.join(notSet) + '</li>'
+		return txt
+		
 	def showToolTip(self, lineNumber, text, e):
 		try:
 			if text.count('\n') > 0:
@@ -403,7 +429,7 @@ class EverydayEditor(AbstractEverydayEditor):
 			elif text != '':
 				pLine = ParsedLine(text)
 				part = pLine.next()
-				if part == 'frame':
+				if part in ('frame', 'bglayer', 'fglayer', 'background', 'panel'):
 					p = pLine.next()
 					data_path = settings.get_option('general/data_path', '')
 					path = os.path.join(os.path.dirname(data_path), p)
@@ -422,20 +448,21 @@ class EverydayEditor(AbstractEverydayEditor):
 					b64 =  str(data.toBase64())[2:-1]
 					text = "<div><img alt='Embedded Image' src='data:image/png;base64," + b64 + "' />"
 					#text += "<img src='" + getSpriteShowingPath(path) + "'></div>"
+					text += self.extractData(part, pLine)
 					
-					
-					frameCount = 0
-					part = None
-					lineNumber = lineNumber -1
-					while lineNumber >= 0 and part != 'anim':
-						line = self.editor.lines[lineNumber]
-						pLine = ParsedLine(line)
-						part = pLine.next()
-						if part == 'frame' :
-							frameCount += 1
-						lineNumber -=1
-						
-					text += '<br /><div>Frame number : ' + str(frameCount) + '</div>'
+					if(part == 'frame'):
+						frameCount = 0
+						part = None
+						lineNumber = lineNumber -1
+						while lineNumber >= 0 and part != 'anim':
+							line = self.editor.lines[lineNumber]
+							pLine = ParsedLine(line)
+							part = pLine.next()
+							if part == 'frame' :
+								frameCount += 1
+							lineNumber -=1
+							
+						text += '<br /><div>Frame number : ' + str(frameCount) + '</div>'
 					
 					QToolTip.showText(e.globalPos(), text)
 					return

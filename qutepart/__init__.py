@@ -877,8 +877,8 @@ class Qutepart(QPlainTextEdit):
             # if block height not added to rect, last line number sometimes is not drawn
             blockHeight = self.blockBoundingRect(self.firstVisibleBlock()).height()
 
-            self._lineNumberArea.update(0, rect.y(), self._lineNumberArea.width(), rect.height() + blockHeight)
-            self._lineNumberArea.update(0, rect.y(), self._markArea.width(), rect.height() + blockHeight)
+            self._lineNumberArea.update(0, rect.y(), self._lineNumberArea.width(), int(rect.height() + blockHeight))
+            self._lineNumberArea.update(0, rect.y(), self._markArea.width(), int(rect.height() + blockHeight))
         self._countCache = (self.blockCount(), self.textCursor().block().lineCount())
 
         if rect.contains(self.viewport().rect()):
@@ -1120,11 +1120,11 @@ class Qutepart(QPlainTextEdit):
             leftCursorRect = cursorRect(block, column, 0)
             rightCursorRect = cursorRect(block, column + 1, 0)
             if leftCursorRect.top() == rightCursorRect.top():  # if on the same visual line
-                middleHeight = (leftCursorRect.top() + leftCursorRect.bottom()) / 2
+                middleHeight = int((leftCursorRect.top() + leftCursorRect.bottom()) / 2)
                 if char == ' ':
                     painter.setPen(Qt.transparent)
                     painter.setBrush(QBrush(Qt.gray))
-                    xPos = (leftCursorRect.x() + rightCursorRect.x()) / 2
+                    xPos = int((leftCursorRect.x() + rightCursorRect.x()) / 2)
                     painter.drawRect(QRect(xPos, middleHeight, 2, 2))
                 else:
                     painter.setPen(QColor(Qt.gray).lighter(factor=120))
@@ -1494,6 +1494,7 @@ class EverydayPart(Qutepart):
 	
 	toolTipEvent = pyqtSignal(int, str, object)
 	newExtraSelection = pyqtSignal(object)
+	tabAlwaysIndent = True
 
 	def __init__(self, *args):
 		Qutepart.__init__(self, *args)
@@ -1550,7 +1551,7 @@ class EverydayPart(Qutepart):
 		
 		
 	def keyPressEvent(self, e):
-		if e.text() == '	':
+		if e.text() == '	' and EverydayPart.tabAlwaysIndent: # tab
 			start, end = self.selectedPosition
 			start = start[0]
 			end = end[0]

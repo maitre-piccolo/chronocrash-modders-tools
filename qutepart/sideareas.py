@@ -32,7 +32,7 @@ class LineNumberArea(QWidget):
         blockNumber = block.blockNumber()
         top = int(self._qpart.blockBoundingGeometry(block).translated(self._qpart.contentOffset()).top())
         bottom = top + int(self._qpart.blockBoundingRect(block).height())
-        singleBlockHeight = self._qpart.cursorRect().height()
+        singleBlockHeight = int(self._qpart.cursorRect().height())
 
         width = None
 
@@ -46,7 +46,7 @@ class LineNumberArea(QWidget):
                     if width is None:
                         width = self.width()  # laizy calculation
                     painter.fillRect(1, top + singleBlockHeight,
-                                     width - 2, boundingRect.height() - singleBlockHeight - 2,
+                                     width - 2, int(boundingRect.height() - singleBlockHeight - 2),
                                      Qt.darkGreen)
 
             block = block.next()
@@ -59,7 +59,7 @@ class LineNumberArea(QWidget):
         """Desired width. Includes text and margins
         """
         digits = len(str(max(1, self._qpart.blockCount())))
-        return self._LEFT_MARGIN + self._qpart.fontMetrics().width('9') * digits + self._RIGHT_MARGIN
+        return int(self._LEFT_MARGIN + self._qpart.fontMetrics().width('9') * digits + self._RIGHT_MARGIN)
 
 
 class MarkArea(QWidget):
@@ -113,11 +113,11 @@ class MarkArea(QWidget):
                 if block.blockNumber() in self._qpart.lintMarks:
                     msgType, msgText = self._qpart.lintMarks[block.blockNumber()]
                     pixMap = self._lintPixmaps[msgType]
-                    yPos = top + ((height - pixMap.height()) / 2)  # centered
+                    yPos = int(top + ((height - pixMap.height()) / 2))  # centered
                     painter.drawPixmap(0, yPos, pixMap)
 
                 if Bookmarks.isBlockMarked(block):
-                    yPos = top + ((height - self._bookmarkPixmap.height()) / 2)  # centered
+                    yPos = int(top + ((height - self._bookmarkPixmap.height()) / 2))  # centered
                     painter.drawPixmap(0, yPos, self._bookmarkPixmap)
 
             top += height

@@ -333,6 +333,8 @@ class Portrait():
 		self.file = f
 		self.thumbnail_path = os.path.join(folder, f)
 		self.path = self.thumbnail_path
+		self.icon = None
+		self.loadingIconFailed = False
 		
 	@staticmethod
 	def fromPath(path):
@@ -377,15 +379,18 @@ class ThumbnailModel(QtCore.QAbstractListModel):
 				return None
 		elif role == QtCore.Qt.DecorationRole:
 			try:
-				if(item.icon is None):
+				if(not item.loadingIconFailed and item.icon is None):
 					#item.icon = QtGui.QPixmap(item.thumbnail_path)
 					item.icon = QtGui.QPixmap.fromImage(loadSprite(item.thumbnail_path))
 					
+			except OSError:
+				item.icon = None
+				item.loadingIconFailed = True
 			except:
 				#item.icon = QtGui.QPixmap(item.thumbnail_path)
 				item.icon = QtGui.QPixmap.fromImage(loadSprite(item.thumbnail_path))
 				
-			if item.icon.isNull():
+			if item.icon is None or item.icon.isNull():
 				item.icon = QtGui.QPixmap(xdg.get_data_dir() + os.sep + 'icons' + os.sep + item.module + '.png')
 			
 			#item.icon = item.icon.scaled(self.icon_size, self.icon_size, QtCore.Qt.KeepAspectRatio, QtCore.Qt.SmoothTransformation)

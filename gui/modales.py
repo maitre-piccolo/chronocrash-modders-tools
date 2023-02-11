@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from gui.util import FileInput
 from gui.settings.fontselector import FontSelector
 
-VERSION = '0.3.6 (03/05/21)'
+VERSION = '0.4.4.5 (10/02/23)'
 
 
 class ShortcutSettingsWidget(QtWidgets.QWidget):
@@ -250,10 +250,13 @@ class AboutDialog(QtWidgets.QDialog):
 		textEdit = QtWidgets.QTextBrowser()
 		text = '''<p>Version : ''' + VERSION + '''</p>
 		<p>This tool is meant for editing games built with OpenBOR / ChronoCrash engines.</p>
-		<p>It is inspired from OpenBOR Stats and Fighter Factory, and is developped by Piccolo (<a href="http://daimao.info">daimao.info</a>).</p>
+		<p>It is inspired from OpenBOR Stats and Fighter Factory, and is developped by Piccolo (<a href="https://daimao.fondation-magister.org">daimao.fondation-magister.org</a>).</p>
 		
-		<p>Special thanks to BeasTie, DJGameFreakTheIguana, Maxman and O Ilusionista for their thorough feedbacks and suggestions.</p>
-		<p><a href="http://www.chronocrash.com/">ChronoCrash website</a></p>'''
+		<p>Special thanks to BeasTie, DJGameFreakTheIguana, Maxman, O Ilusionista and Kratus for their thorough feedbacks and suggestions.</p>
+		<p><a href="http://www.chronocrash.com/">ChronoCrash website</a></p>
+		<p>Press "Escape" to close</p>
+
+		'''
 		
 		#<p>Credits to the ChronoCrash community.</p>
 		#\nicon\nPresentation ChronoCrash community\nLink to ChronoCrash'
@@ -267,6 +270,392 @@ class AboutDialog(QtWidgets.QDialog):
 		
 		self.setLayout(mainLayout)
 		
+		
+class DonateDialog(QtWidgets.QDialog):
+	def __init__(self):
+		QtWidgets.QDialog.__init__(self)
+		self.setWindowTitle(_('Make a donation'))
+		mainLayout = QtWidgets.QVBoxLayout()
+		
+		textEdit = QtWidgets.QTextBrowser()
+		text = '''<p>If you want to make a donation you can use PayPal to this address :</p><p>Bertrand.Coulombel@gmail.com</p>
+<p>or you can also use this link : <a href="https://paypal.me/FondationMAGister?locale.x=en_EN">https://paypal.me/FondationMAGister?locale.x=en_EN</a></p> 
+<p>Press "Escape" to close</p> '''
+		
+		#<p>Credits to the ChronoCrash community.</p>
+		#\nicon\nPresentation ChronoCrash community\nLink to ChronoCrash'
+		
+		textEdit.setText(text)
+		textEdit.setReadOnly(True)
+		textEdit.setOpenExternalLinks(True)
+		textEdit.setMinimumWidth(400)
+		textEdit.setMinimumHeight(300)
+		mainLayout.addWidget(textEdit)
+		
+		self.setLayout(mainLayout)
+		# self.setWindowFlags(self.windowFlags() | QtCore.Qt.CustomizeWindowHint)
+		# self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.WindowCloseButtonHint)
+
+	
+class TipsDialog(QtWidgets.QDialog):
+	def __init__(self):
+		QtWidgets.QDialog.__init__(self)
+		self.setWindowTitle(_('Some tips about ChronoCrash Modders Tools'))
+		self.widgetLayout = QtWidgets.QHBoxLayout()
+		
+		# mainLayout = QtWidgets.QVBoxLayout()
+		
+		
+		# --- Sections selector
+		treeView = QtWidgets.QTreeView(self)
+		treeView.setMinimumWidth(200)
+		treeView.header().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
+		self.sections = treemodel.SimpleTreeModel()
+		def addSection(key, text, iconPath=None, parent=None):
+			node = treemodel.SimpleTreeItem(parent, key, iconPath, text)
+			self.sections.append(parent, node)
+			return node
+
+		addSection('general', _('General'))
+		bindingNode = addSection('binding', _('Binding GUI'))
+		addSection('binding', _('Basics'), None, bindingNode)
+		addSection('binding-adv1', _('Advanced (Mask)'), None, bindingNode)
+		addSection('binding-adv2', _('Advanced (code translations)'), None, bindingNode)
+		
+		treeView.setModel(self.sections)
+		treeView.clicked.connect(self.sectionActivated)
+		self.widgetLayout.addWidget(treeView, 0)
+		
+		
+		
+		
+		
+		textEdit = QtWidgets.QTextBrowser()
+		text = '''<h3>Some info :</h3>
+
+<ul><li>the file selector on the left can list the files "registered" in your mod or list all the files that you actually opened (library mode vs opened mode ; you can change mode through the top icons)</li>
+</ul>
+
+<h3>Some tips :</h3>
+
+<ul>
+<li>double-clicking on a word will highlight its occurrences in the whole text</li>
+<li>If you place the mouse cursor over a "frame data/chars/..." line in the main editor, a tooltip will show a preview of this frame and the number of this frame in the animation (very useful to set landframe, quakeframe and such)</li>
+<li>If you select several lines in the main editor, the overing tooltip will indicate the number of frames contained within</li>
+<li>F2 key is a shortcut for searching a file in the File Selector (on the left)</li>
+<li>Ctrl+D allows you to comment the selected lines (uncomment => Shift+Ctrl+D)</li>
+<li>you can expand/collapse treeview nodes by middle-clicking them.</li>
+<li>if you put a comment next to the start of an anim block (e.g. "anim attack1 # Light punch") it will be processed and appears as the animation "Label"</li>
+</ul>
+
+<p>Press "Escape" to close</p>
+
+		'''
+		
+		#<p>Credits to the ChronoCrash community.</p>
+		#\nicon\nPresentation ChronoCrash community\nLink to ChronoCrash'
+		
+		textEdit.setText(text)
+		textEdit.setReadOnly(True)
+		textEdit.setOpenExternalLinks(True)
+		textEdit.setMinimumWidth(400)
+		textEdit.setMinimumHeight(300)
+		
+		self.widgets = {}
+		
+		self.widgets['general'] = textEdit
+		self.activeWidget = textEdit
+		self.widgetLayout.addWidget(textEdit, 1)
+		
+		
+		self.setUpBinding()
+		# w = FontSelector()
+		# self.widgetLayout.addWidget(w, 1)
+		# w.hide()
+		# self.widgets['editor'] = w
+		
+		
+		
+		self.setLayout(self.widgetLayout)
+		
+		
+	def loadSection(self, section):
+		print(section)
+		self.activeWidget.hide()
+		self.activeWidget = self.widgets[section]
+		self.activeWidget.show()
+		
+	def sectionActivated(self, index):
+		section = index.internalPointer().key
+		self.loadSection(section)
+		
+		
+	def setUpBinding(self):
+		text = '''<p>There it is, I just finished cooking the first version of the binding GUI, which will be useful in particular for those who want to set up grab animations.</p>
+
+<p>The binding GUI is integrated in the existing entity editor, and includes very useful features such as drag'n'drop positioning with the mouse, real time preview, changing bind entity on the fly, changing animation on the fly, automatic and fully customizable read /write (import/export) from your animations, and more.</p>
+
+<h1>How it works, the basics :</h1>
+
+1 / Open the app, load an entity and go the visual animation editor ("Animation").
+
+2 / In the right panel, there is now a "Bindings" tab. Click on it.
+
+3 / Enter an entity name in the "Entity model" input. When you write a valid model, the input will turn green and the entity will automatically be loaded. If the entity does not show up try to check the box "Show opponent" (not that this checkbox can also be used to hide the bound entity without removing it)
+
+4 / If you want you can also change the animation of the "opponent" entity using the input just below the once you previously changed.
+
+5 / Now you need to create binding settings. Click on the green "+" button to the right of the "Binding settings" group box. This will automatically sync the position of the "opponent" entity with the one of the "player" entity.
+
+6 / Now you can change the position of the "opponent" entity as you please. There is two ways to do it visually : first, you can do it by manipulating the X and Y values on the right. Don't forget that you can use the wheel of your mouse to increase/lower the values. This is great for precise tuning. But you can also drag and drop the "opponent" entity to the desired location. Great for setting up the overall position before fine tuning it.
+
+7 / Direction :
+0 = direction stays the same as it was set before.
+1 = same as player
+-1 = opposite as player
+2 = force facing right
+-2 = force facing left
+
+8 / Frame = simply the frame within the animation. Not that if you set a number greater that the number of frames within the current animation, it will load the first frame (frame 0) instead.
+
+
+That's it for the basic stuff. 
+
+<h3>Note that with just this basic stuff, the editor doesn't load or write anything in your files/animations.
+
+That is, without further configuration, the binding GUI is just an independent GUI that doesn't alter or interfere with the files.</h3>
+
+So from there you have to manually copy the values, and manually fill these values in your commands, within the text part.
+
+But of course there is a way to automatize this process and make it way more convenient.
+
+I'll explain it in the next section ;)'''
+		
+		
+		text = '''<div class="bbWrapper">There it is, I just finished cooking the first version of the binding GUI, which will be useful in particular for those who want to set up grab animations.<br>
+<br>
+The binding GUI is integrated in the existing entity editor, and includes very useful features such as drag'n'drop positioning with the mouse, real time preview, changing bind entity on the fly, changing animation on the fly, automatic and fully customizable read /write (import/export) from your animations, and more.<br>
+<br>
+<b><span style="font-size: 26px">How it works, the basics :</span></b><br>
+<br>
+1 / Open the app, load an entity and go the visual animation editor ("Animation").<br>
+<br>
+2 / In the right panel, there is now a "Bindings" tab. Click on it.<br>
+<br>
+3 / Enter an entity name in the "Entity model" input. When you write a valid model, the input will turn green and the entity will automatically be loaded. If the entity does not show up try to check the box "Show opponent" (not that this checkbox can also be used to hide the bound entity without removing it)<br>
+<br>
+4 / If you want you can also change the animation of the "opponent" entity using the input just below the once you previously changed.<br>
+<br>
+5 / Now you need to create binding settings. Click on the green "+" button to the right of the "Binding settings" group box. This will automatically sync the position of the "opponent" entity with the one of the "player" entity.<br>
+<br>
+6 / Now you can change the position of the "opponent" entity as you please. There is two ways to do it visually : first, you can do it by manipulating the X and Y values on the right. Don't forget that you can use the wheel of your mouse to increase/lower the values. This is great for precise tuning. But you can also drag and drop the "opponent" entity to the desired location. Great for setting up the overall position before fine tuning it.<br>
+<br>
+7 / Direction : <br>
+0 = direction stays the same as it was set before. <br>
+1 = same as player<br>
+-1 = opposite as player<br>
+2 = force facing right<br>
+-2 = force facing left<br>
+<br>
+8 / Frame = simply the frame within the animation. Not that if you set a number greater that the number of frames within the current animation, it will load the first frame (frame 0) instead.<br>
+<br>
+<br>
+That's it for the basic stuff. <b><span style="font-size: 22px">Note that with just this basic stuff, the editor doesn't load or write anything in your files/animations.<br>
+<br>
+That is, without further configuration, the binding GUI is just an independent GUI that doesn't alter or interfere with the files. </span></b><br>
+<br>
+So from there you have to manually copy the values, and manually fill these values in your commands, within the text part. <br>
+<br>
+But of course there is a way to automatize this process and make it way more convenient.<br>
+<br>
+I'll explain it in the next post <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="smilie smilie--sprite smilie--sprite2" alt=";)" title="Wink    ;)" loading="lazy" data-shortname=";)"></div>'''
+		textEdit = QtWidgets.QTextBrowser()
+		
+		textEdit.setText(text)
+		textEdit.setReadOnly(True)
+		textEdit.setOpenExternalLinks(True)
+		textEdit.setMinimumWidth(400)
+		textEdit.setMinimumHeight(300)
+		textEdit.hide()
+		
+		self.widgets['binding'] = textEdit
+		self.widgetLayout.addWidget(textEdit, 1)
+		
+		
+		
+		text = '''<div class="bbWrapper"><b><span style="font-size: 26px">Binding GUI, How it works, the advanced stuff, part 1 of 2 :</span></b><br>
+<br>
+Currently the advanced stuff is all about setting up the app so that it can read and write the binding values to and from your custom scripting system (or at the very least read and convert the binding values to and from comments within your animations).<br>
+<br>
+The main thing for that is to create a mask.<br>
+<br>
+Let's say you use a system like this :<br>
+<br>
+
+	
+	
+
+
+<div class="bbCodeBlock bbCodeBlock--screenLimited bbCodeBlock--code">
+	<div class="bbCodeBlock-title">
+		Code:
+	</div>
+	<div class="bbCodeBlock-content" dir="ltr">
+		<pre class="bbCodeCode" dir="ltr" data-xf-init="code-block" data-lang=""><code>anim grab
+    offset 50 50
+    @cmd bindEntity 10 20 0 2 1
+    frame data/chars/joe/01.gif
+    
+    @cmd bindEntity 15 -30 0 5 1
+    frame data/chars/joe/02.gif
+    
+    @cmd bindEntity -7 -20 0 3 1
+    frame data/chars/joe/03.gif</code></pre>
+	</div>
+</div>    <br>
+    <br>
+where your command bindEntity use params in that order : xPosition, yPosition, zPosition, frameNumber, direction.<br>
+<br>
+The mask you'll need to create is this :<br>
+<br>
+
+	
+	
+
+
+<div class="bbCodeBlock bbCodeBlock--screenLimited bbCodeBlock--code">
+	<div class="bbCodeBlock-title">
+		Code:
+	</div>
+	<div class="bbCodeBlock-content" dir="ltr">
+		<pre class="bbCodeCode" dir="ltr" data-xf-init="code-block" data-lang=""><code>    @cmd bindEntity {x} {y} {z} {frame} {direction}</code></pre>
+	</div>
+</div>    <br>
+    <br>
+
+<div>And you will have to copy paste this mask in the "Text Mask" input in the right panel of the animation editor in ChronoCrash Modders Tools.<br>
+<br>
+<b><span style="font-size: 22px">And that's it ! Now the binding GUI will load from and to your animations.</span></b><br>
+<br>
+<br>
+If you just want to log the values the principle is the same. For example you can use this mask<br>
+<br>
+</div>
+	
+	
+
+
+<div class="bbCodeBlock bbCodeBlock--screenLimited bbCodeBlock--code">
+	<div class="bbCodeBlock-title">
+		Code:
+	</div>
+	<div class="bbCodeBlock-content" dir="ltr">
+		<pre class="bbCodeCode" dir="ltr" data-xf-init="code-block" data-lang=""><code>    # CMT binding values : z = {z}; x = {x} ; y = {y} ; dir = {direction} ; frame number = {frame}</code></pre>
+	</div>
+</div>    <br><br>
+<div>Note that you can set up the values in any order you want. To be loaded properly your mask must contain : {x} {y} {z} {frame} {direction}.<br>
+But those can be placed anywhere you want within the mask. They just have to be there somewhere.<br>
+<br>
+Any of those 5 parameters that is not in the mask won't be recognized anymore by the GUI.<br>
+<br>
+If you don't use a mask, this warning doesn't apply, as the binding GUI will work independently of any text.<br>
+<br>
+BTW, if you want to make the binding GUI independent again as it was by default, you'll just have to "delete" the text mask in the previously mentioned input. Just replace it with a completely empty/blank text.</div></div>'''
+		
+		textEdit = QtWidgets.QTextBrowser()
+		
+		textEdit.setText(text)
+		textEdit.setReadOnly(True)
+		textEdit.setOpenExternalLinks(True)
+		textEdit.setMinimumWidth(400)
+		textEdit.setMinimumHeight(300)
+		textEdit.hide()
+		
+		self.widgets['binding-adv1'] = textEdit
+		self.widgetLayout.addWidget(textEdit, 1)
+		
+		
+		text = '''<div class="bbWrapper"><span style="font-size: 26px"><b>Binding GUI, How it works, the advanced stuff, part 2 of 2 :</b></span><br>
+<br>
+Just by setting up the previously mentioned mask, you can make the binding GUI seamlessly compatible with almost any scripting system.<br>
+<br>
+The mask was already optional, and the stuff I'll explain in this post is very optional. But if your binding system is more complex, this very optional stuff can help make it compatible.<br>
+<br>
+Let's say you are using constants names in your system. For example let's say one of your animation look like this :<br>
+<br>
+
+	
+	
+
+
+<div class="bbCodeBlock bbCodeBlock--screenLimited bbCodeBlock--code">
+	<div class="bbCodeBlock-title">
+		Code:
+	</div>
+	<div class="bbCodeBlock-content" dir="ltr">
+		<pre class="bbCodeCode" dir="ltr" data-xf-init="code-block" data-lang=""><code>anim grab
+    offset 50 50
+    @cmd bindEntity 10 20 0 GRAB_DEF DIR_SAME_AS
+    frame data/chars/joe/01.gif
+   
+    @cmd bindEntity 15 -30 0 GRAB_STOMACH DIR_SAME_AS
+    frame data/chars/joe/02.gif
+   
+    @cmd bindEntity -7 -20 0 GRAB_VERTICAL DIR_OPPOSITE_AS
+    frame data/chars/joe/03.gif</code></pre>
+	</div>
+</div>   <br>
+   <br>
+<div>
+ Where the GRAB_DEF, DIR_SAME, and so on refers to constants pointing to integers.<br>
+ <br>
+ You can set up the binding GUI so that it is compatible with that, through the "additional translations" input, at the bottom of the binding GUI (right panel).<br>
+ <br>
+ What you have to write in that is the correspondences of every constant, and which setting they are associated to, in a specific format.<br>
+ <br>
+ So for example :<br>
+ <br>
+</div>
+
+	
+	
+
+
+<div class="bbCodeBlock bbCodeBlock--screenLimited bbCodeBlock--code">
+	<div class="bbCodeBlock-title">
+		Code:
+	</div>
+	<div class="bbCodeBlock-content" dir="ltr">
+		<pre class="bbCodeCode" dir="ltr" data-xf-init="code-block" data-lang=""><code>{
+ 
+ 'frame' : { 'GRAB_DEF':0, 'GRAB_STOMACH':1, 'GRAB_VERTICAL': 2},
+ 'direction' : {'DIR_UNCHANGED':0, 'DIR_SAME_AS':1, 'DIR_OPPOSITE_AS:-1, 'DIR_RIGHT':2, 'DIR_LEFT':-2 }
+ 
+ }</code></pre>
+	</div>
+</div> <br>
+ And with that set, every value matching a correspondence will be converted back and forth to the constant name <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" class="smilie smilie--sprite smilie--sprite6" alt=":cool:" title="Cool    :cool:" loading="lazy" data-shortname=":cool:"><br>
+<br>
+<br>
+<b><span style="font-size: 26px">Final word :</span></b><br>
+<br>
+While I didn't encounter many bugs or problems while I was personally experimenting with this new feature, be cautious and don't use this on files you do not have recently made a copy of. Again, it probably won't mess around with your files, but you never know, at this point this new system has barely been tested by me, let alone by someone else.</div>'''
+		
+		
+		textEdit = QtWidgets.QTextBrowser()
+		
+		textEdit.setText(text)
+		textEdit.setReadOnly(True)
+		textEdit.setOpenExternalLinks(True)
+		textEdit.setMaximumWidth(800)
+		textEdit.setMinimumWidth(400)
+		textEdit.setMinimumHeight(300)
+		# textEdit.setFixedWidth(int(textEdit.document().idealWidth() + textEdit.contentsMargins().left() + textEdit.contentsMargins().right()))
+		textEdit.hide()
+		# textEdit.setStyleSheet("QTextBrowser { max-width:600px; background: rgb(0, 255, 0); selection-background-color: rgb(233, 99, 0); }");
+		
+		self.widgets['binding-adv2'] = textEdit
+		self.widgetLayout.addWidget(textEdit, 1)
 		
 class CreateFileDialog(QtWidgets.QDialog):
 	

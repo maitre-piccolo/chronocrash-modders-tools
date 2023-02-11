@@ -89,6 +89,7 @@ class MainEditorWidget(QtWidgets.QWidget):
 		self.currentView = 'text'
 		
 	def close(self, all=False):
+		self.levelEditor.looping = False
 		return self.fileSelector.close(all)
 		
 		
@@ -97,6 +98,10 @@ class MainEditorWidget(QtWidgets.QWidget):
 		fd.lines = []
 		self.loadFile(fd, False)
 		
+
+	def entitiesHaveBeenReloaded(self):
+		self.entityEditor.frameEditor.bindingEditor.reloadModels()
+		
 		
 	def loadProject(self, path=None):
 
@@ -104,7 +109,9 @@ class MainEditorWidget(QtWidgets.QWidget):
 			path = settings.get_option('general/data_path', '')
 		
 		global ROOT_PATH
+		print('loading project', path)
 		ROOT_PATH = os.path.dirname(path)
+		print('root path = ', ROOT_PATH)
 		FileSelector.ROOT_PATH = ROOT_PATH
 		EntityEditorWidget.ROOT_PATH = ROOT_PATH
 		
@@ -306,6 +313,7 @@ class MainEditorWidget(QtWidgets.QWidget):
 			if self.entityEditor.currentAnim != None:
 				self.editor.scrollTo(QtCore.QRegExp("anim(\\s)"+self.entityEditor.currentAnim))
 		elif(self.currentView == 'level'):
+			self.levelEditor.looping = False
 			lines = self.levelEditor.rebuildText()
 			self.editor.setLines(lines)
 		self.editor.updateFD()
@@ -341,6 +349,8 @@ class HeaderWidget(QtWidgets.QWidget):
 		self.fileTypeCB.setToolTip(_('Change file category'))
 		
 		self.fileTypeCB.currentIndexChanged[int].connect(self.setFileType)
+		
+		self.fileTypeCB.setObjectName("fileTypeCB")
 		
 
 		layout.addWidget(self.fileTypeCB)
@@ -434,6 +444,7 @@ class HeaderWidget(QtWidgets.QWidget):
 		if fd.iconPath is not None:
 			print(fd.iconPath)
 			self.pic.load(fd.iconPath)
+			self.pic = self.pic.scaledToWidth(25)
 			self.iconWidget.setPixmap(self.pic)
 		else:
 			self.iconWidget.setPixmap(QtGui.QPixmap())

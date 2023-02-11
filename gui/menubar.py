@@ -2,7 +2,9 @@
 from PyQt5 import QtGui, QtCore, QtWidgets
 
 from common import settings, xdg
-from gui import modales
+from gui import modales, util
+
+from qutepart import EverydayPart
 
 import os
 
@@ -35,12 +37,8 @@ class MenuBar(QtWidgets.QMenuBar):
 		viewMenu.addAction(_('Story editor'), self.dialogEdit)
 		
 		
-		sessionMenu = self.addMenu(_('Sess&ion'))
-		sessionMenu.addAction(_('New Session'), self.newSession)
-		sessionMenu.addSeparator()
-		sessionMenu.addAction(_('Save Session'), self.saveSession)
-		sessionMenu.addAction(_('Save Session As'), self.saveSessionAs)
-		sessionMenu.addSeparator()
+		self.sessionMenu = self.addMenu(_('Sess&ion'))
+		self.reloadSessionsList()
 		
 		themeMenu = self.addMenu(_('Theme'))
 		editorThemeMenu = themeMenu.addMenu(_('Editor'))
@@ -67,16 +65,7 @@ class MenuBar(QtWidgets.QMenuBar):
 			if name == theme: a.setChecked(True)
 			actionGroup.addAction(a)
 			
-			
-		actionGroup = QtWidgets.QActionGroup(self)
-		currentSession = settings.get_option('general/last_session', 'Default')
-		for f in os.listdir(os.path.join(xdg.get_data_home(), 'sessions')):
-			a = sessionMenu.addAction(f, self.core.setSession)
-			a.setData(f)
-			a.setCheckable(True)
-			if f == currentSession:
-				a.setChecked(True)
-			actionGroup.addAction(a)
+		
 		
 		toolMenu = self.addMenu(_('&Tools'))
 		
@@ -118,11 +107,73 @@ class MenuBar(QtWidgets.QMenuBar):
 		legacyCommands = settings.get_option('misc/legacy_commands', False)
 		a.setChecked(legacyCommands)
 		
+		
+		def setTabAction():
+			tabAlwaysIndent = settings.get_option('editor/tab_always_indent', True)
+			tabAlwaysIndent = not tabAlwaysIndent
+			settings.set_option('editor/tab_always_indent', tabAlwaysIndent)
+			EverydayPart.tabAlwaysIndent = tabAlwaysIndent
+		
+		a = optionMenu.addAction(_('Tab always indent'), setTabAction)
+		a.setCheckable(True)
+		tabAlwaysIndent = settings.get_option('editor/tab_always_indent', True)
+		a.setChecked(tabAlwaysIndent)
+		# also init here
+		EverydayPart.tabAlwaysIndent = tabAlwaysIndent
+		
+		def setLevelAutoPlay():
+			autoPlay = settings.get_option('level/auto_play_on_load', True)
+			autoPlay = not autoPlay
+			settings.set_option('level/auto_play_on_load', autoPlay)
+			self.core.mainWidget.levelEditor.autoPlayOnLoad = autoPlay
+		
+		a = optionMenu.addAction(_('Level Editor / Auto-play on Load'), setLevelAutoPlay)
+		a.setCheckable(True)
+		tabAlwaysIndent = settings.get_option('level/auto_play_on_load', True)
+		a.setChecked(tabAlwaysIndent)
+		
+		
+		def setForceTransparency():
+			forceTransp = settings.get_option('gui/force_transparency', False)
+			forceTransp = not forceTransp
+			
+			
+			settings.set_option('gui/force_transparency', forceTransp)
+			util.FORCE_TRANSPARENCY
+			self.informRestart()
+		
+		a = optionMenu.addAction(_('Force transparency (will cause slow down)'), setForceTransparency)
+		a.setCheckable(True)
+		forceTransp = settings.get_option('gui/force_transparency', False)
+		a.setChecked(forceTransp)
+		# also init here
+		util.FORCE_TRANSPARENCY = forceTransp
+		
+		
+		def setBindingModelsSortOrder():
+			sortOrder = settings.get_option('entity/binding_models_sort_alphabetical', False)
+			sortOrder = not sortOrder
+			
+			
+			settings.set_option('entity/binding_models_sort_alphabetical', sortOrder)
+			
+			self.informRestart()
+		
+		a = optionMenu.addAction(_('Binding GUI - sort models from A to Z'), setBindingModelsSortOrder)
+		a.setCheckable(True)
+		sortOrder = settings.get_option('entity/binding_models_sort_alphabetical', False)
+		a.setChecked(sortOrder)
+		# also init here ?
+		
+		
 
 		helpMenu = self.addMenu(_('&Help'))
 		
-		helpMenu.addAction(_('About Qt'), lambda:QtWidgets.QMessageBox.aboutQt(self))
+		helpMenu.addAction(_('Tips'), self.tips)
+		helpMenu.addAction(_('Donate'), self.donate)
 		helpMenu.addAction(_('About this tool'), self.about)
+		helpMenu.addAction(_('About Qt'), lambda:QtWidgets.QMessageBox.aboutQt(self))
+		
 
 		#parent.moduleLoaded.connect(self.loadModuleMenus)
 		
@@ -130,12 +181,40 @@ class MenuBar(QtWidgets.QMenuBar):
 			#self.loadModuleMenus(module)
 		
 		
+	def reloadSessionsList(self):
+		sessionMenu = self.sessionMenu
+		sessionMenu.clear()
+		sessionMenu.addAction(_('New Session'), self.newSession)
+		sessionMenu.addSeparator()
+		sessionMenu.addAction(_('Save Session'), self.saveSession)
+		sessionMenu.addAction(_('Save Session As'), self.saveSessionAs)
+		sessionMenu.addSeparator()
+		
+		actionGroup = QtWidgets.QActionGroup(self)
+		currentSession = settings.get_option('general/last_session', 'Default')
+		for f in os.listdir(os.path.join(xdg.get_data_home(), 'sessions')):
+			a = sessionMenu.addAction(f, self.core.setSession)
+			a.setData(f)
+			a.setCheckable(True)
+			if f == currentSession:
+				a.setChecked(True)
+			actionGroup.addAction(a)
+	
 	def tmp(self):
 		pass
+		
+	def informRestart(self):
+		QtWidgets.QMessageBox.information(self, _('Please restart'), _("You'll need to restart the app for that setting to be properly applied"))
 		
 	def about(self):
 		# Credits
 		modales.AboutDialog().exec()
+		
+	def donate(self):
+		modales.DonateDialog().exec()
+		
+	def tips(self):
+		modales.TipsDialog().exec()
 			
 	def checkForNewFiles(self):
 		progressNotifier = self.core.statusBar.addProgressNotifier(self.core.reloadLibraries)
@@ -222,8 +301,9 @@ class MenuBar(QtWidgets.QMenuBar):
 		text = QtWidgets.QInputDialog.getText(self, _("Session name"), _("Name"))[0]
 
 		if text != '':
-			self.core.setSession(text, True)
-			
+			self.core.setSession(text, True, savePrevious=False)
+		self.reloadSessionsList()
+	
 	
 	def toolSelect(self):
 		from tools import ToolWidget

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import os, sys, traceback
+import os, sys, traceback, shutil
 import locale
 import time
 from datetime import datetime
@@ -11,7 +11,15 @@ import logging
 
 
 # print log in example.log instead of the console, and set the log level to DEBUG (by default, it is set to WARNING)
+
+
+
 logFile = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'journal.log')
+try:
+	os.remove(logFile + '.1')
+except:
+	pass
+if(os.path.isfile(logFile)): shutil.copyfile(logFile, logFile + '.1')
 #logFile = 'journal2.log'
 logging.basicConfig(filename=logFile, filemode='w', level=logging.DEBUG)
 
@@ -72,7 +80,15 @@ class Frame(QtWidgets.QMainWindow):
 			import fallbackicons
 			QtGui.QIcon.setThemeName('oxygen')
 		
-		self.move(settings.get_option('gui/window_x', 50), settings.get_option('gui/window_y', 50))
+		try:
+			self.move(settings.get_option('gui/window_x', 50), settings.get_option('gui/window_y', 50))
+		except AttributeError:
+			if(QtWidgets.QMessageBox.question(self, _('FATAL ERROR in settings'), _('Do you want to delete settings ?'), defaultButton=QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes):
+				settings.delete()
+				QtWidgets.QMessageBox.warning(self, _('Please restart'), _('Settings deleted please restart the app'))
+				app.quit()
+
+			
 		self.resize(settings.get_option('gui/window_width', 700), settings.get_option('gui/window_height', 500))
 		if(settings.get_option('gui/maximized', False)):
 			self.maximized = True
@@ -169,6 +185,7 @@ class Frame(QtWidgets.QMainWindow):
 			#self.hide()
 			#e.ignore()
 			#return
+		logging.debug("close event")
 		self.quit(e)
 		
 	def dragEnterEvent(self, e):
@@ -225,6 +242,7 @@ class Frame(QtWidgets.QMainWindow):
 		
 		
 	def quit(self, e=None):
+		logging.debug("MAIN FRAME QUIT EVENT " + str(e) )
 		if not self.meWidget.close(True):
 			if e is not None:
 				e.ignore()
@@ -291,7 +309,8 @@ class Frame(QtWidgets.QMainWindow):
 		settings.set_option('gui/widgets_theme', name)
 		
 		
-	def setSession(self, name=None, save=False):
+	def setSession(self, name=None, save=False, savePrevious=True):
+		logging.debug("Setting session from main frame... [" + str(name) + '] save=' + str(save))
 		if name is None and self.sender() != None:
 			name = self.sender().data()
 		print(name)
@@ -299,7 +318,7 @@ class Frame(QtWidgets.QMainWindow):
 
 	
 		# Before changing, save current
-		if not self.meWidget.close(True): # False mean there was unsaved files and the user canceled operation
+		if(savePrevious and not self.meWidget.close(True)): # False mean there was unsaved files and the user canceled operation
 			return
 		#if self.mainWidget.fileSelector.sessionName != None:
 			#self.mainWidget.fileSelector.saveSession()
@@ -331,7 +350,7 @@ def excepthook(exc_type, exc_value, exc_tb):
 	msg = QtWidgets.QMessageBox()
 	msg.setIcon(QtWidgets.QMessageBox.Warning)
 	msg.setText("AN ERROR HAS OCCURED")
-	msg.setInformativeText('PLEASE COPY THE ERROR MESSAGE AND REPORT IT HERE : <a href="http://www.chronocrash.com/forum/index.php?topic=2759.0">http://www.chronocrash.com/forum/index.php?topic=2759.0</a><pre>\n\nTHEN CLICK "OK", SAVE EVERYTHING YOU CAN AND RESTART THE SOFTWARE BEFORE CONTINUING USING IT\n\n(OR CONTINUE USING IT AT YOUR OWN RISKS)\n\n' + tb + '</pre>')
+	msg.setInformativeText('PLEASE COPY THE ERROR MESSAGE AND REPORT IT HERE : <a href="https://www.chronocrash.com/forum/threads/chronocrash-modders-tools.2467">http://www.chronocrash.com/forum/index.php?topic=2759.0</a><pre>\n\nTHEN CLICK "OK", SAVE EVERYTHING YOU CAN AND RESTART THE SOFTWARE BEFORE CONTINUING USING IT\n\n(OR CONTINUE USING IT AT YOUR OWN RISKS)\n\n' + tb + '</pre>')
 	msg.setWindowTitle("CRASH REPORT")
 	msg.setDetailedText(tb)
 	msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)
