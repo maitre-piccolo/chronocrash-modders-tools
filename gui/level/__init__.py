@@ -139,7 +139,15 @@ class LevelEditorWidget(QtWidgets.QWidget):
 			part = pLine.next()
 			if part is None : continue
 			if part.lower() == 'video':
-				self.videoMode = int(pLine.next())
+				part2 = pLine.next()
+				if('x' in part2.lower()):
+					width, height = part2.lower().split('x')
+					LevelEditorWidget.RESOLUTIONS.append((int(width), int(height)))
+					# print(width, height)
+					self.videoMode = len(LevelEditorWidget.RESOLUTIONS) -1
+					# print(self.videoMode)
+				else:
+					self.videoMode = int(part2)
 		
 	def loadLines(self, lines):
 		self.loadVideoMode()
@@ -886,7 +894,9 @@ class WallControlWidget(QtWidgets.QWidget):
 				
 				image = self.loadImage(os.path.join(ROOT_PATH, path))
 				panelHeight = image.pixmap().height()
+				
 				width, height = LevelEditorWidget.RESOLUTIONS[self.levelEditor.videoMode]
+				print('video mode', width, height, self.levelEditor.videoMode)
 				self.levelEditor.screenItem = QtWidgets.QGraphicsRectItem(0, panelHeight-height, width, height)
 				self.levelEditor.screenItem.setZValue(1000)
 				self.levelEditor.screenItem.setPen(QtGui.QPen(QtGui.QColor(255,0,0), 5))

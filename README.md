@@ -1,4 +1,4 @@
-# Chronocrash-Modders-Tools
+# ChronoCrash-Modders-Tools
 
 Hey guys,
 
@@ -21,6 +21,12 @@ It is still in its early stages (started it last week) but development is going 
 
 Of course if anyone has interesting suggestions for this tool, I'm all ears.
 
+## Running on Linux
+
+Just download the source code and run "python cmt.py".
+
+You'll need python3, Qt5 for python3 and pillow (or PIL).
+
 ## Building on Linux
 
-Make sure to install python3, pyinstaller and QT5. Run the linux_build.sh file and wait for the application to compile, when finished there will be a folder "dist/chronocrash-modders-tools" this will contain the application.
+Make sure to install python3, pyinstaller and Qt5. Run the linux_build.sh file and wait for the application to compile, when finished there will be a folder "dist/chronocrash-modders-tools" this will contain the application.

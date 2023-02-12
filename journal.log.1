@@ -1,50 +1,58 @@
-DEBUG:root:2023-02-10 20:07:51.639000
+DEBUG:root:2023-02-12 21:53:28.074196
 DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/journal.log
 DEBUG:root:Setting session from project manager...
 DEBUG:root:Setting session from main frame... [Juin 2016] save=False
+ERROR:root:CRASH
+NoneType: None
+DEBUG:root:Traceback (most recent call last):
+  File "/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/main/__init__.py", line 386, in <lambda>
+    b5 = self.buttonBar.addAction(labels['Level'], lambda:self.parent.setView('level'))
+  File "/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/main/__init__.py", line 265, in setView
+    self.levelEditor.loadLines(self.editor.getLines())
+  File "/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/level/__init__.py", line 158, in loadLines
+    self.wallControlWidget.loadLines(lines)
+  File "/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/level/__init__.py", line 900, in loadLines
+    self.levelEditor.screenItem = QtWidgets.QGraphicsRectItem(0, panelHeight-height, width, height)
+TypeError: unsupported operand type(s) for -: 'int' and 'str'
+
 DEBUG:root:close event
-DEBUG:root:MAIN FRAME QUIT EVENT <PyQt5.QtGui.QCloseEvent object at 0x7f201c3bfc70>
-DEBUG:root:2023-02-10 20:09:02.455208 STARTING SAVE SESSION : Juin 2016
-DEBUG:root:FILES TO SAVE : [<gui.main.fileselector.File object at 0x7f20351361d0>, <gui.main.fileselector.File object at 0x7f2035136200>, <gui.main.fileselector.File object at 0x7f201ff10c10>, <gui.main.fileselector.File object at 0x7f201ff10a30>, <gui.main.fileselector.File object at 0x7f201ff10c40>, <gui.main.fileselector.File object at 0x7f201ff109d0>, <gui.main.fileselector.File object at 0x7f201ff10d00>, <gui.main.fileselector.File object at 0x7f201ff10940>, <gui.main.fileselector.File object at 0x7f201ff10df0>, <gui.main.fileselector.File object at 0x7f201ff10880>, <gui.main.fileselector.File object at 0x7f201ff10ac0>, <gui.main.fileselector.File object at 0x7f201ff10b50>, <gui.main.fileselector.File object at 0x7f201ff10bb0>, <gui.main.fileselector.File object at 0x7f201ff10820>, <gui.main.fileselector.File object at 0x7f201ff107f0>, <gui.main.fileselector.File object at 0x7f201ff10a60>, <gui.main.fileselector.File object at 0x7f201ff10e20>, <gui.main.fileselector.File object at 0x7f201ff10a90>, <gui.main.fileselector.File object at 0x7f201ff10ca0>, <gui.main.fileselector.File object at 0x7f201ff109a0>, <gui.main.fileselector.File object at 0x7f201ff10d30>, <gui.main.fileselector.File object at 0x7f201ff108b0>, <gui.main.fileselector.File object at 0x7f201ff11cc0>, <gui.main.fileselector.File object at 0x7f201ff10dc0>, <gui.main.fileselector.File object at 0x7f201ff10af0>, <gui.main.fileselector.File object at 0x7f201ff11d20>, <gui.main.fileselector.File object at 0x7f201ff10be0>, <gui.main.fileselector.File object at 0x7f201ff10b20>, <gui.main.fileselector.File object at 0x7f201ff10a00>, <gui.main.fileselector.File object at 0x7f201ff10670>, <gui.main.fileselector.File object at 0x7f201ff10430>, <gui.main.fileselector.File object at 0x7f201ff10cd0>, <gui.main.fileselector.File object at 0x7f201ff105e0>, <gui.main.fileselector.File object at 0x7f201ff10400>, <gui.main.fileselector.File object at 0x7f201ff10850>, <gui.main.fileselector.File object at 0x7f201ff105b0>, <gui.main.fileselector.File object at 0x7f201ff10370>, <gui.main.fileselector.File object at 0x7f201ff11d50>, <gui.main.fileselector.File object at 0x7f201ff10520>, <gui.main.fileselector.File object at 0x7f201ff104f0>, <gui.main.fileselector.File object at 0x7f201ff10b80>]
+DEBUG:root:MAIN FRAME QUIT EVENT <PyQt5.QtGui.QCloseEvent object at 0x7f879c3cfa30>
+DEBUG:root:2023-02-12 21:54:27.032871 STARTING SAVE SESSION : Juin 2016
+DEBUG:root:FILES TO SAVE : [<gui.main.fileselector.File object at 0x7f879c1f7400>, <gui.main.fileselector.File object at 0x7f879c1f7430>, <gui.main.fileselector.File object at 0x7f879c1f72b0>, <gui.main.fileselector.File object at 0x7f879c5525f0>, <gui.main.fileselector.File object at 0x7f879c552710>, <gui.main.fileselector.File object at 0x7f879c552590>, <gui.main.fileselector.File object at 0x7f879c552890>, <gui.main.fileselector.File object at 0x7f879c552500>, <gui.main.fileselector.File object at 0x7f879c552a70>, <gui.main.fileselector.File object at 0x7f879c552440>, <gui.main.fileselector.File object at 0x7f879c552680>, <gui.main.fileselector.File object at 0x7f879c5527d0>, <gui.main.fileselector.File object at 0x7f879c552770>, <gui.main.fileselector.File object at 0x7f879c5523e0>, <gui.main.fileselector.File object at 0x7f879c552740>, <gui.main.fileselector.File object at 0x7f879c552620>, <gui.main.fileselector.File object at 0x7f879c552a10>, <gui.main.fileselector.File object at 0x7f879c552650>, <gui.main.fileselector.File object at 0x7f879c552860>, <gui.main.fileselector.File object at 0x7f879c552560>, <gui.main.fileselector.File object at 0x7f879c5529e0>, <gui.main.fileselector.File object at 0x7f879c552470>, <gui.main.fileselector.File object at 0x7f879c552aa0>, <gui.main.fileselector.File object at 0x7f879c5529b0>, <gui.main.fileselector.File object at 0x7f879c5526b0>, <gui.main.fileselector.File object at 0x7f879c552a40>, <gui.main.fileselector.File object at 0x7f879c5527a0>, <gui.main.fileselector.File object at 0x7f879c5526e0>, <gui.main.fileselector.File object at 0x7f879c5525c0>, <gui.main.fileselector.File object at 0x7f879c552230>, <gui.main.fileselector.File object at 0x7f879c551ff0>, <gui.main.fileselector.File object at 0x7f879c5528c0>, <gui.main.fileselector.File object at 0x7f879c5521a0>, <gui.main.fileselector.File object at 0x7f879c551fc0>, <gui.main.fileselector.File object at 0x7f879c552410>, <gui.main.fileselector.File object at 0x7f879c552170>, <gui.main.fileselector.File object at 0x7f879c551f30>, <gui.main.fileselector.File object at 0x7f879c552920>, <gui.main.fileselector.File object at 0x7f879c5520e0>, <gui.main.fileselector.File object at 0x7f879c5520b0>, <gui.main.fileselector.File object at 0x7f879c552800>, <gui.main.fileselector.File object at 0x7f879c5522f0>]
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/scripts
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/levels
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/scripts
 DEBUG:root:/home/piccolo/Downloads/TODEL/data
 DEBUG:root:/home/piccolo/Downloads/TODEL/data/levels
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/birdie
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/elias
+DEBUG:root:/home/piccolo/Downloads/TODEL/data/chars
+DEBUG:root:/home/piccolo/Downloads/TODEL/data/chars/cyclops
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/levels/decontamination
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/batman
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/zangief
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/cvs2_todo
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/abubo
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/MVC2_Gill
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/misc
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/tager
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/colossus
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/oro
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/juggernaut
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/potem
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/stronggayj
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/victor
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/TAN_CLARK
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/akuma
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/gallon
 DEBUG:root:/home/piccolo/Partage/OpenBOR DATA/SOR/data/levels
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/zangief
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/misc
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/levels/decontamination
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/colossus
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/yang
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/oro
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/stronggayj
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/cvsbenimaru
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/potem
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/MVC2_Gill
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/victor
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/juggernaut
-DEBUG:root:/home/piccolo/Downloads/TODEL/data/chars
-DEBUG:root:/home/piccolo/Downloads/TODEL/data/chars/cyclops
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/tager
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/ryu
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/batman
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/cvs2_todo
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/abubo
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/cvsbenimaru
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/yang
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/birdie
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/stages
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/stages/city
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/stages/sumos
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/stages/sumos/rightside
 DEBUG:root:END OF SAVE SESSION : Juin 2016
-DEBUG:common.settings:Saving settings...
-DEBUG:root:close event
-DEBUG:root:MAIN FRAME QUIT EVENT <PyQt5.QtGui.QCloseEvent object at 0x7f201c4dff40>
-DEBUG:root:2023-02-10 20:09:02.539128 STARTING SAVE SESSION : Juin 2016
-DEBUG:root:2023-02-10 20:09:02.539128 SAVE CANCEL because too close to last save
 DEBUG:common.settings:Saving settings...
