@@ -2,6 +2,8 @@ build/
 dist/
 journal.log
 journal2.log
+journal.log.1
+TODO.txt
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

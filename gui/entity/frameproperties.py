@@ -51,6 +51,19 @@ class BindingEditor(QtWidgets.QWidget):
 		layout.addWidget(self.entityAnimation, 4, 0)
 		
 		
+		showSquareOffset = settings.get_option('entity/binding_show_square_offset', False)
+		showCrossOffset = settings.get_option('entity/binding_show_cross_offset', True)
+		
+		self.showCrossOffset = QtWidgets.QCheckBox(_('Show cross offset'))
+		self.showCrossOffset.setChecked(showCrossOffset)
+		self.showCrossOffset.stateChanged.connect(self.showCrossOffsetChanged)
+		layout.addWidget(self.showCrossOffset, 5, 0)
+		
+		self.showSquareOffset = QtWidgets.QCheckBox(_('Show square offset'))
+		self.showSquareOffset.setChecked(showSquareOffset)
+		self.showSquareOffset.stateChanged.connect(self.showSquareOffsetChanged)
+		layout.addWidget(self.showSquareOffset, 6, 0)
+		
 		
 		
 		
@@ -345,6 +358,20 @@ class BindingEditor(QtWidgets.QWidget):
 	def showOpponentChanged(self):
 		showOpponent = self.showOpponent.isChecked()
 		self.parent.frameEditor.showOpponent(showOpponent)
+		
+	def showCrossOffsetChanged(self):
+		show = self.showCrossOffset.isChecked()
+		settings.set_option('entity/binding_show_cross_offset', show)
+		opponent = self.parent.frameEditor.opponent
+		if(opponent != None):
+			opponent.showCrossOffsetChanged(show)
+		
+	def showSquareOffsetChanged(self):
+		show = self.showSquareOffset.isChecked()
+		settings.set_option('entity/binding_show_square_offset', show)
+		opponent = self.parent.frameEditor.opponent
+		if(opponent != None):
+			opponent.showSquareOffsetChanged(show)
 		
 	def valueChanged(self, *args):
 		# for

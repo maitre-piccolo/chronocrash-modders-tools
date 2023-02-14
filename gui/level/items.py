@@ -44,7 +44,7 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		else : self.showOffset =False
 		fPath = 'data/chars/rugal/2.gif'
 		
-		if(entName in Entity.LOADED_MODELS_REFERENCE):
+		if(entName in Entity.LOADED_MODELS_REFERENCE and hasattr(Entity.LOADED_MODELS_REFERENCE[entName], 'anims')):
 			reference = Entity.LOADED_MODELS_REFERENCE[entName]
 			self.reference = reference
 			self.anims = reference.anims
@@ -125,8 +125,41 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		
 		self.shadow = QtWidgets.QGraphicsPixmapItem(shadow)
 		# self.offset = QtWidgets.QGraphicsRectItem(self.xOffset, self.yOffset, 10, 10)
-		self.offset = QtWidgets.QGraphicsRectItem(0, 0, 10, 10)
-		self.offset.setBrush(QtGui.QBrush(QtGui.QColor(255,0,0)))
+		
+		self.offset = QtWidgets.QGraphicsItemGroup()
+		showSquareOffset = settings.get_option('entity/binding_show_square_offset', False)
+		
+		self.squareOffset = QtWidgets.QGraphicsRectItem(0, 0, 10, 10)
+		self.squareOffset.setBrush(QtGui.QBrush(QtGui.QColor(230,0,0, 100)))
+		self.offset.addToGroup(self.squareOffset)
+		if(not showSquareOffset): self.squareOffset.setVisible(False)
+		showCrossOffset = settings.get_option('entity/binding_show_cross_offset', True)
+		
+			
+		# line1 = QtWidgets.QGraphicsLineItem(5, 0 , 5, 10)
+		# self.crossOffsetLine2 = QtWidgets.QGraphicsLineItem(0, 5 , 10, 5)
+		self.crossOffsetLine1 = QtWidgets.QGraphicsRectItem(4, 0 , 2, 10)
+		self.crossOffsetLine2 = QtWidgets.QGraphicsRectItem(0, 4 , 10, 2)
+		
+		self.offset.addToGroup(self.crossOffsetLine1)
+		self.offset.addToGroup(self.crossOffsetLine2)
+		
+		
+		self.crossOffsetLine1.setPen(QtGui.QPen(QtGui.QColor(255,255,255)))
+		self.crossOffsetLine2.setPen(QtGui.QPen(QtGui.QColor(255,255,255)))
+		self.crossOffsetLine1.setBrush(QtGui.QBrush(QtGui.QColor(0,0,0)))
+		self.crossOffsetLine2.setBrush(QtGui.QBrush(QtGui.QColor(0,0,0)))
+		
+		if(not showCrossOffset):
+			self.crossOffsetLine1.setVisible(False)
+			self.crossOffsetLine2.setVisible(False)
+			
+		center = QtWidgets.QGraphicsRectItem(4, 4 , 2, 2)
+		center.setBrush(QtGui.QBrush(QtGui.QColor(255,0,0)))
+		self.offset.addToGroup(center)
+		# else:
+		# 	self.offset = QtWidgets.QGraphicsRectItem(0, 0, 10, 10)
+		# 	self.offset.setBrush(QtGui.QBrush(QtGui.QColor(255,0,0)))
 		
 		# self.x = 0
 		# self.y = 0
@@ -399,7 +432,13 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 			self.parentWidget.endDrag.emit()
 		except:
 			pass
+	
+	def showCrossOffsetChanged(self, show):
+		self.crossOffsetLine1.setVisible(show)
+		self.crossOffsetLine2.setVisible(show)
 		
+	def showSquareOffsetChanged(self,show):
+		self.squareOffset.setVisible(show)
 		
 	def width(self):
 		return self.frameWidth
