@@ -257,6 +257,7 @@ class MainEditorWidget(QtWidgets.QWidget):
 				lineNumber -= 1
 				
 			self.entityEditor.show()
+			self.entityEditor.reloadSplitterPos()
 			
 			
 		elif view == 'level':

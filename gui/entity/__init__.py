@@ -264,6 +264,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		upLayout.setContentsMargins(0, 0, 0, 0)
 		self.splitter = upLayout
 		
+		
 		upLayout.addWidget(editor)
 		upLayout.addWidget(self.frameEditor)
 		layout2.addWidget(upLayout, 1)
@@ -277,6 +278,10 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		self.mainSplitter.setStretchFactor(0,0)
 		self.mainSplitter.setStretchFactor(1,1)
 		
+		# self.mainSplitter.splitterMoved.connect(self.mainSplitterMoved)
+		# splitterPos = settings.get_option('entity/secondary_splitter_pos', -1)
+		# if(splitterPos != -1): self.splitter.moveSplitter(splitterPos, 1)
+		self.splitter.splitterMoved.connect(self.secondarySplitterMoved)
 		
 		
 		self.updating = False
@@ -354,6 +359,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		 dicData exists to provide a key access to fullData
 	'''
 	def loadLines(self, lines, model=None):
+		
 		self.updating = True
 		self.currentAnim = None
 		
@@ -414,6 +420,10 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		self.switchingFrame = False
 		
 
+	def secondarySplitterMoved(self, pos, index):
+		print(pos, index)
+		settings.set_option('entity/secondary_splitter_pos', pos)
+
 	'''
 		text changed
 	'''
@@ -443,6 +453,11 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		self.frameEditor.loadFrame(self.currentFrame)
 			
 		
+		
+	def reloadSplitterPos(self):
+		splitterPos = settings.get_option('entity/secondary_splitter_pos', -1)
+		if(splitterPos != -1): self.splitter.moveSplitter(splitterPos, 1)
+	
 	def getLineOf(self, frameNumber):
 		if len(self.anim) == 0 : return 0
 		lines = self.editor.lines
@@ -677,7 +692,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 						pass
 					
 				
-			elif(part.startswith('attack')):
+			elif(part.startswith('attack') or part.startswith('shock') or part.startswith('burn')):
 				
 				commandParts = part.split('.')
 				if len(commandParts) == 1: # attack legacy/main command (with multiple/all params)
@@ -922,7 +937,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 					#pLine.parts[pLine.pos:] = newParts
 				#print(parts)
 				
-			elif(part.startswith('attack')): #  and len(pLine) > 6
+			elif(part.startswith('attack') or part.startswith('shock') or part.startswith('burn')): #  and len(pLine) > 6
 				if(currentFrame >= len(self.anim.frames)):
 					QtWidgets.QMessageBox.warning(self, _('Error'), _('An attackbox was declared after the last frame'))
 					return
@@ -1567,6 +1582,7 @@ class FrameEditor(QtWidgets.QWidget):
 				#dot.hide()
 			
 		self.scene.addRect(-5,-5,10,10) #offset
+		self.scene.addRect(-1,-1,2,2) #offset precise
 		self.propEditor.loadData(frame)
 		self.bindingEditor.loadData(frame)
 		

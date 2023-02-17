@@ -122,6 +122,10 @@ class ParsedLineMask(ParsedLine):
 	
 	
 class BBox:
+	
+	FIELDS = ['bbox.position.x', 'bbox.position.y', 'bbox.size.x', 'bbox.size.y', 'bbox.size.z.background', 'bbox.size.z.foreground']
+	
+	
 	def __init__(self, params=None):
 		self.x = 0
 		self.y = 0
@@ -149,6 +153,15 @@ class BBox:
 					params.append(0)
 				# x, y, w, h
 			self.x, self.y, self.width, self.height = params[0:4]
+			try:
+				self.z1 = params[4]
+			except:
+				pass
+				
+			try:
+				self.z2 = params[5]
+			except:
+				pass
 			
 	def getParams(self):
 		data = [self.x, self.y, self.width, self.height]
@@ -170,7 +183,7 @@ class BBox:
 				pos = 0 # includes both values and spaces
 				indexVal = -1 # only for values (not spaces)
 				recreatedLine = ''
-				while pos < len(self.ogLine):
+				while pos < len(self.ogLine) and indexVal < len(params):
 					el = self.ogLine.get(pos)
 					#print("elt", el)
 					pos += 1
@@ -183,6 +196,9 @@ class BBox:
 							#print(indexVal)
 							recreatedLine += str(params[indexVal])
 						indexVal += 1
+				while(indexVal < len(params)): # params that were not present in ogLine, typically z1 and z2
+					recreatedLine += ' ' + str(params[indexVal])
+					indexVal += 1
 					
 				return recreatedLine
 				
@@ -191,15 +207,16 @@ class BBox:
 				data = ['\tbbox.position.x ' + str(self.x), '\tbbox.position.y ' + str(self.y),
 				'\tbbox.size.x ' + str(self.width), '\tbbox.size.y ' + str(self.height)]
 				if self.z1 != 0:
-					data.append('\tbbox.size.z.1 ' + str(self.z1))
+					data.append('\tbbox.size.z.background ' + str(self.z1))
 				if self.z2 != 0:
-					data.append('\tbbox.size.z.2 ' + str(self.z2))
+					data.append('\tbbox.size.z.foreground ' + str(self.z2))
 				return '\n'.join(data)
 				
 			else: # recreate from original lines, keeping indentation, spaces, tabs, etc
 				lines = []
 				params = self.getParams()
 				i = 0
+				numberOfParamsProcessed = 0
 				for ogLine in [self.ogLineX, self.ogLineY, self.ogLineWidth, self.ogLineHeight, self.ogLineZ1, self.ogLineZ2]:
 					if ogLine is None:
 						i+=1
@@ -221,10 +238,17 @@ class BBox:
 							else:
 								#print(indexVal)
 								recreatedLine += str(params[i])
+								numberOfParamsProcessed +=1
 							indexVal += 1
 							
 					lines.append(recreatedLine)
 					i+=1
+					
+				while(numberOfParamsProcessed < len(params)): # params that were not present in ogLine, typically z1 and z2
+					recreatedLine = '\t' + BBox.FIELDS[numberOfParamsProcessed] + " " + str(params[numberOfParamsProcessed])
+					lines.append(recreatedLine)
+					numberOfParamsProcessed+=1
+					
 				return '\n'.join(lines)
 					
 		
@@ -265,10 +289,18 @@ class AttackBox:
 		self.data['reaction.fall.velocity.y'] = None
 		self.data['reaction.fall.velocity.z'] = None
 		
+		self.originalNumbersofParams = 0
+		
 		
 		if params is not None:
-			self.data['damage.type'] = params[0][6:] # strip attack#
-			if self.data['damage.type'] is None or self.data['damage.type'] == '' : self.data['damage.type'] = '1'
+			self.originalNumbersofParams = len(params)
+			
+			command = params[0]
+			if(command.startswith('attack')):
+				self.data['damage.type'] = params[0][6:] # strip attack#
+				if self.data['damage.type'] is None or self.data['damage.type'] == '' : self.data['damage.type'] = '1'
+			else:
+				self.data['damage.type'] = command
 			params = params[1:]
 			if(len(params) < 11): params.append(None)
 			self.data['position.x'], self.data['position.y'], self.data['size.x'], self.data['size.y'], self.data['damage.force'], self.data['reaction.fall.force'], self.data['block.penetrate'], self.data['effect.hit.flash.disable'], self.data['reaction.pause.time'], self.data['size.z.1'], self.data['size.z.2'] = params
@@ -331,8 +363,9 @@ class AttackBox:
 			if dropvLine is not None : data.append(dropvLine)
 			
 			return '\n'.join(data)
-				
-		else:
+			
+			
+		else: # *** NON-LEGACY ***
 			
 			if(len(self.ogLines) == 0): # create new lines
 				data = []

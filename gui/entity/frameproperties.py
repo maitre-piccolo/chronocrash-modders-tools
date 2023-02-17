@@ -434,7 +434,9 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 		yB = QtWidgets.QSpinBox()
 		wB = QtWidgets.QSpinBox()
 		hB = QtWidgets.QSpinBox()
-		self.widgets['bbox'] = {'x':xB, 'y':yB, 'w':wB, 'h':hB}
+		z1B = QtWidgets.QSpinBox()
+		z2B = QtWidgets.QSpinBox()
+		self.widgets['bbox'] = {'x':xB, 'y':yB, 'w':wB, 'h':hB, 'z1':z1B, 'z2': z2B}
 
 		
 		layout.addWidget(QLabel(_("X")), 0, 0)
@@ -446,6 +448,11 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 		layout.addWidget(QLabel(_("Height")), 2, 1)
 		layout.addWidget(wB, 3, 0)
 		layout.addWidget(hB, 3, 1)
+		
+		layout.addWidget(QLabel(_("Z bg")), 4, 0)
+		layout.addWidget(QLabel(_("Z fg")), 4, 1)
+		layout.addWidget(z1B, 5, 0)
+		layout.addWidget(z2B, 5, 1)
 		
 		self.layout.addWidget(self.bboxGB, 0)
 		
@@ -583,11 +590,18 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 		
 		if 'bbox' in data:
 			self.bboxGB.setDisabled(False)
-			x, y, w, h = data['bbox'].getParams()[0:4]
+			params = data['bbox'].getParams()
+			x, y, w, h = params[0:4]
 			self.widgets['bbox']['x'].setValue(x)
 			self.widgets['bbox']['y'].setValue(y)
 			self.widgets['bbox']['w'].setValue(w)
 			self.widgets['bbox']['h'].setValue(h)
+			
+			try: self.widgets['bbox']['z1'].setValue(params[4])
+			except: pass
+			
+			try: self.widgets['bbox']['z2'].setValue(params[5])
+			except: pass
 		else:
 			self.bboxGB.setDisabled(True)
 			
@@ -662,10 +676,14 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 			y = self.widgets['bbox']['y'].value()
 			w = self.widgets['bbox']['w'].value()
 			h = self.widgets['bbox']['h'].value()
+			z1 = self.widgets['bbox']['z1'].value()
+			z2 = self.widgets['bbox']['z2'].value()
 			bbox.x = x
 			bbox.y = y
 			bbox.width = w
 			bbox.height = h
+			bbox.z1 = z1
+			bbox.z2 = z2
 			
 		if 'attack' in data:
 			abox = data['attack']
