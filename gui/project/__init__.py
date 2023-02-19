@@ -94,7 +94,7 @@ class ProjectSelector(QtWidgets.QWidget):
 		# self.projects.append("test")
 		
 		settings.set_option('general/projects', self.projects)
-		# self.loadProjectsList()
+		self.loadProjectsList()
 		
 
 		

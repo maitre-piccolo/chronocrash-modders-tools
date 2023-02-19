@@ -267,8 +267,8 @@ class AttackBox:
 
 		self.data['reaction.pause.time'] = None
 
-		self.data['size.z.1'] = None
-		self.data['size.z.2'] = None
+		self.data['size.z.background'] = None
+		self.data['size.z.foreground'] = None
 		
 	
 		self.delete = False # Flag used to not process when rebuilding text
@@ -303,16 +303,17 @@ class AttackBox:
 				self.data['damage.type'] = command
 			params = params[1:]
 			if(len(params) < 11): params.append(None)
-			self.data['position.x'], self.data['position.y'], self.data['size.x'], self.data['size.y'], self.data['damage.force'], self.data['reaction.fall.force'], self.data['block.penetrate'], self.data['effect.hit.flash.disable'], self.data['reaction.pause.time'], self.data['size.z.1'], self.data['size.z.2'] = params
+			self.data['position.x'], self.data['position.y'], self.data['size.x'], self.data['size.y'], self.data['damage.force'], self.data['reaction.fall.force'], self.data['block.penetrate'], self.data['effect.hit.flash.disable'], self.data['reaction.pause.time'], self.data['size.z.background'], self.data['size.z.foreground'] = params
 			
 		
 			
 	def getParams(self):
 		data = [self.data['damage.type'], self.data['position.x'], self.data['position.y'], self.data['size.x'], self.data['size.y'], self.data['damage.force'], parseInt(self.data['reaction.fall.force']), parseInt(self.data['block.penetrate']), parseInt(self.data['effect.hit.flash.disable']), parseInt(self.data['reaction.pause.time'])]
 		#if self.z1 != 0:
-		data.append(parseInt(self.data['size.z.1']))
-		if self.data['size.z.2'] != None:
-			data.append(self.data['size.z.2'])
+		# if self.data['size.z.background'] != None:
+		data.append(parseInt(self.data['size.z.background']))
+		if self.data['size.z.foreground'] != None:
+			data.append(self.data['size.z.foreground'])
 		return data
 	
 	def getText(self, legacy=False):

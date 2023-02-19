@@ -713,7 +713,7 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 			updateNotEmpty(abox, 'reaction.pause.time', pause)
 			
 			updateNotEmpty(abox, 'effect.hit.flash.disable', noflash)
-			updateNotEmpty(abox, 'size.z.1', depth)
+			updateNotEmpty(abox, 'size.z.background', depth)
 			
 		
 			

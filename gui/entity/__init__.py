@@ -63,10 +63,11 @@ class Platform:
 		return self.data
 		
 	def getText(self):
+		print(self.data)
 		return 'platform ' + ' '.join(map(str, map(int, self.data)))
 	
 	def platformUpdated(self):
-		self.data = list(self.wall.getParams())
+		self.data = list(self.wall.getParams())[0:8] # don't take type
 		self.data[0] += self.xOffset
 		self.data[1] += self.yOffset
 		print(self.data)
@@ -777,10 +778,10 @@ class EntityEditorWidget(QtWidgets.QWidget):
 								abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
 								abox.ogLines['.'.join(commandParts[1:])] = pLine
 							elif commandParts[2] == 'z':
-								if commandParts[3] == '1':
+								if commandParts[3] == '1' or commandParts[3] == 'background':
 									abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
 									abox.ogLines['.'.join(commandParts[1:])] = pLine
-								elif commandParts[3] == '2':
+								elif commandParts[3] == '2'  or commandParts[3] == 'foreground':
 									abox.data['.'.join(commandParts[1:])] = parseInt(pLine.next())
 									abox.ogLines['.'.join(commandParts[1:])] = pLine
 						
