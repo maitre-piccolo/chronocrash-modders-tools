@@ -393,6 +393,7 @@ class BindingEditor(QtWidgets.QWidget):
 class FramePropertiesEditor(QtWidgets.QWidget):
 	def __init__(self, parent):
 		QtWidgets.QWidget.__init__(self)
+		self.setAutoFillBackground(True); 
 		self.setMaximumSize(300,2000)
 		self.parent = parent
 		self.layout = QtWidgets.QVBoxLayout()
@@ -752,16 +753,19 @@ class CustomGroupBox(QtWidgets.QGroupBox):
 	
 	def __init__(self, label):
 		QtWidgets.QGroupBox.__init__(self, label)
+		
 		self.disabled = False
 		
 		self.painter = None
 	
 	
 	def setDisabled(self, disabled):
+		# print('\nset Disabled', disabled)
 		for i in range(self.layout().count()):
 			widget = self.layout().itemAt(i).widget()
 			widget.setEnabled(not disabled)
 		self.disabled = disabled
+		self.update()
 				
 	def mouseReleaseEvent(self, e):
 		xClick = e.pos().x()
@@ -782,6 +786,11 @@ class CustomGroupBox(QtWidgets.QGroupBox):
 
 	def paintEvent(self, e):
 		
+		rect = e.rect();
+   
+   
+   
+		
 		QtWidgets.QGroupBox.paintEvent(self, e)
 		# if( self.painter != None): 
 			# self.painter.end()
@@ -789,9 +798,16 @@ class CustomGroupBox(QtWidgets.QGroupBox):
 			# del self.painter
 			# pass
 		painter = QtGui.QPainter(self)
+		# painter.setCompositionMode(QtGui.QPainter.CompositionMode_Source)
+		# painter.fillRect(e.rect(), QtCore.Qt.transparent);
+
+		# painter.eraseRect(rect);
 		# painter = self.painter
 		painter.setRenderHint(QtGui.QPainter.Antialiasing);
 		
+		
+		# painter.eraseRect(0, 0, 300,300)
+		# print('\nDisabled', self.disabled)
 		if self.disabled:
 			painter.setPen(QtCore.Qt.darkGreen);
 			x = self.width()-32
@@ -808,6 +824,6 @@ class CustomGroupBox(QtWidgets.QGroupBox):
 
 		painter.setPen(QtCore.Qt.darkGray);
 		painter.drawLine(2, 8, 6, 2);
-		self.update()
+		# self.update() # cause leak
 		#label = QtWidgets.QLabel("Hello")
 		#label.render(painter)

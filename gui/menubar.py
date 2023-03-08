@@ -166,6 +166,21 @@ class MenuBar(QtWidgets.QMenuBar):
 		# also init here ?
 		
 		
+		def setOpenGLRendering():
+			openGLRendering = settings.get_option('gui/opengl_rendering', False)
+			openGLRendering = not openGLRendering
+			
+			
+			settings.set_option('gui/opengl_rendering', openGLRendering)
+			self.informRestart()
+		
+		a = optionMenu.addAction(_('OpenGL Rendering)'), setOpenGLRendering)
+		a.setCheckable(True)
+		openGLRendering = settings.get_option('gui/opengl_rendering', False)
+		a.setChecked(openGLRendering)
+
+		
+		
 
 		helpMenu = self.addMenu(_('&Help'))
 		

@@ -40,6 +40,7 @@ class MainEditorWidget(QtWidgets.QWidget):
 		self.fileSelector = FileSelector(self)
 
 		self.editor = EverydayEditor(self)
+		self.editor.fileSelector = self.fileSelector 
 		
 		
 		self.setupFavorites()
@@ -76,7 +77,7 @@ class MainEditorWidget(QtWidgets.QWidget):
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Ctrl+D", "Edit|Comment")), self, self.editor.comment)
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Shift+Ctrl+D", "Edit|Uncomment")), self, self.editor.uncomment)
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Ctrl+F", "Edit|Find")), self, self.editor.focusForSearch)
-		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Ctrl+R", "Edit|Replace")), self, self.editor.replaceEntry.setFocus)
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Ctrl+R", "Edit|Replace")), self, self.editor.focusForReplace)
 		
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Ctrl+W", "File|Close")), self, self.fileSelector.close)
 
@@ -151,6 +152,8 @@ class MainEditorWidget(QtWidgets.QWidget):
 		if(path is not None and path != ''):
 			
 			fd = self.fileSelector.addFile(path)
+			
+			self.fileSelector.setSelectedFile(fd)
 			fd.loadFromDisk()
 			
 			self.loadFile(fd, False)

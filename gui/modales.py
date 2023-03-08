@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from gui.util import FileInput
 from gui.settings.fontselector import FontSelector
 
-VERSION = '0.4.4.10 (19/02/23)'
+VERSION = '0.4.5 (07/03/23)'
 
 
 class ShortcutSettingsWidget(QtWidgets.QWidget):
@@ -230,7 +230,11 @@ class SettingsEditor(QtWidgets.QDialog):
 		self.widgets['misc'].save()
 		
 		settings.MANAGER.save()
+		self.informRestart()
 		QtWidgets.QDialog.accept(self)
+		
+	def informRestart(self):
+		QtWidgets.QMessageBox.information(self, _('Please restart'), _("You'll probably need to restart the app for new settings to be properly applied"))
 		
 	def loadSection(self, section):
 		self.activeWidget.hide()

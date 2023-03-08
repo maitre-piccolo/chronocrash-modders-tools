@@ -1773,6 +1773,16 @@ class ImageWidget(QtWidgets.QGraphicsView):
 		self.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
 		#self.setInteractive(False)
 		self.setOptimizationFlags(QtWidgets.QGraphicsView.DontSavePainterState | QtWidgets.QGraphicsView.DontAdjustForAntialiasing)
+		
+		
+		openGLRendering = settings.get_option('gui/opengl_rendering', False)
+		if(openGLRendering):
+			gl =  QtWidgets.QOpenGLWidget()
+			# QSurfaceFormat format;
+			# format.setSamples(4);
+			# gl->setFormat(format);
+			self.setViewport(gl);
+		
 
 		scene = QtWidgets.QGraphicsScene(self)
 		self.pic = QtGui.QPixmap('icons/8.jpg')

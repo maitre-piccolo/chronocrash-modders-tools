@@ -107,6 +107,34 @@ QScrollBar:vertical {
     }
     
     
+ EverydayEditor   QScrollBar:vertical {               
+    border: 1px solid #999999;
+        background:white;
+        width:30px;    
+        margin: 0px 0px 0px 0px;
+    }
+    QScrollBar::handle:vertical {
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop: 0  rgb(32, 47, 130), stop: 0.5 rgb(32, 47, 130),  stop:1 rgb(32, 47, 130));
+        min-height: 15px;
+    
+    }
+    QScrollBar::add-line:vertical {
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop: 0  rgb(32, 47, 130), stop: 0.5 rgb(32, 47, 130),  stop:1 rgb(32, 47, 130));
+        height: 4px;
+        subcontrol-position: bottom;
+        subcontrol-origin: margin;
+    }
+    QScrollBar::sub-line:vertical {
+        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+        stop: 0  rgb(32, 47, 130), stop: 0.5 rgb(32, 47, 130),  stop:1 rgb(32, 47, 130));
+        height: 4px;
+        subcontrol-position: top;
+        subcontrol-origin: margin;
+    }
+    
+    
 QTabWidget::pane { /* The tab widget frame */
     border : 0px;
 }
@@ -342,6 +370,10 @@ QWidget#FileSelector{
 }
 
 QToolButton#MainToolButton {  margin:0px 4px; padding: 4px 10px; }
+
+QTreeView::item {
+  padding: 5px 0px;
+}
 
 
 '''

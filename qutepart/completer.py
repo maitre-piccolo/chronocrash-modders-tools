@@ -313,6 +313,9 @@ class _CompletionList(QListView):
                 if self._selectedIndex != -1:
                     self.itemSelected.emit(self._selectedIndex)
                     return True
+                else:
+                    self.tabPressed.emit()
+                    return True
             elif event.key() == Qt.Key_Tab:
                 self.tabPressed.emit()
                 return True

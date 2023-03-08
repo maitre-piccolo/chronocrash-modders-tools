@@ -14,6 +14,9 @@ from gui.modales import CreateFileDialog
 from gui.util import FileInput, loadSprite
 from gui.level.items import Entity
 
+
+SELECTED_COLOR = [100,100,255];
+
 class File:
 	def __init__(self, path=None):
 		if path is not None:
@@ -54,17 +57,31 @@ class File:
 	def checkSave(self):
 		if self.originalLines == None : return
 		
-		if self.originalLines != self.lines : self.saved = False
-		return
+		
+		self.prepareChange()
+		
+		changedDetected = False
+		
+		if self.originalLines != self.lines : 
+			self.saved = False
+			self.notifyChange()
+			return
 	
 		# Alternative method, maybe safer
-		i = 0
-		while i < len(self.originalLines) and i < len(self.lines):
-			if self.originalLines[i] != self.lines[i]:
-				print('DIFF', self.originalLines[i], self.lines[i])
-				self.saved = False
-				break
-			i+=1
+# 		i = 0
+# 		
+# 		while i < len(self.originalLines) and i < len(self.lines):
+# 			if self.originalLines[i] != self.lines[i]:
+# 				print('DIFF', self.originalLines[i], self.lines[i])
+# 				self.saved = False
+# 				changedDetected = True
+# 				return
+# 			i+=1
+		if(not changedDetected): 
+			print('No changed detected')
+			self.saved = True # useful in case of reverse
+			self.notifyChange()
+			
 			
 		
 	def isLoaded(self):
@@ -86,6 +103,16 @@ class File:
 		except FileNotFoundError:
 			pass
 		
+	def notifyChange(self):
+		# index = self.node.model.indexOfNode(self.node)
+		# self.node.model.dataChanged.emit(index, index, [FileModel.itemRole, Qt.DecorationRole])
+		self.node.model.layoutChanged.emit();
+		
+		
+	def prepareChange(self):
+		self.node.model.layoutAboutToBeChanged.emit();
+		pass
+		
 	def save(self):
 		f = open(self.path, 'w')
 		f.write('\n'.join(self.lines))
@@ -93,7 +120,22 @@ class File:
 		self.originalLines = list(self.lines)
 		self.saved = True
 
+
+class CustomTreeView( QtWidgets.QTreeView):
+
+
+	def drawBranches(self, painter, rect, index):
 		
+		item = self.model().data(index, FileModel.itemRole)
+		try:
+			if(item.fd.state == 1):
+				painter.fillRect(rect, QtGui.QColor(*SELECTED_COLOR));
+		except:
+			pass
+		# else
+		# painter->fillRect(rect, Qt::green);
+
+		QtWidgets.QTreeView.drawBranches(self, painter, rect, index)
 
 class FileSelector(QtWidgets.QWidget):
 	
@@ -174,7 +216,7 @@ class FileSelector(QtWidgets.QWidget):
 
 		
 		
-		self.treeView = QtWidgets.QTreeView(self)
+		self.treeView = CustomTreeView(self)
 		self.treeView.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
 		self.treeView.customContextMenuRequested.connect(self.showContextMenu)
 		self.treeView.expanded.connect(self.expandChange)
@@ -194,6 +236,7 @@ class FileSelector(QtWidgets.QWidget):
 		
 		self.filterModel = FilterModel()
 		self.filterModel.setSortCaseSensitivity(QtCore.Qt.CaseInsensitive)
+		self.filterModel.setFilterCaseSensitivity(QtCore.Qt.CaseInsensitive)
 
 		self.filterModel.setSourceModel(self.libraryModels['Entities'])
 		
@@ -202,6 +245,7 @@ class FileSelector(QtWidgets.QWidget):
 		#self.treeView.setModel(self.model)
 	
 		self.treeView.activated.connect(self.loadItem)
+		self.treeView.clicked.connect(self.loadItem)
 		self.treeView.mouseReleaseEvent = self.mouseReleaseEvent
 		
 		header = self.treeView.header()
@@ -304,7 +348,10 @@ class FileSelector(QtWidgets.QWidget):
 		# 	# if item.isExpandedWithoutFilter:
 		# 	self.treeView.setExpanded(index, False)
 		# 	self.collapseAll(parentIndex=index)
-		
+	
+	
+
+	
 	def expandAll(self, button=None, parentIndex=QtCore.QModelIndex()):
 		self.treeView.expandAll()
 		# for i in range(self.filterModel.rowCount(parentIndex)):
@@ -393,7 +440,7 @@ class FileSelector(QtWidgets.QWidget):
 				#print('OOOOOUI', parentNode.isExpanded)
 			#self.treeView.setExpanded(index, True)
 		#print('APPEND', index.isValid())
-		item = model.append(parentNode, Item(parentNode, dataTuple), index)
+		item = model.append(parentNode, Item(parentNode, dataTuple, model), index)
 		#model.modelReset.emit()
 		return item
 	
@@ -706,14 +753,9 @@ class FileSelector(QtWidgets.QWidget):
 		#if self.openedItem is not None:
 			#self.openedItem.state = 0
 
-		
 		fd.state = 1
-		for oFd in self.loadedFiles.values():
-			if oFd.state != 0:
-				if oFd.state == 10:
-					oFd.state = 0
-				else:
-					oFd.state += 1
+		self.updateStates(exception=fd)
+		
 
 		self.openedItem = fd
 		#print(fd, fd.path, os.path.isdir(fd.path))
@@ -896,7 +938,7 @@ class FileSelector(QtWidgets.QWidget):
 			
 		self.folderNodes = folderNodes
 		
-
+		self.openedModel.modelReset.emit()
 
 		if(self.mode == 'opened'):
 			#self.treeView.update()
@@ -984,12 +1026,21 @@ class FileSelector(QtWidgets.QWidget):
 			self.loadLibrary()
 			self.setMode('library')
 	
+	def setSelectedFile(self, fd):
+		pass
+		#Method 2 
+		# selectionModel = self.treeView.selectionModel()
+		# selectionModel.select(self.openedModel.indexOfNode(fd.node), QtCore.QItemSelectionModel.Select) # , 
+		
+		# Method 1
+		# self.treeView.setCurrentIndex(self.openedModel.indexOfNode(fd.node))
+	
 	def search(self):
 		txt = self.searchEntry.text()
 		if(txt != ''):
 			self.saveExpandedStateWithoutFilters()
 			
-		self.treeView.model().setFilterRole(Qt.DisplayRole)
+		
 		self.treeView.model().setFilterRole(Qt.DisplayRole)
 		regExp = QtCore.QRegExp(txt, QtCore.Qt.CaseInsensitive)
 		self.treeView.model().setFilterRegExp(regExp)
@@ -1072,20 +1123,45 @@ class FileSelector(QtWidgets.QWidget):
 		action = popMenu.exec_(self.sender().mapToGlobal(pos))
 		if action == delete:
 			self.deleteItem(index)
+			
+			
+	def updateStates(self, exception=None):
+		
+		self.treeView.clearSelection()
+		self.openedModel.layoutAboutToBeChanged.emit();
+		
+		
+		
+		
+		
+		for oFd in self.loadedFiles.values():
+			if(oFd == exception):continue
+		
+			if oFd.state != 0:
+				if oFd.state == 10:
+					oFd.state = 0
+				else:
+					oFd.state += 1
+					
+		self.openedModel.layoutChanged.emit();
 
 		
 class Item(TreeItem):
-	def __init__(self, parent, data):
+	def __init__(self, parent, data, model):
 		TreeItem.__init__(self, data[1], parent)
 		self.ID = data[0]
 		self.label = data[1]
 		self.pos = data[2]
 		self.path = data[3]
 		self.fd = data[5]
+		if(self.fd != None):
+			self.fd.node = self
 
 		self.subelements = []
 		self.iconPath =  data[4]
 		self.icon = None
+		
+		self.model = model
 		
 	def __str__( self ):
 		return self.label
@@ -1095,7 +1171,7 @@ class Item(TreeItem):
 	
 	
 	def copy(self):
-		new = Item(self, [self.ID, self.label, self.pos, self.path, self.iconPath, self.fd], self.parent())
+		new = Item(self, [self.ID, self.label, self.pos, self.path, self.iconPath, self.fd], self.parent(), self.model)
 		
 	def getFilter(self):
 		'''
@@ -1189,15 +1265,23 @@ class FileModel(TreeModel):
 			def tint(x):
 				return int(x + factor * (255-x))
 
-			factor = item.fd.state * 0.1
-			color = [215,223,1]
-			color = map(tint, color)
+			
+			if(item.fd.state == 1): # top of the chain (~ selected)
+				color = SELECTED_COLOR
+			else:
+			
+				factor = item.fd.state * 0.1
+				color = [215,223,1]
+				color = map(tint, color)
 
 			return QtGui.QBrush(QtGui.QColor(*color))
 		elif role == Qt.FontRole and item.path is None:
 			return FileModel.bigFont
 		elif role == Qt.ForegroundRole and (item.fd is not None and item.fd.state > 0):
-			color = [0,0,0]
+			if(item.fd.state == 1):
+				color = [255,255,255]
+			else:
+				color = [0,0,0]
 			return QtGui.QBrush(QtGui.QColor(*color))
 		return None
 

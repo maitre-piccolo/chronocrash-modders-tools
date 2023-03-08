@@ -26,6 +26,8 @@ from qutepart.syntax.colortheme import ColorTheme
 class AbstractEverydayEditor(QtWidgets.QWidget):
 	def __init__(self, parent):
 		self.parent = parent
+		
+		self.initialSearchPos = None
 		QtWidgets.QWidget.__init__(self)
 		
 		
@@ -92,6 +94,15 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 			self.searchEntry.setText(text)
 		self.searchEntry.selectAll()
 		
+	def focusForReplace(self):
+		self.replaceEntry.setFocus()
+		# selection = self.editor.selectedText
+  # 
+		# if selection != '':
+		# 	text = selection
+		# 	self.searchEntry.setText(text)
+		self.replaceEntry.selectAll()
+		
 	def getCommentString(self, blockNumber):
 		lang = self.editor.language()
 		#print('langage', lang)
@@ -103,13 +114,18 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 			else : return '#'
 		elif lang is 'C':
 			return '//'
+		else:
+			try:
+				return self.editor._highlighter.syntax().comment
+			except:
+				pass
 		return '#'
 	
 	def notifyChange(self):
 		if self.updating : return
-		if self.editor.fd.saved:
-			self.updateFD()
-			self.editor.fd.checkSave()
+		# if self.editor.fd.saved:
+		self.updateFD()
+		self.editor.fd.checkSave()
 			
 	def refresh(self):
 		fd = self.current()
@@ -138,15 +154,38 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 	def search(self, searchForward=True):
 		self.editor.setCenterOnScroll(True)
 		
-
+		if(self.initialSearchPos == None):
+			self.initialSearchPos = self.editor.textCursor()
+			
 		text = self.searchEntry.text()
+		print('text', text)
+		if(text == ''): 
+			self.searchEntry.setStyleSheet("")
+			self.editor.setTextCursor(self.initialSearchPos)
+			self.initialSearchPos = None
+			return
 
 		if searchForward:
 			options = QtGui.QTextDocument.FindFlags()
 		else:
 			options = QtGui.QTextDocument.FindBackward
-		if not self.editor.find(text, options):
+		if not self.editor.find(text, options): # first try to search from cursor to end of document
 			self.editor.moveCursor(QtGui.QTextCursor.Start)
+			if not self.editor.find(text, options): # then try to search from start to end of document
+			
+			
+				# self.editor.moveCursor(self.initialSearchPos)
+				self.editor.setTextCursor(self.initialSearchPos)
+				self.initialSearchPos = None
+			
+			
+				self.searchEntry.setStyleSheet("QLineEdit { background: rgb(255, 175, 175); }");
+				 # selection-background-color: rgb(233, 99, 0);
+		else:
+			
+				
+			self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
+
 			
 	def searchPrevious(self):
 		self.search(False)
@@ -205,7 +244,8 @@ class EverydayEditor(AbstractEverydayEditor):
 		searchEntry = QtWidgets.QLineEdit()
 		searchEntry.returnPressed.connect(self.search)
 		self.searchEntry = searchEntry
-		#searchEntry.textChanged.connect(self.filter)
+		# searchEntry.textChanged.connect(self.filter)
+		searchEntry.textChanged.connect(self.search)
 		actionBox.addWidget(QtWidgets.QLabel(_('Search') + ' :'), 0)
 		
 		actionBox.addWidget(searchEntry, 1)
@@ -233,6 +273,7 @@ class EverydayEditor(AbstractEverydayEditor):
 		self.replaceEntry = replaceEntry
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.refresh)
 		self.updating = False
+		# self.setAcceptDrops(True)
 		
 		
 
@@ -293,7 +334,9 @@ class EverydayEditor(AbstractEverydayEditor):
 		
 
 		
-	
+	# def dropEvent(self,e):
+	# 	print("\nEditor Drop Event")
+	# 	super().dropEvent(e)
 		
 	def eventFilter(self, obj, e):
 		#print(e.type(), e.FocusIn)
@@ -304,7 +347,8 @@ class EverydayEditor(AbstractEverydayEditor):
 				self.parent.headerWidget.setInfo(obj.fd)
 			
 			#self.editor.fd.state = 0
-			#obj.fd.state = 1
+			obj.fd.state = 1
+			self.fileSelector.updateStates(obj.fd)
 			self.editor = obj
 			#return True
 		#else:

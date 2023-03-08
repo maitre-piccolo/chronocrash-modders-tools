@@ -36,7 +36,9 @@ class FilterModel(QtCore.QSortFilterProxyModel):
 		# print(data)
 		if data is None : return False
 		# if data is None : return True
-		contains = self.filterRegExp().pattern() in data
+		# contains = self.filterRegExp().pattern() in data
+		contains = self.filterRegExp().indexIn(data) != -1
+		# contains = data.contains(self.filterRegExp())
 		if(contains and self.filterRegExp().pattern() != '') :
 			# print(data)
 			self.sourceModel().setData(col0, True, expandedRole)
@@ -115,6 +117,7 @@ class TreeModel(QtCore.QAbstractItemModel):
 	    return res
     
     def indexOfNode(self, node):
+        return self.createIndex(node.row(), 0, node.parent());
         nb = 0
         #print('PASSING')
         while node != self.rootItem:

@@ -76,6 +76,11 @@ class Frame(QtWidgets.QMainWindow):
 		QtWidgets.QMainWindow.__init__(self, parent)
 		self.setWindowTitle(TITLE)
 		
+		
+		try:
+			self.setWindowIcon(QtGui.QIcon("icons/CMT.png"))
+		except:pass
+		
 		if not QtGui.QIcon.hasThemeIcon("document-open"):
 			import fallbackicons
 			QtGui.QIcon.setThemeName('oxygen')
@@ -202,7 +207,8 @@ class Frame(QtWidgets.QMainWindow):
 					continue
 				newUrls.append(url)
 				
-			e.ignore()
+			# e.ignore()
+			e.accept()
 			data = QtCore.QMimeData()
 			data.setText(newText)
 			data.setUrls(newUrls)
@@ -221,7 +227,7 @@ class Frame(QtWidgets.QMainWindow):
 	def dropEvent(self, e):
 		
 		data = e.mimeData()
-		print("DROP EVENT", data.urls())
+		print("\nDROP EVENT", data.urls())
 		print(data.formats())
 				
 		if data.hasUrls():
@@ -362,6 +368,16 @@ sys.excepthook = excepthook
 
 try:
 	app = QtWidgets.QApplication(sys.argv)
+	print(app.instance())
+	
+	memory = QtCore.QSharedMemory(app)
+	memory.setKey("CMT")
+	if memory.attach():
+		print('already running')
+	else:
+		print('NOT running')
+		memory.create(1)
+	
 	app.setApplicationName(TITLE)
 	app.setStyleSheet(style.STYLE_SHEET)
 	print (sys.argv)

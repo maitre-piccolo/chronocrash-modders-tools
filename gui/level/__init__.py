@@ -359,6 +359,14 @@ class ImageWidget(QtWidgets.QGraphicsView):
 		#self.setInteractive(False)
 		self.setOptimizationFlags(QtWidgets.QGraphicsView.DontSavePainterState | QtWidgets.QGraphicsView.DontAdjustForAntialiasing)
 		print (self.optimizationFlags())
+		
+		openGLRendering = settings.get_option('gui/opengl_rendering', False)
+		if(openGLRendering):
+			gl =  QtWidgets.QOpenGLWidget()
+			# QSurfaceFormat format;
+			# format.setSamples(4);
+			# gl->setFormat(format);
+			self.setViewport(gl);
 
 		scene = LevelScene(self)
 		self.pic = QtGui.QPixmap('icons/8.jpg')
