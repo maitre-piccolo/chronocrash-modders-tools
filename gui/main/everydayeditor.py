@@ -397,10 +397,32 @@ class EverydayEditor(AbstractEverydayEditor):
 	
 	def remove(self, fd):
 		if fd in self.stack1.fd_list:
-			self.stack1.removeWidget(self.stack1.fd_list[fd])
+			
+			editor = self.stack1.fd_list[fd]
+			wasCurrent = False
+			if(editor == self.editor):
+				wasCurrent = True
+			self.stack1.removeWidget(editor)
+			del self.stack1.fd_list[fd]
+			if(wasCurrent):
+				self.editor = self.stack1.currentWidget()
+				self.parent.headerWidget.setInfo(self.editor.fd)
+
 		
 		if fd in self.stack2.fd_list:
-			self.stack2.removeWidget(self.stack2.fd_list[fd])
+			editor = self.stack2.fd_list[fd]
+			wasCurrent = False
+			if(editor == self.editor):
+				wasCurrent = True
+			
+			self.stack2.removeWidget(editor)
+			del self.stack2.fd_list[fd]
+			if(wasCurrent):
+				self.editor = self.stack2.currentWidget()
+				self.parent.headerWidget.setInfo(self.editor.fd)
+			
+		
+			
 
 
 			
@@ -418,10 +440,13 @@ class EverydayEditor(AbstractEverydayEditor):
 	def setCurrent(self, fd, stack=None):
 		if stack is None: # Take current stack
 			stack = self.editor.parent()
-				
+		
+		print('stack is', stack)
 		if fd not in stack.fd_list:
+			print('was not in stack')
 			editor = self.addToStack(fd, stack)
 		else:
+			print('was in stack')
 			editor = stack.fd_list[fd]
 
 		stack.setCurrentWidget(editor)

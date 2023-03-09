@@ -101,7 +101,7 @@ class File:
 			self.saved = True
 			f.close()
 		except FileNotFoundError:
-			pass
+			print('File not found', self.path)
 		
 	def notifyChange(self):
 		# index = self.node.model.indexOfNode(self.node)
@@ -324,6 +324,7 @@ class FileSelector(QtWidgets.QWidget):
 	def addFromLibrary(self, fd):
 		print('\n Opening file from Library...')
 		if fd.path not in self.loadedPaths:
+			print('was not loaded')
 			self.loadedPaths.append(fd.path)
 			self.loadedFiles[fd.path] = fd
 			fd.state = 1
@@ -475,12 +476,17 @@ class FileSelector(QtWidgets.QWidget):
 	def closeFile(self, fd=None):
 		if fd is None:
 			fd = self.mainEditor.editor.current()
+			print('\nDELETE', fd)
 		if not fd.saved:
 			d = UnsavedFileDialog([fd])
 			if d.exec() == 0:
 				return False
+				
+		
 		print(fd.getLongText())
 		self.remove(fd.getLongText())
+		
+		
 		return True
 		
 	def closeFolder(self, folder):

@@ -120,6 +120,7 @@ class MainEditorWidget(QtWidgets.QWidget):
 		self.fileSelector.loadLibrary(True)
 		
 	def loadFile(self, fd, rel=True):
+		print('\nMAIN WIDGET loading file', fd)
 		#if(type(f) == str) : path = f
 		path = fd.path
 		self.headerWidget.setInfo(fd)

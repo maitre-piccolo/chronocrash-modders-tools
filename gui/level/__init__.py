@@ -804,6 +804,9 @@ class WallControlWidget(QtWidgets.QWidget):
 					e = self.levelEditor.entities[-1]
 					e.setAt(int(pLine.next()))
 					self.levelEditor.scene.addItem(e)
+				elif nextAt == None:
+					self.levelEditor.logWarning('Problem at line ' + str(i) + ' : orphan "at", skipped.')
+				nextAt = None
 		
 			elif part.lower() == 'spawn':
 				# before moving on to this spawn point, we review beforehand if last spawn point was properly declared
@@ -819,6 +822,9 @@ class WallControlWidget(QtWidgets.QWidget):
 				nextAt = 'spawn'
 				
 			elif part.lower() == 'coords':
+				if (nextAt == None):
+					self.levelEditor.logWarning('Problem at line ' + str(i) + ' : orphan "coords", skipped.')
+					continue
 				e = self.levelEditor.entities[-1]
 				e.x = int(pLine.next())
 				e.z = int(pLine.next())
