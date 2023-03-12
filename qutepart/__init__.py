@@ -1588,7 +1588,7 @@ class EverydayPart(Qutepart):
 	def restoreScroll(self):
 		self.verticalScrollBar().setSliderPosition(self.previousScroll)
 
-	def highlightCurrentWord(self):
+	def highlightCurrentWord(self): # PROBABLY DAIMAO
 		#@threaded
 		def buildFormat():
 			#selection = QTextEdit.ExtraSelection()
@@ -1646,6 +1646,7 @@ class EverydayPart(Qutepart):
 	
 		self.updatingCursor = True
 		word = self.selectedText
+		# print('word', '|' + word + '|')
 		if len(word) == 0 or word[0] in ('\t', ' ') or word[-1] in ('\t', ' '):
 			self.setExtraSelections([])
 			#QPlainTextEdit.setExtraSelections(self, [])
@@ -1653,7 +1654,7 @@ class EverydayPart(Qutepart):
 			return
 		
 		
-	
+		# print('word', 'continue')
 		#try:
 			#if self._highlighter != None:
 				#self._highlighter._document.contentsChange.disconnect(self._highlighter._onContentsChange)
@@ -1704,14 +1705,14 @@ class EverydayPart(Qutepart):
 		
 		print(startChar, endChar)
 		
-		delimiters = ('.', ',', ' ', '	', '-', ';', '(', ')', '/', '\n')
+		delimiters = ('.', ',', ' ', '	', '-', ';', '(', ')', '{', '}', '/', '\n')
 		#print('here', startChar, endChar)
 		if(startChar not in delimiters  or endChar not in delimiters) : return
 		#print('good')
 		
 		self.updatingCursor = True
 
-		
+		# print('word', 'continue 2')
 		buildFormat()
 		
 		

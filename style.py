@@ -108,8 +108,7 @@ QScrollBar:vertical {
     
     
  EverydayEditor   QScrollBar:vertical {               
-    border: 1px solid #999999;
-        background:white;
+
         width:30px;    
         margin: 0px 0px 0px 0px;
     }

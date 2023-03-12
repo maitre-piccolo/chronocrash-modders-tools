@@ -1,4 +1,4 @@
-import os, logging
+import os, shutil, logging
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
@@ -114,6 +114,11 @@ class File:
 		pass
 		
 	def save(self):
+		if(os.path.isfile(self.path)):
+			saveFolder = os.path.dirname(self.path)
+			fileName = os.path.basename(self.path)
+			shutil.copyfile(self.path, os.path.join(saveFolder, '.'+fileName + '.1'))
+			
 		f = open(self.path, 'w')
 		f.write('\n'.join(self.lines))
 		f.close()
@@ -180,15 +185,28 @@ class FileSelector(QtWidgets.QWidget):
 		
 		actionGroup = QtWidgets.QActionGroup(self)
 		self.buttonBar = QtWidgets.QToolBar()
-		openIcon = QtGui.QIcon(QtGui.QPixmap('icons/folder.png'))
+		
+		theme = settings.get_option('gui/widgets_theme', None)
+		
+		openIcon = QtGui.QImage('icons/folder.png')
+		if(theme == "Dark"): openIcon.invertPixels()
+		openIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(openIcon))
+		# openIcon = QtGui.QIcon(QtGui.QPixmap('icons/folder.png'))
 		b1 = self.buttonBar.addAction(openIcon, _('Open file'), self.mainEditor.openFile)
 		addIcon = QtGui.QIcon.fromTheme('list-add')
 		addAnim = self.buttonBar.addAction(addIcon, _('Create file'), self.createFile)
 		self.buttonBar.addSeparator()
 		self.buttonBar.addSeparator()
 		self.buttonBar.addSeparator()
-		libraryIcon = QtGui.QIcon(QtGui.QPixmap('icons/library.png'))
-		filesIcon = QtGui.QIcon(QtGui.QPixmap('icons/box.png'))
+		
+		libraryIcon = QtGui.QImage('icons/library.png')
+		if(theme == "Dark"): libraryIcon.invertPixels()
+		libraryIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(libraryIcon))
+		
+		filesIcon = QtGui.QImage('icons/box.png')
+		if(theme == "Dark"): filesIcon.invertPixels()
+		filesIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(filesIcon))
+		
 		b1 = self.buttonBar.addAction(libraryIcon, 'Library', lambda:self.setMode('library'))
 		b1bis = self.buttonBar.addAction(filesIcon, 'Opened', lambda:self.setMode('opened'))
 		
@@ -203,8 +221,14 @@ class FileSelector(QtWidgets.QWidget):
 		self.buttonBar.addSeparator()
 		self.buttonBar.addSeparator()
 		self.buttonBar.addSeparator()
-		expandIcon = QtGui.QIcon(QtGui.QPixmap('icons/expand.png'))
-		collapseIcon = QtGui.QIcon(QtGui.QPixmap('icons/collapse.png'))
+		expandIcon = QtGui.QImage('icons/expand.png')
+		if(theme == "Dark"): expandIcon.invertPixels()
+		expandIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(expandIcon))
+		
+		collapseIcon = QtGui.QImage('icons/collapse.png')
+		if(theme == "Dark"): collapseIcon.invertPixels()
+		collapseIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(collapseIcon))
+		
 		self.collapseAllButton = self.buttonBar.addAction(collapseIcon, 'Collapse All', self.collapseAll)
 		self.expandAllButton = self.buttonBar.addAction(expandIcon, 'Expand All', self.expandAll)
 		
@@ -1147,7 +1171,8 @@ class FileSelector(QtWidgets.QWidget):
 				if oFd.state == 10:
 					oFd.state = 0
 				else:
-					oFd.state += 1
+					# oFd.state += 1
+					oFd.state += 0.15
 					
 		self.openedModel.layoutChanged.emit();
 

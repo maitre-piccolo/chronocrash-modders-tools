@@ -182,16 +182,27 @@ class MainEditorWidget(QtWidgets.QWidget):
 		if current is None or current.path is None:
 			lookFolder = ROOT_PATH
 		else:
-			lookFolder = os.path.dirname(self.editor.current().path)
+			# lookFolder = os.path.dirname(self.editor.current().path)
+			lookFolder = self.editor.current().path
 			
 		path = QtWidgets.QFileDialog.getSaveFileName(self, directory=lookFolder)[0]
 		if(path is not None and path != ''):
-			self.fileSelector.remove(current.getLongText()) # Old replaced
-
-			self.editor.current().path = path
+			oldPath = current.getLongText()
+			current.path = path
 			self.save()
+			
+			
+			self.fileSelector.remove(oldPath) # Old replaced
+			
+			
+
+			
 			fd = self.fileSelector.addFile(path)
+			self.fileSelector.setSelectedFile(fd)
+			fd.loadFromDisk()
+			self.loadFile(fd, False)
 			fd.category = current.category
+			
 			
 			
 	
@@ -337,7 +348,9 @@ class HeaderWidget(QtWidgets.QWidget):
 		self.parent = parent
 		QtWidgets.QWidget.__init__(self)
 		layout = QtWidgets.QHBoxLayout()
+		layout.setContentsMargins(11, 11,11,0)
 		self.setLayout(layout)
+		# self.setStyleSheet("QWidget { background-color:green; }");
 		
 		self.pic = QtGui.QIcon.fromTheme('accessories-text-editor').pixmap(32)
 		self.pic = QtGui.QPixmap('icons/oxygen/accessories-text-editor.png')

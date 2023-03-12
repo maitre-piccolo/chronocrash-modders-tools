@@ -1051,7 +1051,11 @@ class FrameEditor(QtWidgets.QWidget):
 		
 		
 		buttonGroup = QtWidgets.QButtonGroup()
+		
 		self.buttonBar = QtWidgets.QToolBar()
+		# self.buttonBar.setContentsMargins(20, 20, 20, 20)
+		self.buttonBar.setStyleSheet("QLabel, QToolButton { margin-top:5px;}  QToolBar { margin:5px;border-top:1px solid #c9c9c9; }");
+		
 		self.label = QtWidgets.QLabel('Frame 0')
 		self.buttonBar.addWidget(self.label)
 		self.buttonBar.addSeparator()

@@ -139,7 +139,8 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 		self.editor.selectedText = replaceEntry.text()
 		self.search()
 		
-	def replaceAll(self):
+	def replaceAll_OLD(self):
+		
 		self.editor.updatingCursor = True
 		text = self.searchEntry.text()
 		replaceWith = self.replaceEntry.text()
@@ -150,6 +151,24 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 		
 		self.editor.lines = newLines
 		self.editor.updatingCursor = False
+		
+		
+		
+	def replaceAll(self):
+		self.initialSearchPos = self.editor.textCursor()
+		self.editor.moveCursor(QtGui.QTextCursor.Start)
+		
+		
+		replaceEntry = self.replaceEntry
+		newTxt = replaceEntry.text()
+		i= 0
+		while self.search():
+			
+			self.editor.selectedText = newTxt
+			i+=1
+			self.search()
+			
+		QtWidgets.QMessageBox.information(self, _('Replaced'), _(str(i) + " entries replaced"))
 		
 	def search(self, searchForward=True):
 		self.editor.setCenterOnScroll(True)
@@ -163,7 +182,7 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 			self.searchEntry.setStyleSheet("")
 			self.editor.setTextCursor(self.initialSearchPos)
 			self.initialSearchPos = None
-			return
+			return False
 
 		if searchForward:
 			options = QtGui.QTextDocument.FindFlags()
@@ -181,14 +200,29 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 			
 				self.searchEntry.setStyleSheet("QLineEdit { background: rgb(255, 175, 175); }");
 				 # selection-background-color: rgb(233, 99, 0);
+				 
+				return False
+			else:
+				return True
+				self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
 		else:
 			
 				
 			self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
+			return True
 
 			
 	def searchPrevious(self):
 		self.search(False)
+		
+	def searchTextChanged(self):
+		if(self.initialSearchPos != None):
+			self.editor.setTextCursor(self.initialSearchPos)
+		
+		self.search()
+			
+		
+		
 			
 	def setLines(self, lines):
 		self.updating = True
@@ -204,6 +238,8 @@ class EverydayEditor(AbstractEverydayEditor):
 	def __init__(self, parent):
 		AbstractEverydayEditor.__init__(self, parent)
 		layout = QtWidgets.QVBoxLayout()
+		layout.setContentsMargins(5, 0, 5, 5)
+		# layout.setSpacing(0)
 		self.setLayout(layout)
 		
 		
@@ -234,6 +270,22 @@ class EverydayEditor(AbstractEverydayEditor):
 		editorLayout.addWidget(self.stack1)
 		editorLayout.addWidget(self.stack2)
 		
+		
+		self.buttonBar = QtWidgets.QToolBar()
+		# self.buttonBar.setContentsMargins(0, 0, 0, 0)
+		self.setStyleSheet("QToolBar { margin:0px; padding:0px; }");
+		 # border-top:1px solid #c9c9c9;
+		saveIcon = QtGui.QIcon.fromTheme('document-save')
+		save = self.buttonBar.addAction(saveIcon, _('Save file (Ctrl+S)'), self.save)
+		
+		saveIcon = QtGui.QIcon.fromTheme('edit-undo')
+		save = self.buttonBar.addAction(saveIcon, _('Undo (Ctrl+Z)'), self.undo)
+		
+		saveIcon = QtGui.QIcon.fromTheme('edit-redo')
+		save = self.buttonBar.addAction(saveIcon, _('Redo (Ctrl+Shift+Z)'), self.redo)
+		
+		layout.addWidget(self.buttonBar, 0)
+		
 		layout.addWidget(editorLayout, 1)
 		
 		actionBox = QtWidgets.QHBoxLayout()
@@ -245,7 +297,7 @@ class EverydayEditor(AbstractEverydayEditor):
 		searchEntry.returnPressed.connect(self.search)
 		self.searchEntry = searchEntry
 		# searchEntry.textChanged.connect(self.filter)
-		searchEntry.textChanged.connect(self.search)
+		searchEntry.textChanged.connect(self.searchTextChanged)
 		actionBox.addWidget(QtWidgets.QLabel(_('Search') + ' :'), 0)
 		
 		actionBox.addWidget(searchEntry, 1)
@@ -274,6 +326,8 @@ class EverydayEditor(AbstractEverydayEditor):
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.refresh)
 		self.updating = False
 		# self.setAcceptDrops(True)
+		
+		self.setTabOrder(self.searchEntry, self.replaceEntry)
 		
 		
 
@@ -393,7 +447,10 @@ class EverydayEditor(AbstractEverydayEditor):
 				#toSyncEditor.cursorPosition = pos
 				toSyncEditor.restoreScroll()
 		self.updating = False
-		
+	
+	
+	def redo(self):
+		self.editor.redo()
 	
 	def remove(self, fd):
 		if fd in self.stack1.fd_list:
@@ -480,7 +537,11 @@ class EverydayEditor(AbstractEverydayEditor):
 		if(len(notSet) > 0):
 			txt += '<li>Not set : ' + ', '.join(notSet) + '</li>'
 		return txt
-		
+	
+	
+
+	
+	
 	def showToolTip(self, lineNumber, text, e):
 		try:
 			if text.count('\n') > 0:
@@ -539,7 +600,16 @@ class EverydayEditor(AbstractEverydayEditor):
 		except IndexError:
 			print('TOOL TIP INDEX ERROR')
 		
-		
+	def save(self):
+		self.updateFD()
+		current = self.current()
+		if current is None or current.path is None:
+			self.parent.saveAs()
+		else:
+			current.lines = self.getLines()
+			current.save()
+	
+	
 	def updateFD(self):
 		self.editor.fd.lines = list(self.editor.lines)
 		self.editor.fd.checkSave()
@@ -547,6 +617,8 @@ class EverydayEditor(AbstractEverydayEditor):
 			
 
 
+	def undo(self):
+		self.editor.undo()
 
 '''
 	A version that use a single instance of editor widget
