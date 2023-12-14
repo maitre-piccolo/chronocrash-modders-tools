@@ -55,11 +55,14 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 #from dialogeditor import DialogEditor
 
 from gui.project import ProjectSelector
+from gui.backupviewer import BackupViewer
 from gui.main import MainEditorWidget
 #from leveleditor import LevelEditorWidget
 
 #from spritesorter import SpriteSorterWidget
 from gui.menubar import MenuBar
+
+from gui.main.fileselector import File
 
 import style
 
@@ -114,7 +117,8 @@ class Frame(QtWidgets.QMainWindow):
 		
 		#ssWidget = SpriteSorterWidget()
 		
-		self.meWidget = MainEditorWidget()
+		self.meWidget = MainEditorWidget(self)
+		self.meWidget.menuBar = menuBar
 		#leWidget = LevelEditorWidget()
 		
 		cw = QtWidgets.QWidget()
@@ -122,6 +126,9 @@ class Frame(QtWidgets.QMainWindow):
 		#self.mainTabWidget.addTab(cw, _('Dialog editor'))
 		self.projectSelector = ProjectSelector(self)
 		#self.mainTabWidget.addTab(self.projectSelector, _('Project Selector'))
+		
+		
+		self.backupViewer = BackupViewer(self)
 		
 		#self.meWidget = meWidget
 		#self.mainTabWidget.addTab(self.meWidget, _('Main editor'))
@@ -132,6 +139,10 @@ class Frame(QtWidgets.QMainWindow):
 
 		#self.mainTabWidget.currentChanged.connect(self.tabChange)
 		
+		
+		from data.db import DB
+		self.DB = DB('backups.db')
+		File.DB = self.DB
 		
 		
 		from dialogeditor import DialogEditor
@@ -146,9 +157,11 @@ class Frame(QtWidgets.QMainWindow):
 		#cw.addWidget(self.mainTabWidget)
 		self.meWidget.hide()
 		self.dialogWidget.hide()
+		self.backupViewer.hide()
 		layout.addWidget(self.projectSelector)
 		layout.addWidget(self.meWidget)
 		layout.addWidget(self.dialogWidget)
+		layout.addWidget(self.backupViewer)
 
 		#self.textEditor = DialogEditor()
 		#layout.addWidget(self.textEditor)
@@ -161,9 +174,22 @@ class Frame(QtWidgets.QMainWindow):
 		self.setEditorTheme(settings.get_option('gui/editor_theme', None))
 		
 		
+		self.autosaveTimer = QtCore.QTimer()
+		interval = settings.get_option('autobackup/timeout', 60) * 1000
+		# interval = 10000
+		self.autosaveTimer.setInterval(interval)
+		self.autosaveTimer.timeout.connect(self.autoSave)
+		self.autosaveTimer.start()
+		
+		
 		#self.createTrayIcon()
 		#self.trayIcon.show()
 		#self.trayIcon.activated.connect(self.trayIconClick)
+		
+		
+	def autoSave(self):
+		if hasattr(self.mainWidget, "fileSelector"):
+			self.mainWidget.backupUnsaved();
 		
 		
 	def createTrayIcon(self):
@@ -286,7 +312,7 @@ class Frame(QtWidgets.QMainWindow):
 			settings.set_option('gui/editor_theme', name)
 		self.mainWidget.setTheme()
 		
-	def setMode(self, mode):
+	def setMode(self, mode, params={}):
 		self.mainWidget.hide()
 		if mode == 'dialog':
 			
@@ -296,6 +322,9 @@ class Frame(QtWidgets.QMainWindow):
 			self.mainWidget = self.projectSelector
 		elif mode == 'mainEditor':
 			self.mainWidget = self.meWidget
+		elif mode == 'backupViewer':
+			self.backupViewer.reload(params)
+			self.mainWidget = self.backupViewer
 			
 		self.mainWidget.show()
 		
@@ -356,7 +385,7 @@ def excepthook(exc_type, exc_value, exc_tb):
 	msg = QtWidgets.QMessageBox()
 	msg.setIcon(QtWidgets.QMessageBox.Warning)
 	msg.setText("AN ERROR HAS OCCURED")
-	msg.setInformativeText('PLEASE COPY THE ERROR MESSAGE AND REPORT IT HERE : <a href="https://www.chronocrash.com/forum/threads/chronocrash-modders-tools.2467">http://www.chronocrash.com/forum/index.php?topic=2759.0</a><pre>\n\nTHEN CLICK "OK", SAVE EVERYTHING YOU CAN AND RESTART THE SOFTWARE BEFORE CONTINUING USING IT\n\n(OR CONTINUE USING IT AT YOUR OWN RISKS)\n\n' + tb + '</pre>')
+	msg.setInformativeText('PLEASE COPY THE ERROR MESSAGE AND REPORT IT HERE : <a href="https://www.chronocrash.com/forum/threads/chronocrash-modders-tools.2467">https://www.chronocrash.com/forum/threads/chronocrash-modders-tools.2467/</a><pre>\n\nTHEN CLICK "OK", SAVE EVERYTHING YOU CAN AND RESTART THE SOFTWARE BEFORE CONTINUING USING IT\n\n(OR CONTINUE USING IT AT YOUR OWN RISKS)\n\n' + tb + '</pre>')
 	msg.setWindowTitle("CRASH REPORT")
 	msg.setDetailedText(tb)
 	msg.setStandardButtons(QtWidgets.QMessageBox.Ok | QtWidgets.QMessageBox.Cancel)

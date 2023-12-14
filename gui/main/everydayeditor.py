@@ -7,6 +7,8 @@ from common import util
 from common import settings
 from gui.util import FileInput, getSpriteShowingPath, loadSprite
 
+from gui import modales
+
 from gui.portrait import IconViewer, Portrait
 
 from qutepart import EverydayPart
@@ -27,7 +29,6 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 	def __init__(self, parent):
 		self.parent = parent
 		
-		self.initialSearchPos = None
 		QtWidgets.QWidget.__init__(self)
 		
 		
@@ -39,14 +40,59 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 		#print (self.editor._highlighter.syntax().comment)
 		with self.editor:
 			start, end = self.editor.selectedPosition
-			start = start[0]
-			end = end[0]
-			if end < start:
+			
+			
+			if (end[0] < start[0]) or (end[0] == start[0] and end[1] < start[1]):
+
 				tmp = end
 				end = start
 				start = tmp
 			print(start, end)
+			
+			startCol = start[1]
+			start = start[0]
+			endCol = end[1]+2
+			end = end[0]
+			
+			
+			
+			
+				
+				#tmp = endCol
+				#endCol = startCol
+				#startCol = tmp
+			#print(start, end)
+			
 			cs = self.getCommentString(start)
+			multiLine = False
+			if(cs == '/*'):
+				closeCS = '*/'
+				multiLine = True
+				
+			
+		
+				
+			
+				
+			if(multiLine):
+				if(start == end and startCol == endCol-2):
+					lineContent = self.editor.lines[start]
+					self.editor.lines[start] = cs + lineContent + closeCS
+					return
+				
+				
+				lineContent = self.editor.lines[start]
+				j = startCol
+				lineContent = lineContent[0:j] + cs + lineContent[j:] # insert(j, '#')
+				self.editor.lines[start] = lineContent
+				
+				lineContent = self.editor.lines[end]
+				j = endCol
+				lineContent = lineContent[0:j] + closeCS + lineContent[j:] # insert(j, '#')
+				self.editor.lines[end] = lineContent
+				
+				return
+			
 			for i in range(start, end+1):
 				lineContent = self.editor.lines[i]
 				if len(lineContent) == 0:
@@ -62,14 +108,42 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 	def uncomment(self):
 		with self.editor:
 			start, end = self.editor.selectedPosition
-			start = start[0]
-			end = end[0]
-			if end < start:
+			
+			if (end[0] < start[0]) or (end[0] == start[0] and end[1] < start[1]):
+
 				tmp = end
 				end = start
 				start = tmp
+			print(start, end)
+			
+			startCol = start[1]
+			start = start[0]
+			endCol = end[1]+2
+			end = end[0]
 				
 			cs = self.getCommentString(start)
+			multiLine = False
+			if(cs == '/*'):
+				closeCS = '*/'
+				multiLine = True
+			
+			if(multiLine):
+				lineContent = self.editor.lines[start]
+				lineContent = lineContent.replace(cs, '', 1)
+				self.editor.lines[start] = lineContent
+				
+				lineContent = self.editor.lines[end]
+				lineContent = lineContent[::-1]
+				lineContent = lineContent.replace(cs, '', 1)
+				lineContent = lineContent[::-1]
+				self.editor.lines[end] = lineContent
+				
+				
+				
+				
+				return
+				
+			
 			for i in range(start, end+1):
 				lineContent = self.editor.lines[i]
 				if len(lineContent) == 0:
@@ -86,6 +160,8 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 		return self.editor.lines
 		
 	def focusForSearch(self):
+		print('focusForSearch');
+		self.editor.initialSearchPos = None # so that it will takes cursor current position
 		self.searchEntry.setFocus()
 		selection = self.editor.selectedText
 
@@ -116,6 +192,8 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 			return '//'
 		else:
 			try:
+				#print('here', self.editor._highlighter.syntax().__dir__())
+				#print('here', vars(self.editor._highlighter.syntax()))
 				return self.editor._highlighter.syntax().comment
 			except:
 				pass
@@ -136,8 +214,9 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 			
 	def replace(self):
 		replaceEntry = self.replaceEntry
-		self.editor.selectedText = replaceEntry.text()
-		self.search()
+		if(self.editor.selectedText != ''):
+			self.editor.selectedText = replaceEntry.text()
+			self.search()
 		
 	def replaceAll_OLD(self):
 		
@@ -155,47 +234,60 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 		
 		
 	def replaceAll(self):
-		self.initialSearchPos = self.editor.textCursor()
-		self.editor.moveCursor(QtGui.QTextCursor.Start)
+		
 		
 		
 		replaceEntry = self.replaceEntry
 		newTxt = replaceEntry.text()
+		
+		if(self.editor.selectedText != ''):
+			self.editor.replaceAllRaw(self.searchEntry.text(), newTxt)
+			return
+		
+		self.editor.initialSearchPos = self.editor.textCursor()
+		self.editor.moveCursor(QtGui.QTextCursor.Start)
 		i= 0
-		while self.search():
+		while self.search(True, False):
 			
 			self.editor.selectedText = newTxt
 			i+=1
-			self.search()
+			# self.search(True, False)
 			
 		QtWidgets.QMessageBox.information(self, _('Replaced'), _(str(i) + " entries replaced"))
 		
-	def search(self, searchForward=True):
+	def search(self, searchForward=True, loop=True):
 		self.editor.setCenterOnScroll(True)
 		
-		if(self.initialSearchPos == None):
-			self.initialSearchPos = self.editor.textCursor()
+		print('editor', self.editor.initialSearchPos)
+		if(self.editor.initialSearchPos == None):
+			self.editor.initialSearchPos = self.editor.textCursor()
 			
 		text = self.searchEntry.text()
 		print('text', text)
 		if(text == ''): 
 			self.searchEntry.setStyleSheet("")
-			self.editor.setTextCursor(self.initialSearchPos)
-			self.initialSearchPos = None
+			self.editor.setTextCursor(self.editor.initialSearchPos)
+			self.editor.initialSearchPos = None
 			return False
 
 		if searchForward:
 			options = QtGui.QTextDocument.FindFlags()
 		else:
 			options = QtGui.QTextDocument.FindBackward
-		if not self.editor.find(text, options): # first try to search from cursor to end of document
+		result = self.editor.find(text, options) # first try to search from cursor to end of document
+		
+		if(result):
+			self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
+			return True
+		
+		elif(loop and not result):
 			self.editor.moveCursor(QtGui.QTextCursor.Start)
 			if not self.editor.find(text, options): # then try to search from start to end of document
 			
 			
-				# self.editor.moveCursor(self.initialSearchPos)
-				self.editor.setTextCursor(self.initialSearchPos)
-				self.initialSearchPos = None
+				# self.editor.moveCursor(self.editor.initialSearchPos)
+				self.editor.setTextCursor(self.editor.initialSearchPos)
+				self.editor.initialSearchPos = None
 			
 			
 				self.searchEntry.setStyleSheet("QLineEdit { background: rgb(255, 175, 175); }");
@@ -203,21 +295,21 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 				 
 				return False
 			else:
-				return True
+				
 				self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
-		else:
+				return True
+	
 			
 				
-			self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
-			return True
+			
 
 			
 	def searchPrevious(self):
 		self.search(False)
 		
 	def searchTextChanged(self):
-		if(self.initialSearchPos != None):
-			self.editor.setTextCursor(self.initialSearchPos)
+		if(self.editor.initialSearchPos != None):
+			self.editor.setTextCursor(self.editor.initialSearchPos)
 		
 		self.search()
 			
@@ -270,27 +362,47 @@ class EverydayEditor(AbstractEverydayEditor):
 		editorLayout.addWidget(self.stack1)
 		editorLayout.addWidget(self.stack2)
 		
+		theme = settings.get_option('gui/widgets_theme', None)
+		
 		
 		self.buttonBar = QtWidgets.QToolBar()
 		# self.buttonBar.setContentsMargins(0, 0, 0, 0)
 		self.setStyleSheet("QToolBar { margin:0px; padding:0px; }");
 		 # border-top:1px solid #c9c9c9;
-		saveIcon = QtGui.QIcon.fromTheme('document-save')
+		# saveIcon = QtGui.QIcon.fromTheme('document-save')
+		saveImage = QtGui.QImage('icons/save.svg')
+		if(theme == "Dark"): saveImage.invertPixels()
+		
+		saveIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(saveImage))
+		
 		save = self.buttonBar.addAction(saveIcon, _('Save file (Ctrl+S)'), self.save)
 		
-		saveIcon = QtGui.QIcon.fromTheme('edit-undo')
-		save = self.buttonBar.addAction(saveIcon, _('Undo (Ctrl+Z)'), self.undo)
+		saveImage = QtGui.QImage('icons/undo.svg')
+		if(theme == "Dark"): saveImage.invertPixels()
 		
-		saveIcon = QtGui.QIcon.fromTheme('edit-redo')
-		save = self.buttonBar.addAction(saveIcon, _('Redo (Ctrl+Shift+Z)'), self.redo)
+		undoIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(saveImage))
+		save = self.buttonBar.addAction(undoIcon, _('Undo (Ctrl+Z)'), self.undo)
+		
+		saveImage = QtGui.QImage('icons/redo.svg')
+		if(theme == "Dark"): saveImage.invertPixels()
+		
+		redoIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(saveImage))
+		save = self.buttonBar.addAction(redoIcon, _('Redo (Ctrl+Shift+Z)'), self.redo)
+		
+		
+		genPaths = self.buttonBar.addAction( _('Generate paths'), self.generatePaths)
+		
+		viewRevisions = self.buttonBar.addAction( _('View revisions'), self.viewRevisions)
 		
 		layout.addWidget(self.buttonBar, 0)
 		
 		layout.addWidget(editorLayout, 1)
 		
 		actionBox = QtWidgets.QHBoxLayout()
-		findNext = QtWidgets.QPushButton(QtGui.QIcon.fromTheme('go-down'), None)
-		findPrevious = QtWidgets.QPushButton(QtGui.QIcon.fromTheme('go-up'), None)
+		# findNext = QtWidgets.QPushButton(QtGui.QIcon.fromTheme('go-down'), None)
+		# findPrevious = QtWidgets.QPushButton(QtGui.QIcon.fromTheme('go-up'), None)
+		findNext = QtWidgets.QPushButton(undoIcon, None)
+		findPrevious = QtWidgets.QPushButton(redoIcon, None)
 		findNext.pressed.connect(self.search)
 		findPrevious.pressed.connect(self.searchPrevious)
 		searchEntry = QtWidgets.QLineEdit()
@@ -330,20 +442,28 @@ class EverydayEditor(AbstractEverydayEditor):
 		self.setTabOrder(self.searchEntry, self.replaceEntry)
 		
 		
+	#@util.threaded
+	def detectSyntax(self, editor, path):
+		if(path is not None):
+			extension = os.path.splitext(path)[1]
+		else:
+			extension = None
+			
+		if extension == '.txt':
+			#self.editor.detectSyntax(xmlFileName='c.xml')
+			theme = settings.get_option('gui/editor_theme', None)
+			print("checking theme")
+			if(theme != None and 'dark' in theme.lower()):
+				print("theme is dark")
+				editor.detectSyntax(xmlFileName='entity-dark.xml')
+			else:
+				editor.detectSyntax(xmlFileName='entity.xml')
+		else:
+			editor.detectSyntax(sourceFilePath=path)
 
 				
 	def addToStack(self, fd, stack=None):
-		#@util.threaded
-		def detectSyntax():
-			if extension == '.txt':
-				#self.editor.detectSyntax(xmlFileName='c.xml')
-				theme = settings.get_option('gui/editor_theme', None)
-				if(theme != None and 'dark' in theme.lower()):
-					editor.detectSyntax(xmlFileName='entity-dark.xml')
-				else:
-					editor.detectSyntax(xmlFileName='entity.xml')
-			else:
-				editor.detectSyntax(sourceFilePath=fd.path)
+		
 				
 		
 		if stack is None: # Take current stack
@@ -365,7 +485,7 @@ class EverydayEditor(AbstractEverydayEditor):
 			#print(mt)
 		else:
 			extension = None
-		detectSyntax()
+		self.detectSyntax(editor, fd.path)
 		if fd.lines != None:
 			editor.lines = list(fd.lines)
 		editor.textChanged.connect(self.notifyChange)
@@ -402,7 +522,8 @@ class EverydayEditor(AbstractEverydayEditor):
 			
 			#self.editor.fd.state = 0
 			obj.fd.state = 1
-			self.fileSelector.updateStates(obj.fd)
+			if(hasattr(self, "fileSelector")):
+				self.fileSelector.updateStates(obj.fd)
 			self.editor = obj
 			#return True
 		#else:
@@ -410,12 +531,30 @@ class EverydayEditor(AbstractEverydayEditor):
 	
 	
 
+	def keyPressEvent(self, e):
+		
+				
+		if e.key() == QtCore.Qt.Key_Escape:
+			print('escape pressed')
+			self.editor.initialSearchPos = None
+		else:
+			AbstractEverydayEditor.keyPressEvent(self, e)
 	
 
+
+	def updateTheme(self):
+		for fd in self.stack1.fd_list:
+			editor = self.stack1.fd_list[fd]
+			self.detectSyntax(editor, fd.path)
 	
 	def getEditors(self):
 		return list(self.stack1.fd_list.values()) + list(self.stack2.fd_list.values())
 	
+	
+	def generatePaths(self):
+		res = modales.GeneratePathsDialog(self.editor).exec()
+		
+		#self.editor.selectedText = res
 	
 	def notifyChange(self):
 		if self.updating : return
@@ -517,19 +656,26 @@ class EverydayEditor(AbstractEverydayEditor):
 		#self.updating = False
 		
 	def extractData(self, command, pLine):
-		if(command not in('bglayer', 'fglayer', 'background')):
+		if(command not in('bglayer', 'fglayer', 'background', 'panel', 'frontpanel')):
 			return ''
 		params = {
 	    'bglayer':["path" ,"xratio" ,"zratio" ,"xposition" ,"zposition" ,"xspacing" ,"zspacing" ,"xrepeat" ,"zrepeat" ,"transparency" ,"alpha" ,"watermode" ,"amplitude" ,"wavelength" ,"wavespeed" ,"bgspeedratio"],
 	    
 	    'fglayer':['path' ,"z" ,"xratio" ,"zratio" ,"xposition" ,"zposition" ,"xspacing" ,"zspacing" ,"xrepeat" ,"zrepeat" ,"transparency" ,"alpha" ,"watermode" ,"amplitude" ,"wavelength" ,"wavespeed" ,"bgspeedratio"],
 	    
-	    'background':["path" ,"xratio" ,"zratio" ,"xposition" ,"zposition" ,"xspacing" ,"zspacing" ,"xrepeat" ,"zrepeat" ,"transparency" ,"alpha"]
+	    'background':["path" ,"xratio" ,"zratio" ,"xposition" ,"zposition" ,"xspacing" ,"zspacing" ,"xrepeat" ,"zrepeat" ,"transparency" ,"alpha"],
+	    	
+	    'panel':['path'],
+	    'frontpanel':['path']
+	    	
+	    
 		}
 		
 		i = 1
 		txt = '<ul>'
-		while(pLine.next() != None):
+
+		while(pLine.next() != None and i < len(params[command])):
+			print('command', command, pLine.current(), params[command])
 			txt += '<li>' + params[command][i] + ' = ' + pLine.current() + '</li>'
 			i+= 1
 			
@@ -559,17 +705,30 @@ class EverydayEditor(AbstractEverydayEditor):
 			elif text != '':
 				pLine = ParsedLine(text)
 				part = pLine.next()
-				if part in ('frame', 'bglayer', 'fglayer', 'background', 'panel'):
+				if part in ('frame', 'bglayer', 'fglayer', 'background', 'panel', 'frontpanel'):
 					p = pLine.next()
+					if(p is None): return
+					print('tooltip', part, p)
 					data_path = settings.get_option('general/data_path', '')
 					path = os.path.join(os.path.dirname(data_path), p)
 					print(path)
 					
 					
+					com = pLine.getCom()
+				
+				
+					transp = 0
+					if('transp=' in com):
+						parts = com.split('transp=')
+						part = parts[1]
+						parts = part.split(';')
+						transp = parts[0]
 					
 					
 					
-					img = loadSprite(path)
+					
+					
+					img = loadSprite(path, transp)
 					data = QtCore.QByteArray()
 					buffer = QtCore.QBuffer(data)
 					#buffer.open(QtCore.QIODevice.WriteOnly);
@@ -619,6 +778,10 @@ class EverydayEditor(AbstractEverydayEditor):
 
 	def undo(self):
 		self.editor.undo()
+		
+	def viewRevisions(self):
+		self.parent.core.setMode('backupViewer', {'path':self.current().path})
+		
 
 '''
 	A version that use a single instance of editor widget

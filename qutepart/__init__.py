@@ -24,6 +24,8 @@ import os.path
 import logging
 import platform
 
+from PyQt5 import QtGui
+
 from PyQt5.QtCore import QRect, Qt, pyqtSignal, QRegExp, QSignalBlocker, QEvent, QMimeData
 from PyQt5.QtWidgets import QAction, QApplication, QDialog, QPlainTextEdit, QTextEdit, QToolTip
 from PyQt5.QtPrintSupport import QPrintDialog
@@ -321,7 +323,10 @@ class Qutepart(QPlainTextEdit):
 
         self.blockCountChanged.connect(self._updateLineNumberAreaWidth)
         self.updateRequest.connect(self._updateSideAreas)
-        #self.cursorPositionChanged.connect(self._updateExtraSelections)
+        
+        # WARNING why did I comment this line before ?
+        self.cursorPositionChanged.connect(self._updateExtraSelections)
+        
         self.textChanged.connect(self._dropUserExtraSelections)
         self.textChanged.connect(self._resetCachedText)
         self.textChanged.connect(self._clearLintMarks)
@@ -332,9 +337,16 @@ class Qutepart(QPlainTextEdit):
         self.setFont(QFont(fontFamily))
 
         self._updateLineNumberAreaWidth(0)
+        self.overwriteHighlightColor = None
         self.highlightColor = QColor('#ffffa3')
+        #self.highlightColor = QColor('#2CA2AE')
+        
         self._updateExtraSelections()
         self.syntaxLoaded.connect(self.loadSyntax)
+        
+        
+        if(settings.get_option('editor/scroll_instead_of_wrap', False)):
+	        self.setLineWrapMode(QPlainTextEdit.LineWrapMode.NoWrap);
         
 
     def terminate(self):
@@ -1217,7 +1229,13 @@ class Qutepart(QPlainTextEdit):
     def _currentLineExtraSelections(self):
         """QTextEdit.ExtraSelection, which highlightes current line
         """
-        lineColor = self.highlightColor
+        #self.highlightColor = QColor('#2CA2AE')
+        if(self.overwriteHighlightColor != None):
+        	lineColor = self.overwriteHighlightColor
+        else:
+        	
+	        lineColor = self.highlightColor
+        
         def makeSelection(cursor):
             selection = QTextEdit.ExtraSelection()
             selection.format.setBackground(lineColor)
@@ -1235,6 +1253,16 @@ class Qutepart(QPlainTextEdit):
             return [makeSelection(self.textCursor())]
 
     def _updateExtraSelections(self):
+        
+        
+        
+        if(self.updatingCursor):return
+    
+        if(self.highlightCurrentWordJustFinished):
+            self.highlightCurrentWordJustFinished = False
+            return
+    
+        print("updating cursor updateExtra")
         """Highlight current line
         """
         cursorColumnIndex = self.textCursor().positionInBlock()
@@ -1497,14 +1525,29 @@ class EverydayPart(Qutepart):
 	tabAlwaysIndent = True
 
 	def __init__(self, *args):
+		
+		self.updatingCursor = False
+		self.highlightCurrentWordJustFinished = False
+		# self.mousePressed = False
 		Qutepart.__init__(self, *args)
+		
+		self.completionEnabled = settings.get_option('editor/completion_enabled', True)
+		
 		self.selectionChanged.connect(self.highlightCurrentWord)
 		#self.newExtraSelection.connect(self.addExtraSelection)
-		self.updatingCursor = False
+		
 		self.wordHighlighted = False
 		self.mousePressed = False
 		
 		self.searchColor = QColor('#ffffa3')
+		
+		ovw_highlight_color = settings.get_option('editor/color_highlighted_line', None)
+		
+		if(ovw_highlight_color != None):
+			self.overwriteHighlightColor = QColor(ovw_highlight_color)
+
+		
+		self.initialSearchPos = None
 		
 	def addExtraSelection(self, selection):
 		pass
@@ -1515,10 +1558,19 @@ class EverydayPart(Qutepart):
 		data_path = settings.get_option('general/data_path', '')
 		newText = []
 		first = True
+		
+		extensionsToCheck = ('.wav', '.ogg', '.bor')
+		
+		
 		for line in text.split('\n'):
 
 			if data_path in line:
-				newLine = '	frame data' + line[line.index(data_path)+len(data_path):]
+				#print(line)
+				command = 'frame'
+				#if line.endswith(extensionsToCheck):
+				if any(x in line for x in extensionsToCheck):
+					command = 'sound'
+				newLine = '	' + command + ' data' + line[line.index(data_path)+len(data_path):]
 				if first:
 					newLine = '\n' + newLine
 				newText.append(newLine)
@@ -1562,6 +1614,7 @@ class EverydayPart(Qutepart):
 			#line, col = self.cursorPosition
 			for line in range(start, end+1):
 				self.insertText((line, 0), e.text())
+
 		else:
 			Qutepart.keyPressEvent(self, e)
 		
@@ -1589,6 +1642,10 @@ class EverydayPart(Qutepart):
 		self.verticalScrollBar().setSliderPosition(self.previousScroll)
 
 	def highlightCurrentWord(self): # PROBABLY DAIMAO
+		print("highlight current word");
+		
+		
+	
 		#@threaded
 		def buildFormat():
 			#selection = QTextEdit.ExtraSelection()
@@ -1607,6 +1664,7 @@ class EverydayPart(Qutepart):
 			self.moveCursor(QTextCursor.Start);
 			extraSelections = []
 			while self.find(word):
+				print("found")
 				selection = QTextEdit.ExtraSelection()
 				selection.cursor = self.textCursor()
 				selection.format.setBackground(self.searchColor)
@@ -1614,9 +1672,11 @@ class EverydayPart(Qutepart):
 				
 			#for e in extraSelections:
 				#print(e.cursor.block().text())
-
+			
+			
 			QPlainTextEdit.setExtraSelections(self, extraSelections)
-
+			
+			
 			#while (index != -1 and index != 0):
 				## Select the matched text and apply the desired format
 				#cursor.setPosition(index)
@@ -1635,6 +1695,7 @@ class EverydayPart(Qutepart):
 		
 		def endBuild():
 			self.updatingCursor = False
+			self.highlightCurrentWordJustFinished = True 
 
 			#self.selectionChanged.connect(self.highlightCurrentWord)
 			if self._highlighter != None:
@@ -1644,6 +1705,7 @@ class EverydayPart(Qutepart):
 		
 		if self.updatingCursor or self.mousePressed: return
 	
+		# self.blockSignals(True)
 		self.updatingCursor = True
 		word = self.selectedText
 		# print('word', '|' + word + '|')
@@ -1651,6 +1713,7 @@ class EverydayPart(Qutepart):
 			self.setExtraSelections([])
 			#QPlainTextEdit.setExtraSelections(self, [])
 			self.updatingCursor = False
+			self.blockSignals(False)
 			return
 		
 		
@@ -1714,7 +1777,7 @@ class EverydayPart(Qutepart):
 
 		# print('word', 'continue 2')
 		buildFormat()
-		
+		# self.blockSignals(False)
 		
 		#cursor.select(QTextCursor.WordUnderCursor);
 		
@@ -1725,6 +1788,70 @@ class EverydayPart(Qutepart):
 		#cursor.setCharFormat(format)
 		##cursor.mergeCharFormat(fmt); # I did try also cursor.setCharFormat(fmt)
 
+	def search(self, text, searchForward=True, loop=True):
+		self.setCenterOnScroll(True)
+		
+		print('editor', self.initialSearchPos)
+		if(self.initialSearchPos == None):
+			self.initialSearchPos = self.textCursor()
+			
+		
+		print('text', text)
+		if(text == ''): 
+			#self.searchEntry.setStyleSheet("")
+			self.setTextCursor(self.initialSearchPos)
+			self.initialSearchPos = None
+			return False
+
+		if searchForward:
+			options = QtGui.QTextDocument.FindFlags()
+		else:
+			options = QtGui.QTextDocument.FindBackward
+		result = self.find(text, options) # first try to search from cursor to end of document
+		
+		if(result):
+			#self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
+			return True
+		
+		elif(loop and not result):
+			self.moveCursor(QtGui.QTextCursor.Start)
+			if not self.find(text, options): # then try to search from start to end of document
+			
+			
+				# self.editor.moveCursor(self.editor.initialSearchPos)
+				self.setTextCursor(self.initialSearchPos)
+				self.initialSearchPos = None
+			
+			
+				#self.searchEntry.setStyleSheet("QLineEdit { background: rgb(255, 175, 175); }");
+				 # selection-background-color: rgb(233, 99, 0);
+				 
+				return False
+			else:
+				
+				#self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
+				return True
+	
+	
+	def replace(self, text1, text2):
+		if(self.selectedText != ''):
+			self.selectedText = text2
+			self.search(text1)
+			
+	def replaceAllRaw(self, text, replaceWith):
+		self.updatingCursor = True
+		
+		if(self.selectedText == ''):
+		
+			lines = self.lines
+			newLines = []
+			for line in lines:
+				newLines.append(line.replace(text, replaceWith))
+			
+			self.lines = newLines
+		else:
+			self.selectedText = self.selectedText.replace(text, replaceWith)
+		self.updatingCursor = False
 	
 	def setTheme(self, data):
 		if data is None:
@@ -1733,6 +1860,7 @@ class EverydayPart(Qutepart):
 		self.setStyleSheet('QPlainTextEdit {' + ';'.join(data['css']) + '}')
 		self.searchColor = data['searchColor']
 		self.highlightColor = data['currentLine']
+		#self.highlightColor = QColor('#2CA2AE')
 	
 	
 	def wheelEvent(self, e):

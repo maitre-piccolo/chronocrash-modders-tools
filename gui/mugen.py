@@ -2,6 +2,8 @@ import os, subprocess
 import re
 import shutil
 
+from data import FileWrapper
+
 from common import settings
 from gui.util import FileInput
 from PyQt5 import QtCore, QtGui, QtWidgets
@@ -58,9 +60,12 @@ def getDelay(mugenDelay):
 		return str(int(mugenDelay * 1.3))
 
 class MugenWidget(QtWidgets.QWidget):
-	def __init__(self):
-		QtWidgets.QWidget.__init__(self)
+	def __init__(self, parent):
+		QtWidgets.QWidget.__init__(self, parent)
+		self.parent = parent # prevent garbabe collector to delete parent dialog
 		layout = QtWidgets.QFormLayout()
+		
+		self.setMinimumSize(500,200)
 		
 		dataPath = settings.get_option('general/datapath', '')
 		charsFolderPath = os.path.join(dataPath, 'chars')
@@ -72,16 +77,16 @@ class MugenWidget(QtWidgets.QWidget):
 			lookPath = dataPath
 		else:
 			lookPath = os.path.dirname(lastSffPath)
-		self.sffFile = FileInput('openFile', lastSffPath, 'Select character SFF file', lookPath, 'SFF Files (*.sff)')
+		self.sffFile = FileInput(self, 'openFile', lastSffPath, 'Select character SFF file', lookPath, 'SFF Files (*.sff)')
 		layout.addRow(_('SFF file') + ' : ', self.sffFile)
 		
 		
-		self.airFile = FileInput('openFile', lastSffPath.replace('.sff', '.air'), 'Select character SFF file', lookPath, 'AIR Files (*.air)')
+		self.airFile = FileInput(self, 'openFile', lastSffPath.replace('.sff', '.air'), 'Select character SFF file', lookPath, 'AIR Files (*.air)')
 		layout.addRow(_('Air file') + ' : ', self.airFile)
 		self.sffFile.changed.connect(self.airFile.clear)
 		
 		outCharsFolderPath = os.path.join(dataPath, 'publishData' + os.sep + 'chars')
-		self.modelFolder = FileInput('folder', settings.get_option('mugen_tool/output_folder', ''), 'Select output folder', dataPath)
+		self.modelFolder = FileInput(self, 'folder', settings.get_option('mugen_tool/output_folder', ''), 'Select output folder', dataPath)
 		layout.addRow(_('Output folder') + ' : ', self.modelFolder)
 		
 		button = QtWidgets.QPushButton(_('Start process'))
@@ -94,7 +99,7 @@ class MugenWidget(QtWidgets.QWidget):
 		
 	def clearLine(self, line):
 		#line = self.clearComment(line)
-		while line[0] == ' ' or line[0] == '	':
+		while len(line) > 0 and ( line[0] == ' ' or line[0] == '	'):
 			line = line[1:]
 		return line
 		
@@ -132,8 +137,10 @@ class MugenWidget(QtWidgets.QWidget):
 			air_path = os.path.join(os.path.dirname(sff_path), modelName + '.air')
 		
 		# First, gather additional information from air file
-		airFile = open(air_path, 'rU')
-		airData = airFile.readlines()
+		#airFile = open(air_path, 'r')
+		airFile = FileWrapper(air_path)
+		#airData = airFile.readlines()
+		airData = airFile.getLines()
 		
 		airParams = re.compile('(-?\d+),(.*)(-?\d+),(.*)(-?\d+)(.*)')
 		
@@ -143,6 +150,7 @@ class MugenWidget(QtWidgets.QWidget):
 		#group, frameNumber, x_shift, y_shift, delay
 		for line in airData:
 			line = self.clearLine(line)
+			if(len(line) == 0): continue
 			#print line
 			if not line[0] == ';' and ('[Begin Action' in line or '[Begin action' in line):
 				group = int(re.search(r'\d+', line).group())
@@ -185,8 +193,10 @@ class MugenWidget(QtWidgets.QWidget):
 		
 		
 		# Gather sprites base information
-		tmpFile = open(tmp_path, 'rU')
-		tmpData = tmpFile.readlines()
+		#tmpFile = open(tmp_path, 'r')
+		tmpFile = FileWrapper(tmp_path)
+		#tmpData = tmpFile.readlines()
+		tmpData = tmpFile.getLines()
 		
 		spriteGroups = {}
 		i = 10

@@ -1,0 +1,105 @@
+import os, re, time
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt
+
+from common import util
+from common import settings
+
+
+
+class BackupViewer(QtWidgets.QWidget):
+	
+
+	
+	def __init__(self, parent):
+		self.mainFrame = parent
+		
+		QtWidgets.QWidget.__init__(self)
+		
+		self.layout = QtWidgets.QVBoxLayout()
+		
+		button = QtWidgets.QPushButton(_('Return to main view'))
+		self.layout.addWidget(button)
+		button.clicked.connect(self.returnToMainView)
+		
+		
+		self.backupListWidget = BackupList()
+		
+		revisions = self.mainFrame.DB.getAllRevisions()
+		
+		self.backupListWidget.loadRevisions(revisions)
+		
+		self.layout.addWidget(self.backupListWidget, 1)
+		
+		self.setLayout(self.layout)
+		
+	def returnToMainView(self):
+		self.mainFrame.setMode("mainEditor")
+		
+		
+		
+class BackupList(QtWidgets.QTableView):
+	
+	def __init__(self):
+		QtWidgets.QTableView.__init__(self)
+		
+		self.model = BackupListModel()
+		
+		#self.filterModel.sort = self.model.sort
+		self.setModel(self.model)
+		
+		self.model.append([{'path':'test', 'birth_date':'20222', 'unsaved':1}])
+		
+		
+class BackupListModel(QtCore.QAbstractTableModel):
+	def __init__(self, parent=None, *args):
+		QtCore.QAbstractTableModel.__init__(self, parent, *args)
+		self.tracks = []
+	
+	def append(self, data, duringInit=False):
+		self.insert(data, len(self.tracks), duringInit)
+		
+	def insert(self, data, pos, duringInit=False):
+		print("BEGIN INSERT ROWS", data, pos, len(data)-1)
+		if type(data).__name__=='list' or type(data) is tuple:
+			
+			
+			if(duringInit): self.beginInsertRows(QtCore.QModelIndex(), pos, pos-1) # THIS should be incorrect but prevent bugs
+			else: self.beginInsertRows(QtCore.QModelIndex(), pos, pos + len(data)-1) # THIS should always be correct but creates bugs for some reason (view extend for no reason, and it creates freezes)
+			
+			print("pos == len", pos == len(self.tracks))
+			if(pos == len(self.tracks)):
+				self.tracks.extend(data)
+			else:
+				for track in data:
+					self.tracks.insert(pos, track)
+			self.endInsertRows()
+		else:
+			self.beginInsertRows(QtCore.QModelIndex(), pos, pos +1)
+			self.tracks.insert(data, pos)
+			self.endInsertRows()
+			
+		# self.endInsertRows()
+		#self.dataChanged.emit(QtCore.QModelIndex(), QtCore.QModelIndex())
+		
+	def rowCount(self, parent):
+		return len(self.tracks)
+
+	def columnCount(self, parent):
+		return 3
+		return len(self.tracks[0])
+			
+	def data(self, index, role):
+		if not index.isValid():
+			return None
+		track = self.tracks[index.row()]
+		if role == Qt.DisplayRole:
+			if index.column() == 0:
+				return self.tracks[index.row()]['path']
+			elif index.column() == 1:
+				return self.tracks[index.row()]['birth_date']
+			elif index.column() == 2:
+				return self.tracks[index.row()]['unsaved']
+	

@@ -73,7 +73,7 @@ class AnimSelector(QtWidgets.QWidget):
 		label = QtWidgets.QLabel(txt)
 		trueLayout.addStretch()
 		trueLayout.addWidget(label)
-		trueLayout.addWidget(w)
+		trueLayout.addWidget(w, 1)
 		trueLayout.addStretch()
 		self.setLayout(trueLayout)
 		
@@ -86,6 +86,10 @@ class AnimSelector(QtWidgets.QWidget):
 		self.buttonBar = QtWidgets.QToolBar()
 		addIcon = QtGui.QIcon.fromTheme('list-add')
 		addAnim = self.buttonBar.addAction(addIcon, _('Add animation'), self.createAnim)
+		
+		#removeIcon = QtGui.QIcon.fromTheme('edit-delete')
+		removeIcon = QtGui.QIcon.fromTheme('list-remove')
+		addAnim = self.buttonBar.addAction(removeIcon, _('Delete animation'), self.deleteAnim)
 		self.buttonBar.addSeparator()
 		#deleteIcon = QtGui.QIcon.fromTheme('list-remove')
 		#deleteAnim = self.buttonBar.addAction(libraryIcon, 'Remove', self.deleteAnim)
@@ -107,14 +111,38 @@ class AnimSelector(QtWidgets.QWidget):
 		#header.setDefaultSectionSize(60)
 		header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
 		header.setSectionResizeMode (1, QtWidgets.QHeaderView.Stretch)
+		header.setSectionResizeMode (2, QtWidgets.QHeaderView.Stretch)
 		
 		
+		theme = settings.get_option('gui/widgets_theme', None)
+		
+		#searchButton = QtWidgets.QToolButton()
+		searchButton = QtWidgets.QPushButton()
+		searchIcon = QtGui.QImage('icons/search.svg')
+		if(theme == "Dark"): searchIcon.invertPixels()
+		searchIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(searchIcon))
+		searchButton.setIcon(searchIcon)
+		#searchButton.setIcon(QtGui.QIcon.fromTheme('search'))
+		searchButton.clicked.connect(self.search)
+		
+		hboxSearch = QtWidgets.QHBoxLayout()
+		w = QtWidgets.QWidget()
+		w.setLayout(hboxSearch)
 		self.searchEntry = QtWidgets.QLineEdit()
+		self.searchEntry.setPlaceholderText(_('Search (press F3 to focus)'))
 		self.searchEntry.returnPressed.connect(self.search)
 		
+		if settings.get_option('misc/search_on_text_change', False):
+			self.searchEntry.textChanged.connect(self.search)
 		
+		
+		hboxSearch.addWidget(self.searchEntry, 1)
+		hboxSearch.addWidget(searchButton)
+		
+		
+		layout.addWidget(w, 0)
 		layout.addWidget(self.treeView)
-		layout.addWidget(self.searchEntry, 0)
+		
 		
 		self.timeLine = QtCore.QTimeLine(400, self)
 		self.timeLine.setUpdateInterval(20)
@@ -123,6 +151,9 @@ class AnimSelector(QtWidgets.QWidget):
 		self.timeLine.frameChanged.connect(self.tmp)
 		
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F3", "Edit|Search Anim")), self, self.focusForSearch)
+		
+		
+		
 		
 		
 	def tmp(self, val):
@@ -144,7 +175,20 @@ class AnimSelector(QtWidgets.QWidget):
 
 		if text != '': # TODO make sure animation name is valid (startswith freespecial, etc OR in idle, walk, rise, etc
 			self.mainEditor.addAnim(text)
-			self.append((text, '' , 999))
+			self.append((text, '' , 999, text))
+			
+	def deleteAnim(self):
+		if(self.currentAnimID == "idle"):
+			return
+		if(self.currentAnimName == None):
+				QtWidgets.QMessageBox.warning(self, _('Load an animation first'), _('Load an animation before deleting it'))
+				return
+		
+		if(QtWidgets.QMessageBox.question(self, _('Delete animation'), _('Are you sure you want to delete animation' + ' ' + self.currentAnimName + ' ?'), defaultButton=QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes):
+			self.currentAnimName = "idle";
+			self.mainEditor.deleteAnim(self.currentAnimID)
+			self.mainEditor.loadAnim("idle")
+		
 		
 	def enterEvent(self, e):
 		if self.content.isVisible() and not settings.get_option('gui/auto_collapse', True) : return # Do not expand if already expanded
@@ -172,10 +216,24 @@ class AnimSelector(QtWidgets.QWidget):
 		self.timeLine.start()
 		
 	def load(self, data):
+		self.currentAnimName = None
 		for i, d in enumerate(data):
-			self.append((d['ID'], d['label'], i))
+			ID_edited = d['ID']
+			if 'ID_edited' in d:
+				ID_edited = d['ID_edited']
+			self.append((d['ID'], d['label'], i, ID_edited))
 	
 	def loadAnim(self, index):
+		self.currentAnimID = index.data(AnimModel.itemRole).ID
+		self.currentAnimName = self.currentAnimID
+		
+		# ???
+		#if(self.currentAnimID.lower() == 'idle'):
+			#return
+		
+		label = index.data(AnimModel.itemRole).label
+		if(label != ''): self.currentAnimName += '(' + label + ')'
+		
 		self.mainEditor.loadAnim(index.data(AnimModel.itemRole).ID)
 		
 		
@@ -203,6 +261,7 @@ class AnimItem(TreeItem):
 		self.ID = data[0]
 		self.label = data[1]
 		self.pos = data[2]
+		self.ID_edited = data[3]
 
 		self.subelements = []
 		
@@ -246,6 +305,8 @@ class AnimModel(TreeModel):
 				return None
 				return item.pos
 			elif index.column() == 1:
+				if(hasattr(item, 'ID_edited')):
+				   return item.ID_edited
 				return item.ID
 			elif index.column() == 2:
 				return item.label

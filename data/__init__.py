@@ -136,6 +136,8 @@ class BBox:
 		
 		self.delete = False # Flag used to not process when rebuilding text
 		
+		self.phantom = False
+		
 		self.ogLine = None
 		self.ogLineX = None
 		self.ogLineWidth = None
@@ -255,12 +257,26 @@ class BBox:
 class AttackBox:
 	def __init__(self, params=None):
 		self.data = {}
-		self.data['position.x'] = 0
-		self.data['position.y'] = 0
-		self.data['size.x'] = 0
-		self.data['size.y'] = 0
+		
+		
+		self.data['position.x'] = None
+		# self.ogParams['position.x'] = None
+		self.data['position.y'] = None
+		# self.ogParams['position.y'] = None
+		self.data['size.x'] = None
+		# self.ogParams['size.x'] = None
+		self.data['size.y'] = None
+		# self.ogParams['size.y'] = None
+		
+		
 
-		self.data['damage.force'] = 0
+		self.data['damage.force'] = None
+		# self.ogParams['damage.force'] = 0
+		
+		
+		
+		
+		
 		#self.data['damage.type'] = 1
 		self.data['damage.type'] = None
 		self.data['reaction.fall.force'] = None
@@ -276,6 +292,7 @@ class AttackBox:
 		
 		self.ogLine = None
 		self.ogLines = {}
+		self.phantom = False
 		
 		
 		
@@ -289,9 +306,22 @@ class AttackBox:
 		self.data['reaction.fall.velocity.y'] = None
 		self.data['reaction.fall.velocity.z'] = None
 		
+		
+		
+		self.data['effect.hit.flash.model'] = None
+			
+		self.data['effect.hit.sound.path'] = None
+		
 		self.originalNumbersofParams = 0
 		
 		
+		self.overwriteWith(params)
+		
+		
+			
+		
+		
+	def overwriteWith(self, params):
 		if params is not None:
 			self.originalNumbersofParams = len(params)
 			
@@ -304,11 +334,10 @@ class AttackBox:
 			params = params[1:]
 			if(len(params) < 11): params.append(None)
 			self.data['position.x'], self.data['position.y'], self.data['size.x'], self.data['size.y'], self.data['damage.force'], self.data['reaction.fall.force'], self.data['block.penetrate'], self.data['effect.hit.flash.disable'], self.data['reaction.pause.time'], self.data['size.z.background'], self.data['size.z.foreground'] = params
-			
 		
 			
 	def getParams(self):
-		data = [self.data['damage.type'], self.data['position.x'], self.data['position.y'], self.data['size.x'], self.data['size.y'], self.data['damage.force'], parseInt(self.data['reaction.fall.force']), parseInt(self.data['block.penetrate']), parseInt(self.data['effect.hit.flash.disable']), parseInt(self.data['reaction.pause.time'])]
+		data = [self.data['damage.type'], parseInt(self.data['position.x']), parseInt(self.data['position.y']), parseInt(self.data['size.x']), parseInt(self.data['size.y']), parseInt(self.data['damage.force']), parseInt(self.data['reaction.fall.force']), parseInt(self.data['block.penetrate']), parseInt(self.data['effect.hit.flash.disable']), parseInt(self.data['reaction.pause.time'])]
 		#if self.z1 != 0:
 		# if self.data['size.z.background'] != None:
 		data.append(parseInt(self.data['size.z.background']))
@@ -324,6 +353,9 @@ class AttackBox:
 				if params[0] is None:
 					params[0] = ''
 				data = ['\tattack' + ' '.join(map(str, params))]
+				
+				if(self.phantom):
+					data = []
 				
 				
 				
@@ -363,6 +395,18 @@ class AttackBox:
 				
 			if dropvLine is not None : data.append(dropvLine)
 			
+			hitflashLine = None
+			if self.data['effect.hit.flash.model'] != None:
+				hitflashLine = '\thitflash ' + str(self.data['effect.hit.flash.model'])
+			if hitflashLine is not None : data.append(hitflashLine)
+			
+			hitfxLine = None
+			if self.data['effect.hit.sound.path'] != None:
+				hitfxLine = '\thitfx ' + str(self.data['effect.hit.sound.path'])
+			if hitfxLine is not None : data.append(hitfxLine)
+			
+			if(len(data) == 0) : return ''
+			
 			return '\n'.join(data)
 			
 			
@@ -401,6 +445,9 @@ class AttackBox:
 				i = 0
 				for key, value in sorted(self.data.items()):
 					if(value is None) : continue
+					
+					
+						
 					
 					ogLine = None
 					if(key in self.ogLines):
@@ -567,6 +614,7 @@ class FileWrapper:
 		except:
 			f.close()
 			import chardet    
+			print('\nchardet')
 			# rawdata = open(infile, 'rb').read()
 			# result = chardet.detect(rawdata)
 			# charenc = result['encoding']

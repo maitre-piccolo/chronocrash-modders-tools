@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from gui.util import FileInput
 from gui.settings.fontselector import FontSelector
 
-VERSION = '0.4.5.2 (11/03/23)'
+VERSION = '0.5.4 (14/12/23)'
 
 
 class ShortcutSettingsWidget(QtWidgets.QWidget):
@@ -19,6 +19,8 @@ class ShortcutSettingsWidget(QtWidgets.QWidget):
 		#self.basePath.setText(settings.get_option('general/datapath', ''))
 		
 		lay.addRow(_("<p style='color:red;font-weight:bold;'>You need to reload the app for</p>"), QtWidgets.QLabel(_("<p style='color:red;font-weight:bold;'>the new shortcuts to be in effect</p>")))
+		
+		#lay.addRow(QtWidgets.QLabel(_("<p style='color:red;font-weight:bold;'>You need to reload the app for the new shortcuts to be in effect</p>")))
 		
 		self.bodyBox = QtWidgets.QLineEdit()
 		self.attackBox = QtWidgets.QLineEdit()
@@ -58,6 +60,22 @@ class ShortcutSettingsWidget(QtWidgets.QWidget):
 		self.nextFrame.setText(settings.get_option('shortcuts/next_frame_global', 'Ctrl+Right'))
 		lay.addRow(_('[Global] Next frame') + ' : ', self.nextFrame)
 		
+		
+		listPrograms = settings.get_option('misc/run_menu_programs', [])
+		
+		self.programs_widgets = []
+		i = 1
+		for p in listPrograms:
+			w = QtWidgets.QLineEdit()
+			w.setText(settings.get_option('shortcuts/run_program_' + str(i), 'Ctrl+' + str(i)))
+			
+			if (len(p) > 30):
+				p = p[len(p)-30:]
+			
+			lay.addRow(_('[Global] Run program ' + str(i) + '(...' + p + ')') + ' : ', w)
+			self.programs_widgets.append(w)
+			i+=1
+		
 		self.setLayout(lay)
 		
 	def save(self):
@@ -74,7 +92,140 @@ class ShortcutSettingsWidget(QtWidgets.QWidget):
 		
 		settings.set_option('shortcuts/previous_frame_global', self.previousFrame.text())
 		settings.set_option('shortcuts/next_frame_global', self.nextFrame.text())
+		
+		listPrograms = settings.get_option('misc/run_menu_programs', [])
+		i = 1
+		for p in listPrograms:
+			w = self.programs_widgets[i-1]
+			settings.set_option('shortcuts/run_program_' + str(i), w.text())
 
+
+class EditorSettingsWidget(QtWidgets.QWidget):
+	def __init__(self):
+		QtWidgets.QWidget.__init__(self)
+		l = QtWidgets.QVBoxLayout()
+		
+		self.fs = FontSelector()
+		l.addWidget(self.fs, 1)
+		
+		#lColor = QtWidgets.QHBoxLayout()
+		#lColor
+		self.buttonHighlightColor = QtWidgets.QPushButton(_('Color for highligted line'))
+		self.buttonHighlightColor.clicked.connect(self.changeHighlightColor)
+		l.addWidget(self.buttonHighlightColor)
+		
+		
+		self.checkbox = QtWidgets.QCheckBox(_('Long lines : horizontal scroll instead of wrap'))
+		self.checkbox.setChecked(settings.get_option('editor/scroll_instead_of_wrap', False))
+		
+		l.addWidget(self.checkbox)
+		
+		self.setLayout(l)
+		
+		
+		
+		
+	def changeHighlightColor(self):
+		color = QtWidgets.QColorDialog.getColor().name() 
+		
+		print('color', color)
+		
+		if(color != '#000000' and color != None and color != False):
+		
+			settings.set_option('editor/color_highlighted_line', color)
+		
+	def save(self):
+		
+		settings.set_option('editor/scroll_instead_of_wrap', self.checkbox.isChecked())
+		self.fs.save()
+		
+		
+class AutoBackupWidget(QtWidgets.QWidget):
+	def __init__(self):
+		QtWidgets.QWidget.__init__(self)
+		lay = QtWidgets.QFormLayout()
+		
+		
+		self.autoSaveEvery = QtWidgets.QSpinBox()
+		self.autoSaveEvery.setMinimum(10)
+		self.autoSaveEvery.setMaximum(10000)
+		self.autoSaveEvery.setValue(settings.get_option('autobackup/timeout', 60))
+		
+		self.maxNumberOfRevisions_saved = QtWidgets.QSpinBox()
+		self.maxNumberOfRevisions_saved.setMaximum(10000)
+		self.maxNumberOfRevisions_saved.setValue(settings.get_option('autobackup/max_number_revisions_saved_per_file', 50))
+		
+		self.maxNumberOfRevisions_unsaved = QtWidgets.QSpinBox()
+		self.maxNumberOfRevisions_unsaved.setMaximum(10000)
+		self.maxNumberOfRevisions_unsaved.setValue(settings.get_option('autobackup/max_number_revisions_unsaved_per_file', 50))
+		
+		self.autoDeleteDays = QtWidgets.QSpinBox()
+		self.autoDeleteDays.setMaximum(10000)
+		self.autoDeleteDays.setValue(settings.get_option('autobackup/auto_delete_revisions_after_days', 90))
+		
+		# Adapter ça pour chaque type
+		
+		lay.addRow(_('Trigger auto-backup unsaved every (seconds)') + ' : ', self.autoSaveEvery)
+		lay.addRow(_(' '), QtWidgets.QWidget())
+		
+		label = QtWidgets.QLabel(_('Backup Type 1 : last revisions / sequential history'))
+		label.setStyleSheet("font-weight: bold; color: black")
+		lay.addRow(label,  QtWidgets.QWidget())
+		lay.addRow(_('Max number of saved revisions per file') + ' : ', self.maxNumberOfRevisions_saved)
+		lay.addRow(_('Max number of UNsaved revisions per file') + ' : ', self.maxNumberOfRevisions_unsaved)
+		lay.addRow(_('Automatically delete revisions older than (days)') + ' : ', self.autoDeleteDays)
+		
+		lay.addRow(_(' '), QtWidgets.QWidget())
+		
+		
+		self.type2_keep_one_revision_per = QtWidgets.QSpinBox()
+		self.type2_keep_one_revision_per.setMaximum(1)
+		self.type2_keep_one_revision_per.setValue(settings.get_option('autobackup/type2_keep_one_revision_per', 1))
+		
+		self.type_2_autoDeleteAfter = QtWidgets.QSpinBox()
+		self.type_2_autoDeleteAfter.setMaximum(10000)
+		self.type_2_autoDeleteAfter.setValue(settings.get_option('autobackup/type2_auto_delete_revisions_after', 365))
+		
+		label = QtWidgets.QLabel(_('Backup Type 2 : spread history backup (days)'))
+		label.setStyleSheet("font-weight: bold; color: black")
+		lay.addRow(label, QtWidgets.QWidget())
+		lay.addRow(_('Keep a revision per day') + ' : ', self.type2_keep_one_revision_per)
+		lay.addRow(_('Automatically delete revisions older than (days)') + ' : ', self.type_2_autoDeleteAfter)
+		
+		
+		
+		lay.addRow(_(' '), QtWidgets.QWidget())
+		
+		
+		self.type3_keep_one_revision_per = QtWidgets.QSpinBox()
+		self.type3_keep_one_revision_per.setMaximum(1)
+		self.type3_keep_one_revision_per.setValue(settings.get_option('autobackup/type3_keep_one_revision_per', 0))
+		
+		self.type_3_autoDeleteAfter = QtWidgets.QSpinBox()
+		self.type_3_autoDeleteAfter.setMaximum(10000)
+		self.type_3_autoDeleteAfter.setValue(settings.get_option('autobackup/type3_auto_delete_revisions_after', 100))
+		
+		
+		label = QtWidgets.QLabel(_('Backup Type 3 : spread history backup (hours)'))
+		label.setStyleSheet("font-weight: bold; color: black")
+		lay.addRow(label, QtWidgets.QWidget())
+		lay.addRow(_('Keep a revision per hour') + ' : ', self.type3_keep_one_revision_per)
+		lay.addRow(_('Automatically delete revisions older than (hours)') + ' : ', self.type_3_autoDeleteAfter)
+		
+		self.setLayout(lay)
+		
+	def save(self):
+		settings.set_option('autobackup/timeout', self.autoSaveEvery.value())
+		
+		settings.set_option('autobackup/max_number_revisions_saved_per_file', self.maxNumberOfRevisions_saved.value())
+		settings.set_option('autobackup/max_number_revisions_unsaved_per_file', self.maxNumberOfRevisions_unsaved.value())
+		settings.set_option('autobackup/auto_delete_revisions_after_days', self.autoDeleteDays.value())
+		
+		settings.set_option('autobackup/type2_keep_one_revision_per', self.type2_keep_one_revision_per.value())
+		settings.set_option('autobackup/auto_delete_revisions_after_type2', self.type_2_autoDeleteAfter.value())
+		
+		settings.set_option('autobackup/type3_keep_one_revision_per', self.type3_keep_one_revision_per.value())
+		settings.set_option('autobackup/type3_auto_delete_revisions_after', self.type_3_autoDeleteAfter.value())
 
 
 class LevelSettingsWidget(QtWidgets.QWidget):
@@ -108,13 +259,36 @@ class MiscSettingsWidget(QtWidgets.QWidget):
 		#self.basePath.setText(settings.get_option('general/datapath', ''))
 		lay.addWidget(QtWidgets.QLabel(_("ImageMagick convert bin")), 0, 0)
 		imageMagickPath = settings.get_option('misc/imagemagick_path', 'convert')
-		self.imageMagickPath = FileInput('saveFile', '', 'Select ImageMagick convert binary', imageMagickPath, '')
+		self.imageMagickPath = FileInput(self, 'saveFile', '', 'Select ImageMagick convert binary', imageMagickPath, '')
 		lay.addWidget(self.imageMagickPath, 0, 1)
+		
+		lay.addWidget(QtWidgets.QLabel(_("Number of TODO shortcuts")), 1, 0)
+		numberOfTodoShortcuts = settings.get_option('misc/number_of_todo_shortcuts', 1)
+		self.numberOfTodoShortcuts = QtWidgets.QSpinBox()
+		self.numberOfTodoShortcuts.setValue(numberOfTodoShortcuts)
+		lay.addWidget(self.numberOfTodoShortcuts, 1, 1)
+		
+		
+		lay.addWidget(QtWidgets.QLabel(_("Entity editor - Ignore commands")), 2, 0)
+		ignore_commands = settings.get_option('entity/ignore_commands', [])
+		ignore_commands_string = ','.join(ignore_commands)
+		self.ignoreCommands = QtWidgets.QLineEdit(ignore_commands_string)
+		lay.addWidget(self.ignoreCommands, 2, 1)
+		lay.addWidget(QtWidgets.QLabel("(Use coma (,) as separator)"), 3, 0)
 		
 		self.setLayout(lay)
 		
 	def save(self):
 		settings.set_option('misc/imagemagick_path', self.imageMagickPath.text())
+		
+		settings.set_option('misc/number_of_todo_shortcuts', self.numberOfTodoShortcuts.value())
+		
+		val = self.ignoreCommands.text()
+		if(val == ''):
+			tab = []
+		else:
+			tab = val.split(',')
+		settings.set_option('entity/ignore_commands', tab)
 		
 		
 
@@ -148,6 +322,7 @@ class SettingsEditor(QtWidgets.QDialog):
 		addSection('level', _('Level editor'))
 		addSection('shortcuts', _('Keyboard shortcuts'))
 		addSection('misc', _('Miscellaneous'))
+		addSection('autobackup', _('Auto-Backup'))
 		treeView.setModel(self.sections)
 		treeView.clicked.connect(self.sectionActivated)
 		self.widgetLayout.addWidget(treeView, 0)
@@ -192,7 +367,9 @@ class SettingsEditor(QtWidgets.QDialog):
 		self.widgetLayout.addWidget(w, 1)
 		
 		
-		w = FontSelector()
+		
+		# FONT & EDITOR
+		w = EditorSettingsWidget()
 		self.widgetLayout.addWidget(w, 1)
 		w.hide()
 		self.widgets['editor'] = w
@@ -212,6 +389,12 @@ class SettingsEditor(QtWidgets.QDialog):
 		w.hide()
 		self.widgets['misc'] = w
 		
+		
+		w = AutoBackupWidget()
+		self.widgetLayout.addWidget(w, 1)
+		w.hide()
+		self.widgets['autobackup'] = w
+		
 		mainLayout.addLayout(self.widgetLayout)
 		mainLayout.addWidget(buttonBox)
 		
@@ -228,10 +411,16 @@ class SettingsEditor(QtWidgets.QDialog):
 		self.widgets['level'].save()
 		self.widgets['shortcuts'].save()
 		self.widgets['misc'].save()
+		self.widgets['autobackup'].save()
 		
 		settings.MANAGER.save()
 		self.informRestart()
 		QtWidgets.QDialog.accept(self)
+		
+		
+	
+		
+		
 		
 	def informRestart(self):
 		QtWidgets.QMessageBox.information(self, _('Please restart'), _("You'll probably need to restart the app for new settings to be properly applied"))
@@ -240,6 +429,8 @@ class SettingsEditor(QtWidgets.QDialog):
 		self.activeWidget.hide()
 		self.activeWidget = self.widgets[section]
 		self.activeWidget.show()
+		
+		print(self.activeWidget)
 		
 	def sectionActivated(self, index):
 		section = index.internalPointer().key
@@ -695,7 +886,7 @@ class CreateFileDialog(QtWidgets.QDialog):
 		
 		mainLayout.addWidget(QtWidgets.QLabel(_("Path")), 2, 0)
 		lookPath = settings.get_option('general/data_path', '')
-		self.filePath = FileInput('saveFile', '', 'Select a .txt level file', lookPath, 'TXT Files (*.txt)')
+		self.filePath = FileInput(self, 'saveFile', '', 'Select a .txt level file', lookPath, 'TXT Files (*.txt)')
 		mainLayout.addWidget(self.filePath, 2, 1)
 		
 		
@@ -756,3 +947,58 @@ class CreateFileDialog(QtWidgets.QDialog):
 		pass
 		
 		
+
+class GeneratePathsDialog(QtWidgets.QDialog):
+	
+	def __init__(self, editor):
+		self.editor = editor
+		QtWidgets.QDialog.__init__(self)
+		self.setWindowTitle(_('Generate paths'))
+		
+		lay = QtWidgets.QFormLayout()
+		self.setLayout(lay)
+		
+		lay.addRow(QtWidgets.QLabel(_('Warning : don\'t forget that you can also drag and drop files directly in text editors')))
+		
+		self.maskEntry = QtWidgets.QLineEdit()
+		self.maskEntry.setText('	frame data/chars/joe-attack{frame}.png')
+		
+		lay.addRow(_('Mask'), self.maskEntry)
+				   
+		self.start = QtWidgets.QSpinBox()
+		self.end = QtWidgets.QSpinBox()
+		self.end.setValue(3)
+		
+		lay.addRow(_('Start'), self.start)
+		lay.addRow(_('End'), self.end)
+		
+		buttonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok | QtWidgets.QDialogButtonBox.Cancel)
+		buttonBox.accepted.connect(self.accept)
+		buttonBox.rejected.connect(self.reject)
+		
+		
+		
+		lay.addRow(buttonBox)
+		
+		
+		
+		
+	def accept(self):
+		
+		# print("accepting")
+		start = self.start.value()
+		end = self.end.value()
+		
+		mask = self.maskEntry.text()
+		
+		txt = ''
+		for i in range(start, end+1):
+			txt += mask.replace('{frame}', str(i)) + '\n'
+			
+		#print(txt)
+		
+		self.editor.selectedText = txt
+		
+		QtWidgets.QDialog.accept(self)
+		
+		#return txt

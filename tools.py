@@ -1,13 +1,18 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-import os
+import os, logging
 import re
 import shutil
 from common import settings
 from gui.pak import PakWidget
+from gui.orphans import OrphanWidget
 from gui.mugen import MugenWidget
 from gui.volnorm import VolNormWidget
 from gui.commandgen import CommandListGenerator
+from data import ParsedLine, FileWrapper
+
+
+from gui.main.fileselector import FileSelector
      
 class ToolWidget(QtWidgets.QWidget):
 	def __init__(self):
@@ -18,6 +23,18 @@ class ToolWidget(QtWidgets.QWidget):
 		actionsLayout = QtWidgets.QVBoxLayout()
 		actionsLayout.setSpacing(0)
 		actionsLayout.setContentsMargins(0, 0, 0, 0)
+		
+		button = QtWidgets.QPushButton(_('Check paths'))
+		button.clicked.connect(lambda: self.loadSection('check_paths'))
+		#button.clicked.connect(self.checkPaths)
+		actionsLayout.addWidget(button)
+		
+		
+		button = QtWidgets.QPushButton(_('Orphans finder'))
+		button.clicked.connect(lambda: self.loadSection('orphans'))
+		actionsLayout.addWidget(button)
+		
+		
 		button = QtWidgets.QPushButton(_('Shift offsets'))
 		button.clicked.connect(lambda: self.loadSection('shift_offsets'))
 		actionsLayout.addWidget(button)
@@ -59,14 +76,21 @@ class ToolWidget(QtWidgets.QWidget):
 		if(section not in self.widgets):
 			if(section == 'shift_offsets'):
 				newWidget = ShiftWidget()
+			if(section == 'check_paths'):
+				newWidget = CheckPathsWidget()
+				
+				
+		
 			elif section == 'scale_offsets':
 				newWidget = ScaleWidget()
 			elif(section == 'prepare_pak'):
-				newWidget = PakWidget()
+				newWidget = PakWidget(self)
+			elif(section == 'orphans'):
+				newWidget = OrphanWidget(self)
 			elif(section == 'gen_command_list'):
 				newWidget = CommandListGenerator()
 			elif(section == 'mugen'):
-				newWidget = MugenWidget()
+				newWidget = MugenWidget(self)
 			elif(section == 'norm_sounds'):
 				newWidget = VolNormWidget()
 			self.widgets[section] = newWidget
@@ -79,6 +103,10 @@ class ToolWidget(QtWidgets.QWidget):
 		self.currentWidget = self.widgets[section]
 
 		self.currentWidget.show()
+		
+		
+	
+							   
 		
 class ShiftWidget(QtWidgets.QWidget):
 	def __init__(self):
@@ -295,5 +323,152 @@ class ScaleWidget(QtWidgets.QWidget):
 		return newText
 
 
+class CheckPathsWidget(QtWidgets.QWidget):
+	def __init__(self):
+		QtWidgets.QWidget.__init__(self)
+		layout = QtWidgets.QFormLayout()
+		
+		button = QtWidgets.QPushButton(_('Check without details'))
+		button.clicked.connect(self.checkWithoutDetails)
+		layout.addRow(button)
+		
+		button = QtWidgets.QPushButton(_('Check with details'))
+		button.clicked.connect(self.checkWithDetails)
+		layout.addRow(button)
+		
+		self.logWidget = QtWidgets.QPlainTextEdit('Log...')
+		layout.addRow(self.logWidget)
+		
+		self.setLayout(layout)
+			
+			
+	def checkWithoutDetails(self):
+		paths_not_exist = self.checkPaths(False)
+		text = 'These files do not exist:\n\n' + '\n\n'.join(paths_not_exist)
 
 		
+		self.logWidget.setPlainText(text)
+		
+		
+	def checkWithDetails(self):
+		paths_not_exist = self.checkPaths(True)
+		text = 'These files do not exist:\n\n' + '\n\n'.join(paths_not_exist)
+
+		
+		self.logWidget.setPlainText(text)
+		
+		
+	def checkPaths(self, details=False):
+		#dataPath = settings.get_option('general/datapath', '')
+		ROOT_PATH = FileSelector.ROOT_PATH
+		
+		txt_files = []
+		found_paths = []
+		found_paths_output = {}
+		
+		
+		# *** MODELS ***
+		path = os.path.join(ROOT_PATH, 'data', 'models.txt')
+		print(path)
+		if not os.path.isfile(path):
+			print('WARNING : no models.txt')
+			return
+			
+		f = FileWrapper(path)
+		lines = f.getLines()
+		
+		
+		
+		
+		
+		for i, line in enumerate(lines):
+			pLine = ParsedLine(line)
+			part = pLine.next()
+			if part is None : continue
+			if part.lower() == 'know' or part.lower() == 'load':
+				if(pLine.getNumberOfParts() < 3) :
+					logging.debug('Incomplete line : ' + pLine.line)
+					
+					
+				else:
+					name = pLine.next().lower()
+					#Entity.AVAILABLE_MODELS.append(name)
+					path = pLine.next()
+					
+					fullPath = os.path.join(ROOT_PATH, path)
+					if not os.path.exists(fullPath) : continue
+					
+					
+					txt_files.append(fullPath)
+					
+					
+		# *** LEVELS ***
+		path = os.path.join(ROOT_PATH, 'data', 'levels.txt')
+		print(path)
+		if not os.path.isfile(path):
+			print('WARNING : no levels.txt')
+			return
+			
+		f = FileWrapper(path)
+		lines = f.getLines()
+		
+		
+		
+		
+		
+		for i, line in enumerate(lines):
+			pLine = ParsedLine(line)
+			part = pLine.next()
+			if part is None : continue
+			if part.lower() == 'file':
+				if(pLine.getNumberOfParts() < 2) :
+					logging.debug('Incomplete line : ' + pLine.line)
+					
+					
+				else:
+					#name = pLine.next().lower()
+					#Entity.AVAILABLE_MODELS.append(name)
+					path = pLine.next()
+					
+					fullPath = os.path.join(ROOT_PATH, path)
+					if not os.path.exists(fullPath) : continue
+					
+					
+					txt_files.append(fullPath)
+					
+					
+					
+		for fullPath in txt_files:
+			# print(fullPath)
+			f = FileWrapper(fullPath)
+			lines2 = f.getLines()
+			
+			for i, line2 in enumerate(lines2):
+				pLine2 = ParsedLine(line2)
+				while(pLine2.next() != None):
+					rPath = pLine2.current()
+					if(pLine2.current().lower().startswith('data/') and ( details or (pLine2.current() not in found_paths))):
+						found_paths.append(pLine2.current())
+						if (details is True):
+							pass
+							found_paths_output[rPath] = pLine2.current() + '	IN : ' + fullPath + '	AT LINE : ' + str(i+1) + '	(FULL LINE : ' + line2 + ')'
+							#found_paths_full.append({'path':pLine2.current(), 'output':pLine2.current() + '	IN : ' + fullPath + '	AT LINE : ' + str(i+1) + '	(FULL LINE : ' + line2 + ')'} )
+						else:
+							found_paths_output[rPath] = rPath
+							pass
+							#found_paths_full.append({'path':pLine2.current(), 'output':pLine2.current()})
+							#found_paths_full.append({'path':pLine2.current(), 'output':pLine2.current()})
+						
+								
+								
+								
+		#print(found_paths)
+		paths_not_exist = []
+		for path in found_paths:
+			
+			output = found_paths_output[path]
+			fullPath = os.path.join(ROOT_PATH, path)
+			if(not os.path.isfile(fullPath)) : 
+				paths_not_exist.append(output)
+		#print(paths_not_exist)
+		return paths_not_exist

@@ -53,6 +53,20 @@ class File:
 		
 	def __str__(self):
 		return str({'path':self.path, 'category':self.category, 'iconPath':self.iconPath, 'state':self.state, 'visible':self.isVisible})
+	
+	
+	def backupUnsaved(self):
+		content = '\n'.join(self.lines)
+		
+		oldContent = File.DB.getLastRevision(self.path, 1)
+		
+		if(oldContent == content):
+			#print('content is same, pass')
+			return
+		#print('content different, go')
+		
+		
+		File.DB.addBackup([self.path, content, 1, 1])
 		
 	def checkSave(self):
 		if self.originalLines == None : return
@@ -91,37 +105,56 @@ class File:
 		elif self.lines is not None : return True
 		return False
 		
-	def loadFromDisk(self):
+	def loadFromDisk(self, setupIfNotExist=False):
 		# print('loading from disk', self.path)
 		try:
-			f = open(self.path)
-			lines = f.read().split("\n")
+			f = FileWrapper(self.path)
+			lines = f.getLines()
 			self.originalLines = list(lines)
 			self.lines = lines
 			self.saved = True
-			f.close()
+			
 		except FileNotFoundError:
 			print('File not found', self.path)
+			if setupIfNotExist:
+				self.originalLines = []
+				self.lines = []
+				self.saved = True
 		
 	def notifyChange(self):
 		# index = self.node.model.indexOfNode(self.node)
 		# self.node.model.dataChanged.emit(index, index, [FileModel.itemRole, Qt.DecorationRole])
-		self.node.model.layoutChanged.emit();
+		if hasattr(self, "node"):
+			self.node.model.layoutChanged.emit();
 		
 		
 	def prepareChange(self):
-		self.node.model.layoutAboutToBeChanged.emit();
+		if hasattr(self, "node"):
+			self.node.model.layoutAboutToBeChanged.emit();
 		pass
 		
 	def save(self):
 		if(os.path.isfile(self.path)):
 			saveFolder = os.path.dirname(self.path)
 			fileName = os.path.basename(self.path)
-			shutil.copyfile(self.path, os.path.join(saveFolder, '.'+fileName + '.1'))
+			
+			if(not settings.get_option('general/disable_advanced_auto_backup', False)):
+				content = '\n'.join(self.originalLines)
+				lastRevContent = File.DB.getLastRevision(self.path, 0)
+				if(content != lastRevContent):
+					File.DB.addBackup([self.path, content, 0, 1])
+					
+			if(not settings.get_option('general/disable_auto_backup', False)):
+				shutil.copyfile(self.path, os.path.join(saveFolder, '.'+fileName + '.1'))
 			
 		f = open(self.path, 'w')
-		f.write('\n'.join(self.lines))
+		content = '\n'.join(self.lines)
+		f.write(content)
 		f.close()
+		
+		if(not settings.get_option('general/disable_advanced_auto_backup', False)):
+			File.DB.addBackup([self.path, content, 0, 1])
+		
 		self.originalLines = list(self.lines)
 		self.saved = True
 
@@ -175,7 +208,7 @@ class FileSelector(QtWidgets.QWidget):
 		label = QtWidgets.QLabel(txt)
 		trueLayout.addStretch()
 		trueLayout.addWidget(label)
-		trueLayout.addWidget(w)
+		trueLayout.addWidget(w, 1)
 		trueLayout.addStretch()
 		
 		self.cacheLabel = label
@@ -232,12 +265,18 @@ class FileSelector(QtWidgets.QWidget):
 		self.collapseAllButton = self.buttonBar.addAction(collapseIcon, 'Collapse All', self.collapseAll)
 		self.expandAllButton = self.buttonBar.addAction(expandIcon, 'Expand All', self.expandAll)
 		
+		reloadIcon = QtGui.QImage('icons/reload.svg')
+		if(theme == "Dark"): reloadIcon.invertPixels()
+		reloadIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(reloadIcon))
+		self.buttonBar.addAction(reloadIcon, 'Reload',  lambda:self.loadLibrary(True))
+		
 		actionGroup.addAction(b1)
 		actionGroup.addAction(b1bis)
 		
 		
 		layout.addWidget(self.buttonBar, 0)
 
+		self.currentFilter = ''
 		
 		
 		self.treeView = CustomTreeView(self)
@@ -245,6 +284,8 @@ class FileSelector(QtWidgets.QWidget):
 		self.treeView.customContextMenuRequested.connect(self.showContextMenu)
 		self.treeView.expanded.connect(self.expandChange)
 		self.treeView.collapsed.connect(self.expandChange)
+		
+		
 		self.libraryModels = {}
 		for key in ('Entities', 'Levels', 'Scripts', 'System'):
 			model = FileModel()
@@ -255,6 +296,46 @@ class FileSelector(QtWidgets.QWidget):
 		self.treeView.setSortingEnabled(True)
 		
 		self.treeView.setAnimated(True)
+		
+		
+		
+		
+		
+		
+		
+		
+		searchButton = QtWidgets.QPushButton()
+		
+		searchIcon = QtGui.QImage('icons/search.svg')
+		if(theme == "Dark"): searchIcon.invertPixels()
+		searchIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(searchIcon))
+		
+		##searchButton.setIcon(QtGui.QIcon.fromTheme('search'))
+		searchButton.setIcon(searchIcon)
+		searchButton.clicked.connect(self.search)
+		
+		self.searchEntry = QtWidgets.QLineEdit()
+		self.searchEntry.setPlaceholderText(_('Search (press F2 to focus)'))
+		self.searchEntry.returnPressed.connect(self.search)
+		
+		if settings.get_option('misc/search_on_text_change', False):
+			self.searchEntry.textChanged.connect(self.search)
+		
+		hboxSearch = QtWidgets.QHBoxLayout()
+		hboxSearch.setContentsMargins(0, 5, 0, 5)
+		w = QtWidgets.QWidget()
+		w.setLayout(hboxSearch)
+		
+		
+		
+		hboxSearch.addWidget(self.searchEntry, 1)
+		hboxSearch.addWidget(searchButton)
+		
+		
+		
+		layout.addWidget(w, 0)
+		
+		
 		layout.addWidget(self.treeView, 1)
 		
 		
@@ -279,9 +360,7 @@ class FileSelector(QtWidgets.QWidget):
 		header.setSectionResizeMode(1, QtWidgets.QHeaderView.Stretch)
 		
 		
-		self.searchEntry = QtWidgets.QLineEdit()
-		self.searchEntry.returnPressed.connect(self.search)
-		layout.addWidget(self.searchEntry, 0)
+
 		
 		
 		self.timeLine = QtCore.QTimeLine(400, self);
@@ -308,7 +387,37 @@ class FileSelector(QtWidgets.QWidget):
 		self.lastSaveTime = 0
 		self.lastSaveName = None
 		
+		self.PROJECTS_VARS = {}
 		
+	
+
+	def projectChanged(self, projectRoot=None):
+		
+		
+		
+		
+		if(projectRoot in self.PROJECTS_VARS):
+			vars = self.PROJECTS_VARS[projectRoot]
+			
+			self.libraryModels = vars['libraryModels']
+			
+		else:
+			
+		
+			
+			self.libraryModels = {}
+			for key in ('Entities', 'Levels', 'Scripts', 'System'):
+				model = FileModel()
+				model.isFilled = False
+				self.libraryModels[key] = model
+			
+			
+			vars = {}
+			
+			vars['libraryModels'] = self.libraryModels
+			
+			
+			self.PROJECTS_VARS[projectRoot] = vars	
 		
 		
 	def addFile(self, path, iconPath=None):
@@ -409,6 +518,7 @@ class FileSelector(QtWidgets.QWidget):
 		self.restoreExpandedState()
 			
 	def loadSession(self, name):
+		print("loading session")
 		path = os.path.join(xdg.get_data_home(), 'sessions') + os.sep + name
 		#if not os.path.exists(path) : return
 		self.loadedPaths = []
@@ -499,6 +609,9 @@ class FileSelector(QtWidgets.QWidget):
 		
 	def closeFile(self, fd=None):
 		if fd is None:
+			if(self.mainEditor.currentView in ['anim', 'level']):
+				self.mainEditor.setView('text')
+				
 			fd = self.mainEditor.editor.current()
 			print('\nDELETE', fd)
 		if not fd.saved:
@@ -514,6 +627,8 @@ class FileSelector(QtWidgets.QWidget):
 		return True
 		
 	def closeFolder(self, folder):
+		if(self.mainEditor.currentView in ['anim', 'level']):
+			self.mainEditor.setView('text')
 		unsavedfiles = []
 		pathsToClose = []
 		for path in self.loadedPaths:
@@ -583,6 +698,22 @@ class FileSelector(QtWidgets.QWidget):
 		### Et enfin nous démarrons l'animation
 		#self.animate.start()
 		
+		
+	def backupUnsaved(self, folder=''):
+		if(settings.get_option('general/disable_advanced_auto_backup', False)):
+			return
+		
+		self.mainEditor.updateFD() # Important if we are to delete a file that we are currently editing
+		
+		
+		for path in self.loadedPaths:
+			if folder in path:
+				
+				fd = self.loadedFiles[path]
+				if not fd.saved:
+					fd.backupUnsaved()
+		
+		
 	def leaveEvent(self, e):
 		if self.rect().contains(self.mapFromGlobal(QtGui.QCursor.pos())):
 			return
@@ -605,6 +736,8 @@ class FileSelector(QtWidgets.QWidget):
 		self.filterModel.setSourceModel(model)
 		if reset:
 			model.reset()
+			#for model_to_reset in self.libraryModels.values():
+				#model_to_reset.reset()
 			
 		if model.isFilled and not reset:
 			return
@@ -648,6 +781,9 @@ class FileSelector(QtWidgets.QWidget):
 						Entity.AVAILABLE_MODELS.append(name)
 						path = pLine.next()
 						
+						# if os.path.sep == '\\':
+						# 	path = path.replace('/', '\\')
+						
 						
 						type = 'none'
 						icon = None
@@ -661,7 +797,8 @@ class FileSelector(QtWidgets.QWidget):
 								icon = ent_data['icon']
 							else :
 						
-								fullPath = os.path.join(FileSelector.ROOT_PATH, path)
+								# fullPath = os.path.join(FileSelector.ROOT_PATH, path)
+								fullPath = FileSelector.ROOT_PATH + '/' + path
 								if not os.path.exists(fullPath) : continue
 								# print(fullPath)
 								f = FileWrapper(fullPath)
@@ -695,7 +832,8 @@ class FileSelector(QtWidgets.QWidget):
 				#print(d)
 				#if d['type'] != 'player':
 					#pass
-				path = os.path.join(FileSelector.ROOT_PATH, d['path'])
+				# path = os.path.join(FileSelector.ROOT_PATH, d['path'])
+				path = FileSelector.ROOT_PATH + '/' + d['path']
 				fd = File(path)
 				if d['icon'] is not None:
 					iconPath = os.path.join(FileSelector.ROOT_PATH, d['icon'])
@@ -717,28 +855,76 @@ class FileSelector(QtWidgets.QWidget):
 		elif self.libraryMode == 'Levels':
 			path = os.path.join(FileSelector.ROOT_PATH, 'data', 'levels.txt')
 			if not os.path.isfile(path): return
-			f = open(path)
-			lines = f.read().split('\n')
-			f.close()
+			f = FileWrapper(path)
+			lines = f.getLines()
 			
 			levelsAlreadyAdded = []
+			z = {}
+			HUD_settings = {'lbarsize':{'width':100, 'height':5}}
+			
 			for i, line in enumerate(lines):
 				pLine = ParsedLine(line)
 				part = pLine.next()
 				if part is None : continue
 				if part.lower() == 'set':
+					levelsAlreadyAdded = [] # reset every set
 					name = pLine.next()
 					parentNode = self.append((name, name, i, None, None, None), None)
 					#print(name)
+					
+				elif part.lower() == 'z':
+					xMin = 160
+					xMax = 232
+					BGHeight = 160
+					
+					val = pLine.next()
+					if(val != None):
+						xMin = val
+						
+					val = pLine.next()
+					if(val != None):
+						xMax = val
+						
+					val = pLine.next()
+					if(val != None):
+						BGHeight = val
+						
+					z = {'xMin':xMin, 'xMax':xMax, 'BGHeight':BGHeight}
+					
+					
+					
 				elif part.lower() == 'file':
 					path = pLine.next()
 					if(path in levelsAlreadyAdded): continue
 					levelsAlreadyAdded.append(path)
-					path = os.path.join(FileSelector.ROOT_PATH, path)
+					# path = os.path.join(FileSelector.ROOT_PATH, path)
+					path = FileSelector.ROOT_PATH + '/' + path
 					fd = File(path)
 					fd.category = 'Level'
+					#print('z', z)
+					fd.z = z
+					fd.HUD_settings = HUD_settings
 					self.append((os.path.basename(path), os.path.basename(path), i, path, None, fd), parentNode)
 					
+				elif part.lower() == 'lbarsize':
+					width = int(pLine.next())
+					height = int(pLine.next())
+					HUD_settings['lbarsize'] = {'width':width, 'height':height}
+				elif part.lower() in ['p1life', 'p2life', 'p3life', 'p4life'] :
+					x = int(pLine.next())
+					y = int(pLine.next())
+					HUD_settings[part.lower()] = {'x':x, 'y':y}
+				elif part.lower() in ['p1namej', 'p2namej', 'p3namej', 'p4namej'] :
+					x = int(pLine.next())
+					y = int(pLine.next())
+					HUD_settings[part.lower()] = {'x1':x, 'y1':y}
+				elif part.lower() in ['p1icon', 'p2icon', 'p3icon', 'p4icon'] :
+					x = int(pLine.next())
+					y = int(pLine.next())
+					HUD_settings[part.lower()] = {'x':x, 'y':y}
+					
+			
+			print('HUD_settings', HUD_settings)
 			self.libraryModels[self.libraryMode].modelReset.emit()
 					
 		elif self.libraryMode == 'Scripts':
@@ -1021,6 +1207,7 @@ class FileSelector(QtWidgets.QWidget):
 		for i in range(self.filterModel.rowCount(parentIndex)):
 			index = self.filterModel.index(i, 0, parentIndex)
 			item = index.data(FileModel.itemRole)
+			
 			# print(i, item.isExpanded)
 			# if item.isExpandedWithoutFilter:
 			self.treeView.setExpanded(index, item.isExpandedWithoutFilter)
@@ -1067,10 +1254,22 @@ class FileSelector(QtWidgets.QWidget):
 	
 	def search(self):
 		txt = self.searchEntry.text()
+		
+		
+		if(txt != self.currentFilter or txt == ''):
+			self.treeView.model().expandResults = 0
+		elif(txt == self.currentFilter):
+			self.treeView.model().expandResults += 1
+		
+			
+		self.currentFilter = txt
+		
 		if(txt != ''):
 			self.saveExpandedStateWithoutFilters()
 			
+			
 		
+	
 		self.treeView.model().setFilterRole(Qt.DisplayRole)
 		regExp = QtCore.QRegExp(txt, QtCore.Qt.CaseInsensitive)
 		self.treeView.model().setFilterRegExp(regExp)
@@ -1223,16 +1422,28 @@ class FileModel(TreeModel):
 	itemRole = Qt.UserRole+2
 	expandedRole = Qt.UserRole+1
 	expandedRoleWithoutFilter = Qt.UserRole+3
+	containsRole = Qt.UserRole+4
+	expandWithoutContainsRole = Qt.UserRole+5
 	
 	def __init__(self):
 		TreeModel.__init__(self)
 		self.columnsFields = ('pos', 'ID', 'label')
+		theme = settings.get_option('gui/widgets_theme', None)
 		if FileModel.unsavedIcon is None:
-			FileModel.unsavedIcon = QtGui.QIcon.fromTheme('document-save').pixmap(self.icon_size-5)
+			
+			#FileModel.unsavedIcon = QtGui.QIcon.fromTheme('document-save').pixmap(self.icon_size-5)
+			saveImage = QtGui.QImage('icons/save.svg')
+			if(theme == "Dark"): saveImage.invertPixels()
+		
+			FileModel.unsavedIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(saveImage)).pixmap(self.icon_size-5)
 			FileModel.bigFont = QtGui.QFont()
 			FileModel.bigFont.setPointSize(12)
 			
 		
+		
+		self.defaultFontColor = [0,0,0]
+		if(theme != None and 'dark' in theme.lower()):
+			self.defaultFontColor = [240,240,240]
 
 
 	def columnCount(self, parent):
@@ -1249,6 +1460,10 @@ class FileModel(TreeModel):
 			return item.isExpanded
 		elif role == self.expandedRoleWithoutFilter:
 			return item.isExpandedWithoutFilter
+		elif role == self.containsRole:
+			return item.containsFilter
+		elif role == self.expandWithoutContainsRole:
+			return item.expandWithoutContains
 		elif role == Qt.DisplayRole:
 			if index.column() == -1:
 				return item.pos
@@ -1312,7 +1527,10 @@ class FileModel(TreeModel):
 			if(item.fd.state == 1):
 				color = [255,255,255]
 			else:
-				color = [0,0,0]
+				if(item.fd.state < 10):
+					color = [0,0,0]
+				else:
+					color = self.defaultFontColor
 			return QtGui.QBrush(QtGui.QColor(*color))
 		return None
 
@@ -1357,6 +1575,12 @@ class FileModel(TreeModel):
 			return 1
 		elif role == self.expandedRoleWithoutFilter:
 			item.isExpandedWithoutFilter = value
+			return 1
+		elif role == self.containsRole:
+			item.containsFilter = value
+			return 1
+		elif role == self.expandWithoutContainsRole:
+			item.expandWithoutContains = value
 			return 1
 		else:
 			return TreeModel.setData(self, index, value, role)

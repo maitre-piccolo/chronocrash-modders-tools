@@ -375,4 +375,30 @@ QTreeView::item {
 }
 
 
+QToolButton[popupMode="1"] { /* only for MenuButtonPopup */
+padding-right: 20px; /* make way for the popup button */
+}
+
+/* the subcontrols below are used only in the MenuButtonPopup mode */
+
+QToolButton::menu-button {
+border: 2px solid gray;
+border-top-right-radius: 6px;
+border-bottom-right-radius: 6px;
+/* 16px width + 4px for border = 20px allocated above */
+width: 16px;
+image: url(icons/caret-down.svg);
+background:white;
+}
+
+
+QToolButton::menu-arrow {
+    image: url(icons/todo.png);
+}
+
+QToolButton::menu-arrow:open {
+    top: 1px; left: 1px; /* shift it a bit */
+}
+
+
 '''

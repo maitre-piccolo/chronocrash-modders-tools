@@ -27,7 +27,13 @@ QPushButton:pressed {
     border-style: inset;
 }
 
+QToolButton:checked{
+    background-color:green;
+}
 
+QToolButton:disabled{
+        color:grey;
+}
 
 
 QMenuBar {

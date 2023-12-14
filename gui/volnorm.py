@@ -16,7 +16,7 @@ class VolNormWidget(QtWidgets.QWidget):
 		
 		dataPath = settings.get_option('general/data_path', '')
 		charsFolderPath = os.path.join(dataPath, 'chars')
-		self.charsFolder = FileInput('folder', charsFolderPath, 'Select chars folder', dataPath)
+		self.charsFolder = FileInput(self, 'folder', charsFolderPath, 'Select chars folder', dataPath)
 		layout.addRow(_('Workbase chars folder') + ' : ', self.charsFolder)
 		
 

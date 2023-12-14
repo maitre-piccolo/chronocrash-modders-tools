@@ -107,7 +107,10 @@
       <context attribute="Normal Text" lineEndContext="#stay" name="Normal">
         <DetectSpaces />
 	<keyword attribute="Command" context="#stay" String="commands" name="Command"/>
+        
+        <StringDetect attribute="Comment 2" context="Hash comment 2" String="## " insensitive="true" />
 	<DetectChar attribute="Comment" char="#" context="Hash comment"/>
+       
 	<keyword attribute="Keyword" context="#stay" String="keywords"/>
 	
 <!--	<RegExpr attribute="Preprocessor" context="Outscoped" String="#\s*if\s+0\s*$" beginRegion="PP" firstNonSpace="true" />
@@ -170,6 +173,10 @@
       <context name="Hash comment" attribute="Comment" lineEndContext="#pop">
         <LineContinue attribute="Comment" context="#stay"/>
         <IncludeRules context="##Alerts" />
+      </context>
+      
+       <context name="Hash comment 2" attribute="Comment 2" lineEndContext="#pop">
+        <LineContinue attribute="Comment 2" context="#stay"/>
       </context>
       
       	<context name="Anim" attribute="Keyword" lineEndContext="#pop">
@@ -256,7 +263,8 @@
       <itemData name="Char"         defStyleNum="dsChar" spellChecking="false"/>
       <itemData name="String"       defStyleNum="dsString"/>
       <itemData name="String Char"  defStyleNum="dsSpecialChar"/>
-      <itemData name="Comment"      defStyleNum="dsComment"/>
+      <itemData name="Comment"     color="#ff7b9d"  defStyleNum="dsComment"/>
+      <itemData name="Comment 2"  color="#6EEE9B"    defStyleNum="dsComment"/>
       <itemData name="Symbol"       defStyleNum="dsNormal" spellChecking="false"/>
       <itemData name="Preprocessor" defStyleNum="dsPreprocessor" spellChecking="false"/>
       <itemData name="Prep. Lib"    defStyleNum="dsImport" spellChecking="false"/>

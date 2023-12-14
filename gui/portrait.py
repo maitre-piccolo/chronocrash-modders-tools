@@ -5,6 +5,7 @@ import os
 from common import settings, xdg
 from gui.util import loadSprite
 
+
 class PortraitSelectorD(QtWidgets.QDialog):
 	
 	def __init__(self, parent, name='Portrait selector'):
@@ -63,10 +64,10 @@ class IconViewer(QtWidgets.QListView):
 
 		
 
-		self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+		#self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
 		
 
-		#self.setDragEnabled(True)
+		self.setDragEnabled(False)
 		#self.setViewMode(QtWidgets.QListView.ListMode)
 		
 		#self.setDragDropMode(QtWidgets.QAbstractItemView.DragDrop)
@@ -90,14 +91,14 @@ class IconViewer(QtWidgets.QListView):
 	def clear(self):
 		self.model.items = []
 		
-	def dragEnterEvent(self, e):
+	def dragEnterEventOLD(self, e):
 		data = e.mimeData()
 		if data.hasUrls():
 			e.accept()
 		else:
 			QtWidgets.QListView.dragEnterEvent(self, e)
 			
-	def dragMoveEvent(self, e):
+	def dragMoveEventOLD(self, e):
 		QtWidgets.QListView.dragMoveEvent(self, e)
 		e.accept()
 		#e.acceptProposedAction()
@@ -107,12 +108,12 @@ class IconViewer(QtWidgets.QListView):
 	def getItemAt(self, index):
 		return self.model.items[index.row()]
 
-	def contextMenuEvent(self, event):
-		from qt.gui.menus import  SpecialEltMenu
-		elt = self.getEltAt(self.indexAt(event.pos()).row())
-		menu = SpecialEltMenu(elt, self.mapToGlobal(event.pos()))
+	# def contextMenuEvent(self, event):
+	# 	from qt.gui.menus import  SpecialEltMenu
+	# 	elt = self.getEltAt(self.indexAt(event.pos()).row())
+	# 	menu = SpecialEltMenu(elt, self.mapToGlobal(event.pos()))
 		
-	def dropEvent(self, e):
+	def dropEventOLD(self, e):
 		#print('DROP EVENT')
 		data = e.mimeData()
 		#print data.formats()
@@ -407,7 +408,7 @@ class ThumbnailModel(QtCore.QAbstractListModel):
 	def lastIndex(self):
 		return self.index(len(self.items)-1, 0)
 
-	def mimeData(self, indexes):
+	def mimeDataOLD(self, indexes):
 		'''
 			What is passed during drag operations
 		'''
@@ -418,7 +419,7 @@ class ThumbnailModel(QtCore.QAbstractListModel):
 		data.setData('portraits', str(selection))
 		return data
 		
-	def mimeTypes(self):
+	def mimeTypesOLD(self):
 		return ('portraits',)
 		
 	def supportedDropActions(self):

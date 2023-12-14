@@ -9,6 +9,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 PLAIN_TEXT = True
 
+#
+
 class CommandListGenerator(QtWidgets.QWidget):
 	def __init__(self):
 		QtWidgets.QWidget.__init__(self)
@@ -111,7 +113,7 @@ class CommandListGenerator(QtWidgets.QWidget):
 			
 			settings.set_option('command_list/file', path)
 			
-			f = open(path, 'rwU')
+			f = open(path, 'r')
 			data = f.readlines()
 			
 			newText = self.processData(data, True)
@@ -247,6 +249,8 @@ class CommandListGenerator(QtWidgets.QWidget):
 			c = 0
 			i += 1
 			if p.match(line) != None:
+				#print('match', line)
+				
 				currentMove = {}
 				parts = re.split('#', line)
 				label = None
@@ -256,8 +260,10 @@ class CommandListGenerator(QtWidgets.QWidget):
 				except IndexError:
 					pass
 				
-				parts = re.split(' |	', parts[0])
+				firstPart = ' '.join(parts[0].split())
+				parts = re.split(' |	', firstPart)
 				currentMove['id'] = parts[1].lower()
+				print('match', parts[1].lower())
 
 				if(label is None):
 					currentMove['label'] = currentMove['id']
@@ -317,6 +323,8 @@ class CommandListGenerator(QtWidgets.QWidget):
 				line = parts[0]
 				if line[-1] == ' ':
 					line = line[0:-1]
+					
+				line = ' '.join(line.split())
 				parts = re.split(' |	', line)
 				if(parts[-2].lower() == 'a'): parts[-2] = 'a1'
 				com = ' '.join(parts[1:-1]).lower()
@@ -330,7 +338,10 @@ class CommandListGenerator(QtWidgets.QWidget):
 				if(currentMove['id'] == 'follow4'):
 					print( framePath)
 			elif atchainMask.match(line) != None:
+				line = ' '.join(line.split())
 				self.atchain = re.split(' |	', line)[1:]
+				
+				print("self.atchain", self.atchain)
 				baseMoves['attack' + self.atchain[0]] = 'a1'
 				orderedMoves.append('attack' + self.atchain[0])
 			elif nameMask.match(line) != None:
@@ -344,14 +355,18 @@ class CommandListGenerator(QtWidgets.QWidget):
 			orderedMoves.insert(0, 'attack1')
 			#orderedMoves.prepend('attack1')
 		
-		baseMoves["special"] = "s"
-		orderedMoves.append("special")
+		if("special" in orderedMoves):
+			
+			baseMoves["special"] = "s"
+		#orderedMoves.append("special")
+		
+		print(orderedMoves)
 		
 		def getMoveString(move):
-			basePath = os.path.dirname(settings.get_option('general/data_path', ''))
+			basePath = os.path.dirname(settings.get_option('general/data_path', '')) +  '/';
 			try:
 				frames = move['frames']
-				framePath = frames[len(frames)/2]
+				framePath = frames[int(len(frames)/2)]
 				filename = os.path.basename(framePath)
 				destDir = '/srv/http/misc/bb/' + self.modelName.lower()
 
@@ -360,7 +375,10 @@ class CommandListGenerator(QtWidgets.QWidget):
 				except OSError:
 					pass
 			
-				shutil.copy(basePath + framePath, destDir)
+				try:
+					shutil.copy(basePath + framePath, destDir)
+				except:
+					pass
 				
 				framePath = destDir + os.sep + filename
 			except IndexError:

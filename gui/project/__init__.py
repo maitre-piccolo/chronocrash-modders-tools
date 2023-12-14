@@ -11,6 +11,7 @@ from gui.util import FileInput
 class ProjectSelector(QtWidgets.QWidget):
 	
 	LOAD_TEXT = 'Select a game project\n or register a new one'
+	SESSION_LOADED = False
 	
 	def __init__(self, parent):
 		self.mainFrame = parent
@@ -100,14 +101,16 @@ class ProjectSelector(QtWidgets.QWidget):
 		
 		
 	def loadProject(self, project):
-		self.label.setText(_('Now loading projet...'))
+		self.label.setText(_('Now loading project...'))
 		settings.set_option('general/data_path', project)
 		
 		self.hide()
 		self.mainFrame.meWidget.loadProject(project)
 		self.mainFrame.setMode('mainEditor')
-		logging.debug("Setting session from project manager...")
-		self.mainFrame.setSession(settings.get_option('general/last_session', 'Default'), savePrevious=False)
+		if(not ProjectSelector.SESSION_LOADED):
+			logging.debug("Setting session from project manager...")
+			self.mainFrame.setSession(settings.get_option('general/last_session', 'Default'), savePrevious=False)
+			ProjectSelector.SESSION_LOADED = True
 		
 		
 	def loadProjectsList(self):

@@ -10,8 +10,10 @@ from data import AttackBox, BBox, BindData
 from gui.level.items import Entity
 
 
-
-class BindingEditor(QtWidgets.QWidget):
+class AbstractOverlayEditor(QtWidgets.QWidget):
+	
+	SETTING_KEY = 'opponent'
+	
 	def __init__(self, parent):
 		QtWidgets.QWidget.__init__(self)
 		self.setMaximumSize(300,2000)
@@ -25,7 +27,7 @@ class BindingEditor(QtWidgets.QWidget):
 		layout = QtWidgets.QGridLayout()
 		
 		offsetGB = QtWidgets.QGroupBox(_('Entity'))
-		self.showOpponent = QtWidgets.QCheckBox(_('Show opponent'))
+		self.showOpponent = QtWidgets.QCheckBox(_('Show entity'))
 		self.showOpponent.stateChanged.connect(self.showOpponentChanged)
 		layout.addWidget(self.showOpponent, 0, 0)
 		
@@ -45,24 +47,31 @@ class BindingEditor(QtWidgets.QWidget):
 		
 		self.entityAnimation = QtWidgets.QComboBox() # get option
 		self.entityAnimation.setEditable(True)
-		self.entityAnimation.setCurrentText(settings.get_option('entity/last_opponent_animation', 'idle'))
+		self.entityAnimation.setCurrentText(settings.get_option('entity/last_' + self.SETTING_KEY + '_animation', 'idle'))
 		self.entityAnimation.currentTextChanged.connect(self.entityAnimationChanged)
 		self.entityAnimation.setObjectName("entityAnimCB")
 		layout.addWidget(self.entityAnimation, 4, 0)
 		
 		
-		showSquareOffset = settings.get_option('entity/binding_show_square_offset', False)
-		showCrossOffset = settings.get_option('entity/binding_show_cross_offset', True)
-		
-		self.showCrossOffset = QtWidgets.QCheckBox(_('Show cross offset'))
-		self.showCrossOffset.setChecked(showCrossOffset)
-		self.showCrossOffset.stateChanged.connect(self.showCrossOffsetChanged)
-		layout.addWidget(self.showCrossOffset, 5, 0)
-		
-		self.showSquareOffset = QtWidgets.QCheckBox(_('Show square offset'))
-		self.showSquareOffset.setChecked(showSquareOffset)
-		self.showSquareOffset.stateChanged.connect(self.showSquareOffsetChanged)
-		layout.addWidget(self.showSquareOffset, 6, 0)
+		if (self.SETTING_KEY == 'opponent'):
+			showSquareOffset = settings.get_option('entity/binding_show_square_offset', False)
+			showCrossOffset = settings.get_option('entity/binding_show_cross_offset', True)
+			
+			self.showCrossOffset = QtWidgets.QCheckBox(_('Show cross offset'))
+			self.showCrossOffset.setChecked(showCrossOffset)
+			self.showCrossOffset.stateChanged.connect(self.showCrossOffsetChanged)
+			layout.addWidget(self.showCrossOffset, 5, 0)
+			
+			self.showSquareOffset = QtWidgets.QCheckBox(_('Show square offset'))
+			self.showSquareOffset.setChecked(showSquareOffset)
+			self.showSquareOffset.stateChanged.connect(self.showSquareOffsetChanged)
+			layout.addWidget(self.showSquareOffset, 6, 0)
+			
+		else:
+			layout.addWidget(QtWidgets.QLabel('Frame'), 5, 0)
+			self.frameSpinBox = QtWidgets.QSpinBox()
+			self.frameSpinBox.valueChanged.connect(self.updateFrame)
+			layout.addWidget(self.frameSpinBox, 6, 0)
 		
 		
 		
@@ -74,6 +83,194 @@ class BindingEditor(QtWidgets.QWidget):
 		offsetGB.setLayout(layout)
 		
 		self.layout.addWidget(offsetGB, 0)
+		
+		
+		
+		
+		
+	def entityModelEntryChanged(self, widget):
+		print("entity model entry changed", self.entityModelEntry.currentText())
+		if (self.changeEntityModel()):
+			if (self.loadingModels):
+				
+				if(self.SETTING_KEY == "opponent"):
+					self.parent.frameEditor.loadOpponent()
+					self.reloadAnims()
+					self.parent.frameEditor.opponent = None
+				else:
+					self.parent.frameEditor.loadOnionSkinModel()
+					self.reloadAnims()
+					self.parent.frameEditor.onionSkinEnt = None
+			else:
+				self.showOpponent.setChecked(True)
+				if(self.SETTING_KEY == "opponent"):
+					self.parent.frameEditor.showOpponent(True)
+				else:
+					self.parent.frameEditor.showOnionSkin(True)
+				self.reloadAnims()
+	
+	def entityAnimationChanged(self, widget):
+		print("entity animation changed", self.entityAnimation.currentText())
+		if self.loadingAnims : return
+		if self.changeEntityAnimation():
+			self.showOpponent.setChecked(True)
+			
+			
+	def reloadModels(self):
+		self.loadingModels = True
+		lastModel = settings.get_option('entity/last_' + self.SETTING_KEY + '_model', '')
+		print('last Model', lastModel)
+		self.entityModelEntry.clear()
+		sortAlpha = settings.get_option('entity/binding_models_sort_alphabetical', False)
+		models = Entity.AVAILABLE_MODELS
+		if(sortAlpha): models.sort()
+		
+		self.entityModelEntry.addItems(models)
+		# self.entityModelEntry.setEditText(settings.get_option('entity/last_opponent_model', ''))
+		self.entityModelEntry.setCurrentText(lastModel)
+		self.loadingModels = False
+		
+	def reloadAnims(self, default=None):
+		print('reloading anims')
+		self.loadingAnims = True
+		if(default == None): default = settings.get_option('entity/last_' + self.SETTING_KEY + '_animation', '')
+		self.entityAnimation.clear()
+		
+		if(self.SETTING_KEY == 'opponent'):
+			opponent = self.parent.frameEditor.opponent
+		else:
+			opponent = self.parent.frameEditor.onionSkinEnt
+		if(opponent != None):
+			self.entityAnimation.addItems(opponent.anims.keys())
+		self.entityAnimation.setCurrentText(default)
+		
+		self.loadingAnims = False
+		
+		
+	def changeEntityModel(self):
+		txt = self.entityModelEntry.currentText()
+		if(txt in Entity.AVAILABLE_MODELS and txt != self.loadedModel):
+			print("Loading opponent")
+			self.loadedModel = txt
+			
+			if self.SETTING_KEY == "opponent":
+				self.parent.frameEditor.opponentModel = txt
+			else:
+				self.parent.frameEditor.onionSkinModel = txt
+			settings.set_option('entity/last_' + self.SETTING_KEY + '_model', txt)
+			# self.entityModelEntry.setProperty("class", "valid")
+			# self.entityModelEntry.setObjectName("entityModelCB-valid")
+			self.setColorState(self.entityModelEntry, 'valid')
+			
+			return True
+			
+		else:
+			# print("Refusing opponent", txt)
+			if(txt not in Entity.AVAILABLE_MODELS):
+				# if(self.loadedModel != None and not self.loadedModel.startswith(txt)):
+				# self.entityModelEntry.setProperty("class", "valid")
+				# self.entityModelEntry.setObjectName("entityModelCB-valid")
+				
+				self.setColorState(self.entityModelEntry, 'invalid')
+			else:
+				self.setColorState(self.entityModelEntry, 'valid')
+				# self.entityModelEntry.setProperty("class", "invalid")
+				# self.entityModelEntry.setObjectName("entityModelCB-invalid")
+			return False
+			
+			
+	def setColorState(self, CB, state):
+		theme = settings.get_option('gui/widgets_theme', None)
+		if(theme == 'Dark'):
+			if(state == 'valid'):
+				CB.setStyleSheet("QComboBox { background: rgb(0, 100, 0); selection-background-color: rgb(78, 99, 0);}");
+			else:
+				CB.setStyleSheet("QComboBox { background: rgb(100, 0, 0); selection-background-color: rgb(78, 99, 0); }");
+		else:
+			if(state == 'valid'):
+				CB.setStyleSheet("QComboBox { background: rgb(0, 255, 0); selection-background-color: rgb(233, 99, 0); }");
+			else:
+				CB.setStyleSheet("QComboBox { background: rgb(255, 0, 0); selection-background-color: rgb(233, 99, 0); }");
+			
+	def changeEntityAnimation(self):
+		
+		txt = self.entityAnimation.currentText()
+		
+		if self.SETTING_KEY == 'opponent':
+		
+			opponent = self.parent.frameEditor.opponent
+		else:
+			opponent = self.parent.frameEditor.onionSkinEnt
+			
+		if opponent == None: return False
+		if(txt in opponent.anims):
+			opponent.changeAnimation(txt)
+			opponent.setAt(0)
+			opponent.actualizeFrame()
+			print("Loading animation")
+			
+			settings.set_option('entity/last_' + self.SETTING_KEY + '_animation', txt)
+			self.entityAnimation.setStyleSheet("QComboBox { background: rgb(0, 255, 0); selection-background-color: rgb(233, 99, 0); }");
+			
+			return True
+			
+		else:
+			if(txt not in Entity.AVAILABLE_MODELS): self.entityAnimation.setStyleSheet("QComboBox { background: rgb(255, 0, 0); selection-background-color: rgb(233, 99, 0); }");
+			return False
+			
+	def showOpponentChanged(self):
+		showOpponent = self.showOpponent.isChecked()
+		self.parent.frameEditor.showOpponent(showOpponent)
+		
+	def showCrossOffsetChanged(self):
+		show = self.showCrossOffset.isChecked()
+		settings.set_option('entity/binding_show_cross_offset', show)
+		opponent = self.parent.frameEditor.opponent
+		if(opponent != None):
+			opponent.showCrossOffsetChanged(show)
+		
+	def showSquareOffsetChanged(self):
+		show = self.showSquareOffset.isChecked()
+		settings.set_option('entity/binding_show_square_offset', show)
+		opponent = self.parent.frameEditor.opponent
+		if(opponent != None):
+			opponent.showSquareOffsetChanged(show)
+			
+			
+	def updateFrame(self):
+		self.parent.frameEditor.onionSkinFrame = self.frameSpinBox.value()
+		self.parent.frameEditor.loadFrame()
+		
+	def valueChanged(self, *args):
+		# for
+		# blocker = QSignalBlocker(self.double_spin_box)
+		# blocker.__enter__()
+		
+		if not self.loading:
+			# print('value changed', args)
+			self.loading = True
+			self.updateData()
+			if(self.mask != ''):
+				self.parent.rebuildText()
+			
+			self.parent.frameEditor.loadFrame()
+			self.loading = False
+
+
+
+class BindingEditor(AbstractOverlayEditor):
+	def __init__(self, parent):
+		AbstractOverlayEditor.__init__(self, parent)
+		
+
+		
+		
+		
+		# self.toggleDragEntity = QtWidgets.QPushButton(_('Toggle drag entity'))
+		# self.toggleDragEntity.setCheckable(True)
+		# self.layout.addWidget(self.toggleDragEntity, 5, 0)
+		
+		
 		
 		# Binding GB
 		self.bindingGB = CustomGroupBox(_('Binding settings'))
@@ -147,11 +344,14 @@ class BindingEditor(QtWidgets.QWidget):
 			
 		self.widgets['bind']['direction'].setRange(-2, 2)
 		
+		
 		self.loading = False
 		self.loadingModels = False
 		self.loadingAnims = False
 		
 		self.loadedModel = None
+		
+		
 		
 		
 	def addBindData(self):
@@ -167,24 +367,7 @@ class BindingEditor(QtWidgets.QWidget):
 		self.parent.frameEditor.loadFrame()
 		
 		
-	def entityModelEntryChanged(self, widget):
-		print("entity model entry changed", self.entityModelEntry.currentText())
-		if (self.changeEntityModel()):
-			if (self.loadingModels):
-				self.parent.frameEditor.loadOpponent()
-				self.reloadAnims()
-				self.parent.frameEditor.opponent = None
-				
-			else:
-				self.showOpponent.setChecked(True)
-				self.parent.frameEditor.showOpponent(True)
-				self.reloadAnims()
-	
-	def entityAnimationChanged(self, widget):
-		print("entity animation changed", self.entityAnimation.currentText())
-		if self.loadingAnims : return
-		if self.changeEntityAnimation():
-			self.showOpponent.setChecked(True)
+
 			
 		
 	def maskChanged(self, widget):
@@ -217,66 +400,7 @@ class BindingEditor(QtWidgets.QWidget):
 		self.valueChanged()
 		
 		
-	def changeEntityModel(self):
-		txt = self.entityModelEntry.currentText()
-		if(txt in Entity.AVAILABLE_MODELS and txt != self.loadedModel):
-			print("Loading opponent")
-			self.loadedModel = txt
-			self.parent.frameEditor.opponentModel = txt
-			settings.set_option('entity/last_opponent_model', txt)
-			# self.entityModelEntry.setProperty("class", "valid")
-			# self.entityModelEntry.setObjectName("entityModelCB-valid")
-			self.setColorState(self.entityModelEntry, 'valid')
-			
-			return True
-			
-		else:
-			# print("Refusing opponent", txt)
-			if(txt not in Entity.AVAILABLE_MODELS):
-				# if(self.loadedModel != None and not self.loadedModel.startswith(txt)):
-				# self.entityModelEntry.setProperty("class", "valid")
-				# self.entityModelEntry.setObjectName("entityModelCB-valid")
-				
-				self.setColorState(self.entityModelEntry, 'invalid')
-			else:
-				self.setColorState(self.entityModelEntry, 'valid')
-				# self.entityModelEntry.setProperty("class", "invalid")
-				# self.entityModelEntry.setObjectName("entityModelCB-invalid")
-			return False
-			
-			
-	def setColorState(self, CB, state):
-		theme = settings.get_option('gui/widgets_theme', None)
-		if(theme == 'Dark'):
-			if(state == 'valid'):
-				CB.setStyleSheet("QComboBox { background: rgb(0, 100, 0); selection-background-color: rgb(78, 99, 0);}");
-			else:
-				CB.setStyleSheet("QComboBox { background: rgb(100, 0, 0); selection-background-color: rgb(78, 99, 0); }");
-		else:
-			if(state == 'valid'):
-				CB.setStyleSheet("QComboBox { background: rgb(0, 255, 0); selection-background-color: rgb(233, 99, 0); }");
-			else:
-				CB.setStyleSheet("QComboBox { background: rgb(255, 0, 0); selection-background-color: rgb(233, 99, 0); }");
-			
-	def changeEntityAnimation(self):
-		
-		txt = self.entityAnimation.currentText()
-		opponent = self.parent.frameEditor.opponent
-		if opponent == None: return False
-		if(txt in opponent.anims):
-			opponent.changeAnimation(txt)
-			opponent.setAt(0)
-			opponent.actualizeFrame()
-			print("Loading animation")
-			
-			settings.set_option('entity/last_opponent_animation', txt)
-			self.entityAnimation.setStyleSheet("QComboBox { background: rgb(0, 255, 0); selection-background-color: rgb(233, 99, 0); }");
-			
-			return True
-			
-		else:
-			if(txt not in Entity.AVAILABLE_MODELS): self.entityAnimation.setStyleSheet("QComboBox { background: rgb(255, 0, 0); selection-background-color: rgb(233, 99, 0); }");
-			return False
+
 
 		
 	def loadData(self, data):
@@ -318,31 +442,7 @@ class BindingEditor(QtWidgets.QWidget):
 		self.loading = False
 		
 	
-	def reloadModels(self):
-		self.loadingModels = True
-		lastModel = settings.get_option('entity/last_opponent_model', '')
-		print('last Model', lastModel)
-		self.entityModelEntry.clear()
-		sortAlpha = settings.get_option('entity/binding_models_sort_alphabetical', False)
-		models = Entity.AVAILABLE_MODELS
-		if(sortAlpha): models.sort()
-		
-		self.entityModelEntry.addItems(models)
-		# self.entityModelEntry.setEditText(settings.get_option('entity/last_opponent_model', ''))
-		self.entityModelEntry.setCurrentText(lastModel)
-		self.loadingModels = False
-		
-	def reloadAnims(self, default=None):
-		print('reloading anims')
-		self.loadingAnims = True
-		if(default == None): default = settings.get_option('entity/last_opponent_animation', '')
-		self.entityAnimation.clear()
-		opponent = self.parent.frameEditor.opponent
-		if(opponent != None):
-			self.entityAnimation.addItems(opponent.anims.keys())
-		self.entityAnimation.setCurrentText(default)
-		
-		self.loadingAnims = False
+
 	
 	def updateData(self, data=None):
 		if data is None:
@@ -355,40 +455,65 @@ class BindingEditor(QtWidgets.QWidget):
 			for key in keys:
 				bindData[key] = self.widgets['bind'][key].value()
 				
+	
+		
+		
+
+
+class OnionSkinEditor(AbstractOverlayEditor):
+	
+	SETTING_KEY = 'onionskin'
+	
+	def __init__(self, parent):
+		AbstractOverlayEditor.__init__(self, parent)
+		
+		onionSkinGB = QtWidgets.QGroupBox(_('Onion skin type'))
+		layout = QtWidgets.QVBoxLayout()
+		onionSkinGB.setLayout(layout)
+		
+		self.b1 = QRadioButton("Classic")
+		self.b1.setChecked(True)
+		self.b1.toggled.connect(lambda:self.btnstate(self.b1))
+		layout.addWidget(self.b1)
+		
+		self.b2 = QRadioButton("Semi-transp. overlay")
+		self.b2.toggled.connect(lambda:self.btnstate(self.b2))
+		
+		self.b3 = QRadioButton("Opaque overlay")
+		self.b3.toggled.connect(lambda:self.btnstate(self.b3))
+		
+		self.b4 = QRadioButton("Fully transp. overlay")
+		self.b4.toggled.connect(lambda:self.btnstate(self.b4))
+
+
+		layout.addWidget(self.b2)
+		layout.addWidget(self.b3)
+		layout.addWidget(self.b4)
+		
+		self.layout.addWidget(onionSkinGB, 0)
+		
+		self.loading = False
+		self.loadingModels = False
+		self.loadingAnims = False
+		
+		self.loadedModel = None
+		
+	def btnstate(self, button):
+		if(button == self.b1): self.parent.frameEditor.onionSkinMode = 1
+		if(button == self.b2): self.parent.frameEditor.onionSkinMode = 2
+		if(button == self.b3): self.parent.frameEditor.onionSkinMode = 3
+		if(button == self.b4): self.parent.frameEditor.onionSkinMode = 4
+		
+		self.parent.frameEditor.loadFrame()
+		
+		
+		
 	def showOpponentChanged(self):
+		print("show onion skin changed")
 		showOpponent = self.showOpponent.isChecked()
-		self.parent.frameEditor.showOpponent(showOpponent)
+		self.parent.frameEditor.showOnionSkin(showOpponent)
 		
-	def showCrossOffsetChanged(self):
-		show = self.showCrossOffset.isChecked()
-		settings.set_option('entity/binding_show_cross_offset', show)
-		opponent = self.parent.frameEditor.opponent
-		if(opponent != None):
-			opponent.showCrossOffsetChanged(show)
-		
-	def showSquareOffsetChanged(self):
-		show = self.showSquareOffset.isChecked()
-		settings.set_option('entity/binding_show_square_offset', show)
-		opponent = self.parent.frameEditor.opponent
-		if(opponent != None):
-			opponent.showSquareOffsetChanged(show)
-		
-	def valueChanged(self, *args):
-		# for
-		# blocker = QSignalBlocker(self.double_spin_box)
-		# blocker.__enter__()
-		
-		if not self.loading:
-			# print('value changed', args)
-			self.loading = True
-			self.updateData()
-			if(self.mask != ''):
-				self.parent.rebuildText()
-			
-			self.parent.frameEditor.loadFrame()
-			self.loading = False
-		
-		
+
 
 class FramePropertiesEditor(QtWidgets.QWidget):
 	def __init__(self, parent):
@@ -537,7 +662,7 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 		self.loading = False
 		
 		for w in list([delay] + list(self.widgets['offset'].values()) + list(self.widgets['bbox'].values()) + list(self.widgets['range'].values()) + list(self.widgets['attack'].values())):
-			w.setRange(-1000,1000)
+			w.setRange(-1000000,1000000)
 			w.valueChanged.connect(self.valueChanged)
 		
 		self.unblockable.stateChanged.connect(self.valueChanged)
@@ -612,6 +737,7 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 			abox = data['attack']
 
 			aType, x, y, w, h, d, pow, block, noflash, pausetime, z1 =  abox.getParams()[0:11]
+			
 			self.widgets['attack']['x'].setValue(x)
 			self.widgets['attack']['y'].setValue(y)
 			self.widgets['attack']['w'].setValue(w)
@@ -652,10 +778,12 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 	def updateData(self, data=None):
 		
 		def updateNotEmpty(box, key, value):
-			if value == 0 and box.data[key] == None:
+			#print("HERE", key, value)
+			if value == 0 and (box.phantom or box.data[key] == None):
 				return
 			
 			box.data[key] = value
+			box.phantom = False
 			
 		print('DATA UPDATE')
 		if data is None:
@@ -667,7 +795,21 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 			
 		x = self.widgets['offset']['x'].value()
 		y = self.widgets['offset']['y'].value()
+		print('offset', x, y)
 		if 'offset' in data:
+			data['offset'] = [x, y]
+		elif x!= 0 or y !=0:
+			
+			i = self.parent.currentFrame - 1
+			previousOffsetFound = False
+			while not previousOffsetFound and i >=0:
+				dataPrevFrame = self.parent.frames[i]
+				if 'offset' in dataPrevFrame:
+					previousOffsetFound = True
+					x, y = dataPrevFrame['offset']
+				i -= 1
+				
+			
 			data['offset'] = [x, y]
 			
 		if 'bbox' in data:
@@ -688,6 +830,7 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 			
 		if 'attack' in data:
 			abox = data['attack']
+			
 			aType, x, y, w, h = abox.getParams()[0:5]
 			x = self.widgets['attack']['x'].value()
 			y = self.widgets['attack']['y'].value()

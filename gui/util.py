@@ -1,17 +1,140 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+
+from PyQt5.QtCore import QBuffer, QIODevice
+from PyQt5.QtGui import QImage, QPixmap, qRgba
 import os
 from common import settings, xdg
 import PIL.Image
+# from PIL import ImageQt
 #from PIL import Image
 
 FORCE_TRANSPARENCY = False
+USE_PIL = True
+
+CHECK_MISSING_EXTENSION = False
+
+qt_version = "6"
+
+
+def align8to32(bytes, width, mode):
+    """
+    converts each scanline of data from 8 bit to 32 bit aligned
+    """
+
+    bits_per_pixel = {"1": 1, "L": 8, "P": 8, "I;16": 16}[mode]
+
+    # calculate bytes per line and the extra padding if needed
+    bits_per_line = bits_per_pixel * width
+    full_bytes_per_line, remaining_bits_per_line = divmod(bits_per_line, 8)
+    bytes_per_line = full_bytes_per_line + (1 if remaining_bits_per_line else 0)
+
+    extra_padding = -bytes_per_line % 4
+
+    # already 32 bit aligned by luck
+    if not extra_padding:
+        return bytes
+
+    new_data = []
+    for i in range(len(bytes) // bytes_per_line):
+        new_data.append(
+            bytes[i * bytes_per_line : (i + 1) * bytes_per_line]
+            + b"\x00" * extra_padding
+        )
+
+    return b"".join(new_data)
+
+def rgb(r, g, b, a=255):
+    """(Internal) Turns an RGB color into a Qt compatible color integer."""
+    # use qRgb to pack the colors, and then turn the resulting long
+    # into a negative integer with the same bitpattern.
+    return qRgba(r, g, b, a) & 0xFFFFFFFF
+
+def _toqclass_helper(im):
+    data = None
+    colortable = None
+    exclusive_fp = False
+
+    # handle filename, if given instead of image name
+    if hasattr(im, "toUtf8"):
+        # FIXME - is this really the best way to do this?
+        im = str(im.toUtf8(), "utf-8")
+    # if is_path(im):
+    #     im = Image.open(im)
+    #     exclusive_fp = True
+
+    qt_format = QImage.Format if qt_version == "6" else QImage
+    if im.mode == "1":
+        format = qt_format.Format_Mono
+    elif im.mode == "L":
+        format = qt_format.Format_Indexed8
+        colortable = []
+        for i in range(256):
+            colortable.append(rgb(i, i, i))
+    elif im.mode == "P":
+        format = qt_format.Format_Indexed8
+        colortable = []
+        palette = im.getpalette()
+        for i in range(0, len(palette), 3):
+            colortable.append(rgb(*palette[i : i + 3]))
+    elif im.mode == "RGB":
+        # Populate the 4th channel with 255
+        im = im.convert("RGBA")
+
+        data = im.tobytes("raw", "BGRA")
+        format = qt_format.Format_RGB32
+    elif im.mode == "RGBA":
+        data = im.tobytes("raw", "BGRA")
+        format = qt_format.Format_ARGB32
+    elif im.mode == "I;16" and hasattr(qt_format, "Format_Grayscale16"):  # Qt 5.13+
+        im = im.point(lambda i: i * 256)
+
+        format = qt_format.Format_Grayscale16
+    else:
+        if exclusive_fp:
+            im.close()
+        msg = f"unsupported image mode {repr(im.mode)}"
+        raise ValueError(msg)
+
+    size = im.size
+    __data = data or align8to32(im.tobytes(), size[0], im.mode)
+    if exclusive_fp:
+        im.close()
+    return {"data": __data, "size": size, "format": format, "colortable": colortable}
+
+
+class ImageQt(QtGui.QImage):
+	def __init__(self, im):
+		"""
+		An PIL image wrapper for Qt.  This is a subclass of PyQt's QImage
+		class.
+
+		:param im: A PIL Image object, or a file name (given either as
+		Python string or a PyQt string object).
+		"""
+		im_data = _toqclass_helper(im)
+		# must keep a reference, or Qt will crash!
+		# All QImage constructors that take data operate on an existing
+		# buffer, so this buffer has to hang on for the life of the image.
+		# Fixes https://github.com/python-pillow/Pillow/issues/1370
+		self.__data = im_data["data"]
+		super().__init__(
+		self.__data,
+		im_data["size"][0],
+		im_data["size"][1],
+		im_data["format"],
+		)
+		if im_data["colortable"]:
+			self.setColorTable(im_data["colortable"])
+
+
 
 class FileInput(QtWidgets.QWidget):
 	
 	changed = QtCore.pyqtSignal()
 	
-	def __init__(self, mode='openFile', default='', title=None, lookFolder=None, filters=None):
-		QtWidgets.QWidget.__init__(self)
+	def __init__(self, parent, mode='openFile', default='', title=None, lookFolder=None, filters=None):
+		QtWidgets.QWidget.__init__(self, parent)
+		self.parent = parent
 		self.textEdit = QtWidgets.QLineEdit()
 		self.textEdit.setText(default)
 		
@@ -74,32 +197,77 @@ def getSpriteShowingPath(path):
 			im.save(newPath)
 		path = newPath
 	return path
-		
-def loadSprite(path):
+	
+
+	
+def loadSprite(path, transp=0):
+	
+	print('transp', transp);
+	
+	#print("load sprite", path)
 	path = getSpriteShowingPath(path)
+	
+	if(CHECK_MISSING_EXTENSION):
+		dirName = os.path.dirname(path)
+		baseName = os.path.basename(path)
+		if('.' not in baseName):
+			newPath = os.path.join(dirName, baseName + '.png')
+			if(os.path.isfile(newPath)):
+				path = newPath
+				
+			else:
+				newPath = os.path.join(dirName, baseName + '.gif')
+				if(os.path.isfile(newPath)):
+					path = newPath
+			
+	
+	if(USE_PIL):
+	
+		if(not os.path.isfile(path)):
+			return QImage()
+		
+		image = ImageQt(PIL.Image.open(path))
+		
+	else:
 
 
-	image = QtGui.QImage(path)
+		image = QtGui.QImage(path)
 	#print('BITPLANE', image.bitPlaneCount())
 	# if('idle.gif' in path): print('\n\nframe', image.bitPlaneCount(), len(image.colorTable()))
 	
 	# image = image.createMaskFromColor(image.color(0), QtCore.Qt.MaskOutColor)
-
 	
-	if(image.bitPlaneCount() < 32 or len(image.colorTable()) != 0):
-		#print(image.colorTable())
+	#print('image.bitPlaneCount()', image.bitPlaneCount())
+	
+	
+	
+	
+	
+	
+	if( image.bitPlaneCount() < 32 or len(image.colorTable()) != 0):
+		
+		
+		
+		transp = int(transp)
+		
+
+		#print('colorTable', image.colorTable())
 		image = image.convertToFormat(QtGui.QImage.Format_Indexed8)
 		table = image.colorTable()
+		
+		if(transp < 0):
+			transp = len(table)+transp
 		# if('idle.gif' in path): print('\n\ncolorCount', image.colorCount())
 		# if('idle.gif' in path) : print('FIRST COLOR', table[0])
-		image.setColor(0, QtGui.qRgba(255, 255, 255, 0))
+		image.setColor(transp, QtGui.qRgba(255, 255, 255, 0))
 		#image.setColor(1, QtGui.qRgba(255, 255, 255, 0))
-		#image.setColor(len(table), QtGui.qRgba(255, 255, 255, 0))
+		#image.setColor(len(table)-1, QtGui.qRgba(255, 255, 255, 0))
 		#for i in range(len(table)):
 			#image.setColor(i, QtGui.qRgba(255, 255, 255, 0))
 	# image = image.createMaskFromColor(image.color(0), QtCore.Qt.MaskOutColor)
 	# image.setColor(0, QtGui.qRgba(255, 255, 255, 0))
 	elif(FORCE_TRANSPARENCY):
+		#print('here', path)
 		transColor = image.pixelColor(0,0)
 		# image = image.createMaskFromColor(transColor.value(), QtCore.Qt.MaskOutColor)
 		for y in range (image.height()):

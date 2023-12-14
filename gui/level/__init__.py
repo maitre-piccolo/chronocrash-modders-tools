@@ -6,15 +6,54 @@ from common import settings, util
 from gui.util import FileInput, loadSprite
 
 from data import ParsedLine, FileWrapper
-from gui.level.items import Wall, Hole, Basemap, Group, Wait, Entity
+from gui.level.items import Wall, Hole, Basemap, Group, Wait, Entity, FontObject
+
+
+PLAYER_MIN_Z = 160
+PLAYER_MAX_Z = 232
+
+FRONTPANEL_Z  =  PLAYER_MAX_Z+50
+PANEL_Z      =   PLAYER_MIN_Z-50
 
 class LevelEditorWidget(QtWidgets.QWidget):
 	
 	refresh = QtCore.pyqtSignal()
 	
-	PIXMAP_CACHE = {}
+	
+	PROJECTS_VARS = {}
 	
 	RESOLUTIONS = [(320,240), (480,272), (640,480), (720,480), (800,480), (800,600), (960,540)]
+	
+	
+		
+	
+	
+	@classmethod
+	def projectChanged(cls, projectRoot=None):
+		if(projectRoot != None):
+			cls.ROOT_PATH = projectRoot
+		else :
+			cls.ROOT_PATH = os.path.dirname(settings.get_option('general/data_path', '/home/piccolo/workspace/OpenBOR/data')) + os.sep
+		
+		
+		if(cls.ROOT_PATH in cls.PROJECTS_VARS):
+			vars = cls.PROJECTS_VARS[cls.ROOT_PATH]
+			
+			cls.PIXMAP_CACHE = vars['PIXMAP_CACHE']
+			
+		else:
+			
+		
+			
+			cls.PIXMAP_CACHE = {}
+			
+			
+			vars = {}
+			
+			vars['PIXMAP_CACHE'] = cls.PIXMAP_CACHE
+			
+			
+			cls.PROJECTS_VARS[cls.ROOT_PATH] = vars
 
 	
 	def __init__(self):
@@ -26,10 +65,13 @@ class LevelEditorWidget(QtWidgets.QWidget):
 		self.setLayout(mainLayout)
 	
 		self.autoPlayOnLoad = settings.get_option('level/auto_play_on_load', True)
+		
+		self.entities_types = []
 	
 		view = ImageWidget()
 		view.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
 		scene = LevelScene(self)
+		self.graphicView = view
 		self.scene = scene
 
 		self.buttonBar = QtWidgets.QToolBar()
@@ -45,8 +87,15 @@ class LevelEditorWidget(QtWidgets.QWidget):
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F4", "Next Frame")), self, self.nextFrame)
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("right", "Scroll forward")), self, self.scrollForward)
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Alt+right", "Scroll forward")), self, self.scrollForwardFast)
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Shift+right", "Scroll forward")), self, self.scrollForwardFast)
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("left", "Scroll backward")), self, self.scrollBackward)
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Alt+left", "Scroll backward")), self, self.scrollBackwardFast)
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Shift+left", "Scroll backward")), self, self.scrollBackwardFast)
+		
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("up", "Scroll Up")), self, self.scrollUp)
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Shift+up", "Scroll Up")), self, self.scrollUpFast)
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("down", "Scroll Down")), self, self.scrollDown)
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("Shift+down", "Scroll Down")), self, self.scrollDownFast)
 		
 		
 		mainLayout.addWidget(self.buttonBar, 0)
@@ -77,6 +126,7 @@ class LevelEditorWidget(QtWidgets.QWidget):
 		
 		self.videoMode = 0
 		self.scrollPosition = 0
+		self.scrollPosition_Z = 0
 		# hide shadows
 		
 	def actualizeEntities(self):
@@ -149,6 +199,17 @@ class LevelEditorWidget(QtWidgets.QWidget):
 				else:
 					self.videoMode = int(part2)
 		
+		
+	def loadFile(self, fd):
+		if(hasattr(fd, 'z')):
+			print('THERE IS z')
+			self.z = fd.z
+		if(hasattr(fd, 'HUD_settings')):
+			print('THERE IS HUD_settings')
+			self.HUD_settings = fd.HUD_settings
+		self.loadLines(fd.lines)
+	
+	
 	def loadLines(self, lines):
 		self.loadVideoMode()
 		
@@ -161,6 +222,7 @@ class LevelEditorWidget(QtWidgets.QWidget):
 		if(self.autoPlayOnLoad):
 			self.animateEntities()
 		
+		self.levelControlWidget.loadHideButtons()
 		
 	'''
 		Recreate the text with the current data
@@ -287,13 +349,36 @@ class LevelEditorWidget(QtWidgets.QWidget):
 		if(self.scrollPosition < 0):
 			self.scrollPosition = 0
 		self.adjustToScrollPos()
+		
+		
+	def scrollUp(self):
+		#if(self.scrollPosition_Z > 0):
+		self.scrollPosition_Z -= 1
+		self.adjustToScrollPos()
+			
+	def scrollUpFast(self):
+		#if(self.scrollPosition_Z > 0):
+		self.scrollPosition_Z -= 10
+		self.adjustToScrollPos()
+			
+	def scrollDown(self):
+		#if(self.scrollPosition_Z > 0):
+		self.scrollPosition_Z += 1
+		self.adjustToScrollPos()
+		
+	def scrollDownFast(self):
+		self.scrollPosition_Z += 10
+		self.adjustToScrollPos()
 			
 			
 	def adjustToScrollPos(self):
-		self.screenItem.setPos(self.scrollPosition, 0)
+		self.screenItem.setPos(self.scrollPosition, self.scrollPosition_Z)
 		
 		for bg in self.backgroundsImages:
-			bg.setPos(bg.xRatio*self.scrollPosition, bg.pos().y())
+			bg.setPos(bg.xRatio*self.scrollPosition + bg.xOffset, bg.zRatio*self.scrollPosition_Z + bg.zOffset ) # bg.pos().y()
+			
+		for fg in self.frontPanelsImages:
+			fg.setPos(fg.xRatio*self.scrollPosition + fg.xOffset, fg.zRatio*self.scrollPosition_Z + fg.zOffset) # fg.pos().y()
 		
 		
 class LevelScene(QtWidgets.QGraphicsScene):
@@ -337,7 +422,15 @@ class LevelScene(QtWidgets.QGraphicsScene):
 		
 	def mouseMoveEvent(self, e):
 		QtWidgets.QGraphicsScene.mouseMoveEvent(self, e)
-		self.parent().window().statusBar().showMessage(str((round(e.scenePos().x()), round( e.scenePos().y()))), 2000)
+		x = round(e.scenePos().x())
+		wait = 0
+		for waitEntry in self.parent().waits[::-1]:
+			if waitEntry <= x:
+				wait = waitEntry
+				break
+			
+		distanceFromWait = x - wait
+		self.parent().window().statusBar().showMessage(str((x, round( e.scenePos().y()), "from wait :", distanceFromWait)), 2000)
 
 	
 	def mousePressEvent(self, event):
@@ -536,10 +629,10 @@ class WallControlWidget(QtWidgets.QWidget):
 			#lookPath = dataPath
 		#else:
 			#lookPath = os.path.dirname(lastPath)
-		#self.levelFile = FileInput('openFile', lastPath, 'Select a .txt level file', lookPath, 'TXT Files (*.txt)')
+		#self.levelFile = FileInput(self, 'openFile', lastPath, 'Select a .txt level file', lookPath, 'TXT Files (*.txt)')
 		#layout.addRow(_('Level file') + ' : ', self.levelFile)
 		
-		fields = ('xOffset', 'zOffset', 'upperLeft', 'lowerLeft', 'upperRight', 'lowerRight', 'depth', 'alt', 'xSize', 'zSize', 'aMin', 'aMax')
+		fields = ('xOffset', 'zOffset', 'upperLeft', 'lowerLeft', 'upperRight', 'lowerRight', 'depth', 'alt', 'xSize', 'zSize', 'aMin', 'aMax', 'type')
 		
 		self.lineEdits = {}
 		validator = QtGui.QIntValidator()
@@ -577,12 +670,14 @@ class WallControlWidget(QtWidgets.QWidget):
 		print ('wall ' + str(self.item) )
 		
 		
-	def loadBackground(self, parts):
+	def loadBackground(self, parts, transp=0, z=0):
 		# 0 : {path} 1{xratio} 2{zratio} 3{xposition} 4{zposition} 5{xspacing} 6{zspacing} 7{xrepeat} 8{zrepeat} {transparency} {alpha} {watermode} {amplitude} {wavelength} {wavespeed} 15:{bgspeedratio}
 		ROOT_PATH = os.path.dirname(settings.get_option('general/data_path', ''))
 		path = os.path.join(ROOT_PATH, parts[0])
 		
-		item = QtWidgets.QGraphicsPixmapItem(self.getPixmap(path))
+		
+		px = self.getPixmap(path, transp)
+		
 		
 		
 			
@@ -591,7 +686,24 @@ class WallControlWidget(QtWidgets.QWidget):
 			xRatio = float(parts[1])
 		except:
 			pass
-		item.xRatio = xRatio
+		
+		
+		zRatio = 0.5
+		try:
+			zRatio = float(parts[2])
+		except:
+			pass
+		
+		
+		bgspeedratio = 0
+		try:
+			bgspeedratio = float(parts[15])
+		except:
+			pass
+		
+		
+		xRatio *= bgspeedratio
+		
 		
 		
 		xPosition = 0
@@ -606,15 +718,50 @@ class WallControlWidget(QtWidgets.QWidget):
 		except:
 			pass
 		
-		self.levelEditor.scene.addItem(item)
-		# item.setZValue(zPosition)
-		item.setPos(xPosition, zPosition)
-		self.levelEditor.backgroundsImages.append(item)
 		
-	def getPixmap(self, path):
+		xSpacing = 0
+		try:
+			xSpacing = int(parts[5])
+		except:
+			pass
+		
+		
+		xRepeat = 1
+		try:
+			xRepeat = int(parts[7])
+		except:
+			pass
+		
+		if(xRepeat == -1):
+			xRepeat = self.fullWidth / (px.width() + xSpacing)
+			print("xRepeat was", xRepeat)
+			if(xRepeat <= 1):
+				xRepeat = 1
+		
+		print(parts)
+		#print("bg xRepeat is", xRepeat, px.width(), self.fullWidth)
+		
+		
+		xOffset = 0
+		for i in range(int(xRepeat)):
+		
+			item = QtWidgets.QGraphicsPixmapItem(px)
+			item.xOffset = xOffset
+			item.zOffset = 0
+			item.xRatio = xRatio
+			item.zRatio = zRatio
+			item.setPos(xPosition+xOffset, zPosition)
+			self.levelEditor.scene.addItem(item)
+			# item.setZValue(zPosition)
+			item.setZValue(z)
+			
+			self.levelEditor.backgroundsImages.append(item)
+			xOffset += px.width()  + xSpacing
+		
+	def getPixmap(self, path, transp=0):
 		if(path not in LevelEditorWidget.PIXMAP_CACHE):
 			
-			img = loadSprite(path)
+			img = loadSprite(path, transp)
 			#img = QtGui.QImage(path)
 			#img = img.convertToFormat(QtGui.QImage.Format_Indexed8)
 			#img.setColor(0, QtGui.qRgba(255, 255, 255, 0))
@@ -630,7 +777,7 @@ class WallControlWidget(QtWidgets.QWidget):
 			
 		return LevelEditorWidget.PIXMAP_CACHE[path]
 		
-	def loadImage(self, path=None):
+	def loadImage(self, path=None, transp=0):
 		if path is None:
 			path = '/home/piccolo/workspace/OpenBOR/data/bgs/polar/snow4.png'
 		
@@ -638,15 +785,16 @@ class WallControlWidget(QtWidgets.QWidget):
 		
 		
 		
-		item = QtWidgets.QGraphicsPixmapItem(self.getPixmap(path));
+		item = QtWidgets.QGraphicsPixmapItem(self.getPixmap(path, transp));
 		item.setPos(self.levelEditor.panelPos, 0)
+		item.setZValue(-1)
 		self.levelEditor.panelPos += item.pixmap().width()
 		self.levelEditor.scene.addItem(item);
 		print('panel', path)
 		
 		return item
 		
-	def loadFrontPanel(self, parts=[], type="frontpanel"):
+	def loadFrontPanel(self, parts=[], type="frontpanel", transp=0):
 		# fglayer 0{path} 1{z} 2{xratio} 3{zratio} 4{xposition} 5{zposition} {xspacing} {zspacing} {xrepeat} {zrepeat} {transparency} {alpha} {watermode} {amplitude} {wavelength} {wavespeed} {bgspeedratio}
 		
 		path = '/home/piccolo/workspace/OpenBOR/data/bgs/polar/snow4.png'
@@ -660,11 +808,30 @@ class WallControlWidget(QtWidgets.QWidget):
 			
 		#img = QtGui.QImage(path)
 		
-		z = 0
+		z = FRONTPANEL_Z
 		try:
-			z = int(parts[1])
+			z += int(parts[1])
 		except:
 			pass
+		
+		
+		
+		xRatio = 1
+		try:
+			xRatio = float(parts[2])
+		except:
+			pass
+		
+		if(type == 'frontpanel'):
+			xRatio = -0.4
+		
+		
+		zRatio = 1
+		try:
+			zRatio = float(parts[3])
+		except:
+			pass
+		
 		
 		
 		xPosition = 0
@@ -678,20 +845,53 @@ class WallControlWidget(QtWidgets.QWidget):
 			zPosition = int(parts[5])
 		except:
 			pass
+		
+		
+		xSpacing = 0
+		try:
+			xSpacing = int(parts[6])
+		except:
+			pass
 			
 		
+		xRepeat = 1
+		try:
+			xRepeat = int(parts[8])
+		except:
+			pass
 		
 		
-		item = QtWidgets.QGraphicsPixmapItem(self.getPixmap(path));
-		if(type == 'frontpanel'):
-			item.setPos(self.levelEditor.frontPanelPos, 0)
-			self.levelEditor.frontPanelPos += item.pixmap().width()
-		else:
-			item.setPos(xPosition, zPosition)
-		self.levelEditor.scene.addItem(item)
-		item.setZValue(-z)
-		self.levelEditor.panelsImages.append(item)
-		self.levelEditor.frontPanelsImages.append(item)
+		px = self.getPixmap(path, transp)
+		
+		if(xRepeat == -1):
+			xRepeat = self.fullWidth / (px.width() + xSpacing)
+			print("xRepeat was", xRepeat)
+			if(xRepeat <= 1):
+				xRepeat = 1
+			
+			
+		print("xRepeat is", xRepeat)
+		
+		
+		xOffset = 0
+		for i in range(int(xRepeat)):
+		
+			item = QtWidgets.QGraphicsPixmapItem(px)
+			item.xRatio = xRatio
+			item.zRatio = zRatio
+			item.xOffset = xOffset
+			item.zOffset = 0
+			if(type == 'frontpanel'):
+				item.setPos(self.levelEditor.frontPanelPos, 0)
+				self.levelEditor.frontPanelPos += item.pixmap().width()
+			else:
+				item.setPos(xPosition+xOffset, zPosition)
+			self.levelEditor.scene.addItem(item)
+			item.setZValue(z)
+			self.levelEditor.panelsImages.append(item)
+			self.levelEditor.frontPanelsImages.append(item)
+			
+			xOffset += px.width() + xSpacing
 		
 	def loadWalls(self):
 		
@@ -711,6 +911,20 @@ class WallControlWidget(QtWidgets.QWidget):
 
 		#lines = re.split('\n', text)
 		self.loadLines(lines)
+		
+		
+	def getTransp(self, pLine):
+		com = pLine.getCom()
+				
+				
+		transp = 0
+		if('transp=' in com):
+			parts = com.split('transp=')
+			part = parts[1]
+			parts = part.split(';')
+			transp = parts[0]
+			
+		return transp
 		
 	def loadLines(self, lines):
 		def processScriptLine():
@@ -759,26 +973,37 @@ class WallControlWidget(QtWidgets.QWidget):
 		self.levelEditor.scene.clear()
 		
 		
+		loadEntities = True
+		processScript = False
+		
 		
 		self.levelEditor.walls = []
 		self.levelEditor.holes = []
 		self.levelEditor.basemaps = []
 		self.levelEditor.entities = []
+		self.levelEditor.entities_types = []
+		self.levelEditor.backgrounds = []
 		self.levelEditor.backgroundsImages = []
 		self.levelEditor.groups = []
 		self.levelEditor.panels = []
+		self.levelEditor.HUD = []
 		self.levelEditor.panelsImages = []
 		self.levelEditor.panelPos = 0
 		self.levelEditor.frontPanels = []
 		self.levelEditor.frontPanelsImages = []
+		self.levelEditor.panelOrder = [0]
 		self.levelEditor.frontPanelPos = 0
+		self.levelEditor.waits = [0]
 		nextAt = None
+		part = None
+		previousFirstPart = None
 		e = None
 		isInScript = False
 		i = 0
 		for line in lines:
 			i += 1
 			pLine = ParsedLine(line)
+			previousFirstPart = part
 			part = pLine.next()
 			if part is None: continue
 		
@@ -789,7 +1014,7 @@ class WallControlWidget(QtWidgets.QWidget):
 				isInScript = True
 			elif isInScript:
 				# continue
-				processScriptLine()
+				if(loadEntities and processScript): processScriptLine()
 			
 			if part.lower() == 'at':
 				if nextAt == 'group':
@@ -798,13 +1023,16 @@ class WallControlWidget(QtWidgets.QWidget):
 					self.levelEditor.scene.addItem(group)
 				elif nextAt == 'wait':
 					wait = Wait()
-					wait.at(int(pLine.next()))
+					waitPos = int(pLine.next())
+					wait.at(waitPos)
+					self.levelEditor.waits.append(waitPos)
 					self.levelEditor.scene.addItem(wait)
 				elif nextAt == 'spawn':
-					e = self.levelEditor.entities[-1]
-					e.setAt(int(pLine.next()))
-					self.levelEditor.scene.addItem(e)
-				elif nextAt == None:
+					if(loadEntities):
+						e = self.levelEditor.entities[-1]
+						e.setAt(int(pLine.next()))
+						self.levelEditor.scene.addItem(e)
+				elif nextAt == None and previousFirstPart not in ('light', 'music', 'shadowopacity', 'scrollx', 'shadowcolor' ):
 					self.levelEditor.logWarning('Problem at line ' + str(i) + ' : orphan "at", skipped.')
 				nextAt = None
 		
@@ -817,19 +1045,28 @@ class WallControlWidget(QtWidgets.QWidget):
 					if e.x == None:
 						self.levelEditor.logWarning('Problem with spawn point : Entity ' + e.name + ' at line ' + str(e.line) + ' has no "coords" set')
 				
-				e = Entity(pLine.next(), i, self.levelEditor, defaultAnim="idle", loadAllAnims=True)
-				self.levelEditor.entities.append(e)
+				if(loadEntities):
+					e = Entity(pLine.next(), i, self.levelEditor, defaultAnim="idle", loadAllAnims=True, offset=True)
+					if(e.type not in self.levelEditor.entities_types):
+						self.levelEditor.entities_types.append(e.type)
+					self.levelEditor.entities.append(e)
 				nextAt = 'spawn'
 				
 			elif part.lower() == 'coords':
 				if (nextAt == None):
 					self.levelEditor.logWarning('Problem at line ' + str(i) + ' : orphan "coords", skipped.')
 					continue
-				e = self.levelEditor.entities[-1]
-				e.x = int(pLine.next())
-				e.z = int(pLine.next())
-				e.altitude = pLine.next()
-				if(e.altitude!=None): e.altitude = int(e.altitude)
+					
+				if(loadEntities):
+					e = self.levelEditor.entities[-1]
+					e.x = int(pLine.next())
+					try:
+						e.z = int(pLine.next())
+					except:
+						e.z = 0
+						self.levelEditor.logWarning('Problem at line ' + str(i) + ' : z coords missing or not integer.')
+					e.altitude = pLine.next()
+					if(e.altitude!=None): e.altitude = int(e.altitude)
 				
 				
 			elif part.lower() == 'group':
@@ -901,37 +1138,148 @@ class WallControlWidget(QtWidgets.QWidget):
 				parts = []
 				while pLine.next() != None:
 					parts.append(pLine.getCurrent())
-				self.loadBackground(parts)
+				
+				transp = self.getTransp(pLine)
+				z = -99999
+				#z = 0
+				if(part.lower() == 'background'): z = -99999
+				
+				
+				self.levelEditor.backgrounds.append({'parts':parts, 'z':z, 'transp':transp})
+				
+				
 			elif part.lower() == 'panel':
+				
+				transp = self.getTransp(pLine)
+				
+				
 				path = pLine.next()
-				self.levelEditor.panels.append(os.path.join(ROOT_PATH, path))
+				self.levelEditor.panels.append({'path':os.path.join(ROOT_PATH, path), 'transp':transp, 'z-ajust':PANEL_Z})
 				
-				image = self.loadImage(os.path.join(ROOT_PATH, path))
-				panelHeight = image.pixmap().height()
 				
-				width, height = LevelEditorWidget.RESOLUTIONS[self.levelEditor.videoMode]
-				print('video mode', width, height, self.levelEditor.videoMode)
-				self.levelEditor.screenItem = QtWidgets.QGraphicsRectItem(0, panelHeight-height, width, height)
-				self.levelEditor.screenItem.setZValue(1000)
-				self.levelEditor.screenItem.setPen(QtGui.QPen(QtGui.QColor(255,0,0), 5))
-				self.levelEditor.scene.addItem(self.levelEditor.screenItem)
-				
-				self.levelEditor.panelsImages.append(image)
 				
 			elif part.lower() in ('frontpanel', 'fglayer'):
 				parts = []
 				while pLine.next() != None:
 					parts.append(pLine.getCurrent())
-				self.loadFrontPanel(parts, part.lower())
+					
+				transp = self.getTransp(pLine)
+				
+				self.levelEditor.frontPanels.append({'type':part.lower(), 'parts':parts, 'transp':transp})
+				
+				
 			
 				
 				
 			elif part.lower() == 'order':
-				pass
+				corres = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7, 'i':8, 'j':9, 'k':10, 'l':11, 'm':12, 'n':13, 'o':14, 'p':15, 'q':16, 'r':17, 's':18, 't':19, 'u':20, 'v':21, 'w':22, 'x':23, 'y':24, 'z':25}
+				order = pLine.next()
+				self.levelEditor.panelOrder = []
+				for letter in order:
+					letterMin = letter.lower()
+					self.levelEditor.panelOrder.append(corres[letterMin])
 
+		
+		xOffset = 0
+		first = True
+		for i in self.levelEditor.panelOrder:
+			
+			panelData = self.levelEditor.panels[i]
+			
+			image = self.loadImage(panelData['path'], panelData['transp'])
+			
+			if(first):
+			
+				panelHeight = image.pixmap().height()
+			
+				width, height = LevelEditorWidget.RESOLUTIONS[self.levelEditor.videoMode]
+				print('video mode', width, height, self.levelEditor.videoMode)
+				self.levelEditor.screenItem = QtWidgets.QGraphicsRectItem(xOffset, panelHeight-height, width, height)
+				self.levelEditor.screenItem.setZValue(PANEL_Z)
+				self.levelEditor.screenItem.setPen(QtGui.QPen(QtGui.QColor(255,0,0), 5))
+				self.levelEditor.scene.addItem(self.levelEditor.screenItem)
+				
+				first = False
+			
+			self.levelEditor.panelsImages.append(image)
+			
+			xOffset += image.pixmap().width()
+		
+		
+		self.fullWidth = xOffset
+		#self.fullWidth = 5000
+		
+		
+		print("self.fullWidth", self.fullWidth)
+		
+		
+			
+		
+		
+		for background in self.levelEditor.backgrounds:
+			self.loadBackground(background['parts'], background['transp'], background['z'])
+		
+		for frontPanel in self.levelEditor.frontPanels:
+			self.loadFrontPanel(frontPanel['parts'], frontPanel['type'], frontPanel['transp'])
 		#scene.addItem(Item(1700, 920, 0, 850, 200, 1050, 250));
 
 		#scene.addItem(Item(1700, 920, 0, 0, 850, 0, 200));
+		
+		if(hasattr(self.levelEditor, 'z')):
+			print("self.z", self.levelEditor.z)
+		
+			self.xMin = QtWidgets.QGraphicsLineItem(0.0, float(self.levelEditor.z['xMin']) , float(self.fullWidth), float(self.levelEditor.z['xMin']))
+			self.xMin.setZValue(9999)
+			self.xMin.setPen(QtGui.QPen(QtGui.QColor(240,140,120)))
+			self.levelEditor.scene.addItem(self.xMin)
+			
+			self.xMax = QtWidgets.QGraphicsLineItem(0.0, float(self.levelEditor.z['xMax']) , float(self.fullWidth), float(self.levelEditor.z['xMax']))
+			self.xMax.setZValue(9999)
+			self.xMax.setPen(QtGui.QPen(QtGui.QColor(150,100,255)))
+			self.levelEditor.scene.addItem(self.xMax)
+		
+			
+			#self.line.setPen(pen)
+		if(hasattr(self.levelEditor, 'HUD_settings')):
+			HUD = self.levelEditor.HUD_settings
+			print('THERE IS HUD_settings 2')
+			if('lbarsize' in HUD):
+				width = HUD['lbarsize']['width']
+				height = HUD['lbarsize']['height']
+				for pLife in ['p1life', 'p2life', 'p3life', 'p4life']:
+					if(pLife in HUD):
+						x = HUD[pLife]['x']
+						y = HUD[pLife]['y']
+						
+						lifeBar = QtWidgets.QGraphicsRectItem(x, y, width, height)
+						lifeBar.setZValue(9999)
+						lifeBar.setBrush(QtGui.QBrush(QtGui.QColor(0,100,0)))
+						lifeBar.setPen(QtGui.QPen(QtGui.QColor(0,100,0)))
+						self.levelEditor.scene.addItem(lifeBar)
+						self.levelEditor.HUD.append(lifeBar)
+						
+				for pName in ['p1namej', 'p2namej', 'p3namej', 'p4namej'] :
+					x1 = HUD[pName]['x1']
+					y1 = HUD[pName]['y1']
+					pNameObject = FontObject(pName)
+					pNameObject.setZValue(9999)
+					pNameObject.setPos(x1, y1)
+					self.levelEditor.scene.addItem(pNameObject)
+					self.levelEditor.HUD.append(pNameObject)
+					
+				for pIcon in ['p1icon', 'p2icon', 'p3icon', 'p4icon'] :
+					x = HUD[pIcon]['x']
+					y = HUD[pIcon]['y']
+					lifeBar = QtWidgets.QGraphicsRectItem(x, y, 25, 25)
+					lifeBar.setZValue(9999)
+					lifeBar.setBrush(QtGui.QBrush(QtGui.QColor(100,100,100)))
+					lifeBar.setPen(QtGui.QPen(QtGui.QColor(50,50,50)))
+					self.levelEditor.scene.addItem(lifeBar)
+					self.levelEditor.HUD.append(lifeBar)
+				
+			
+		
+		
 		
 		
 	def load(self, item):
@@ -951,6 +1299,13 @@ class WallControlWidget(QtWidgets.QWidget):
 			self.lineEdits['lowerRight'].setText(str(int(item.coords['lowerRight'])))
 			self.lineEdits['depth'].setText(str(int(item.coords['depth'])))
 			self.lineEdits['alt'].setText(str(int(item.coords['alt'])))
+			
+			
+			# print("self.type", item.type)
+			if(item.type != None):
+				self.lineEdits['type'].setText(str(item.type))
+			else:
+				self.lineEdits['type'].setText('')
 		
 		
 	def setBaseOnly(self, state):
@@ -973,6 +1328,10 @@ class WallControlWidget(QtWidgets.QWidget):
 		self.item.coords['lowerRight'] = int(self.lineEdits['lowerRight'].text())
 		self.item.coords['depth'] = int(self.lineEdits['depth'].text())
 		self.item.coords['alt'] = int(self.lineEdits['alt'].text())
+		if(self.lineEdits['type'].text().strip() == ''):
+			self.item.type = None
+		else:
+			self.item.type = self.lineEdits['type'].text()
 		self.item.updatePolygon()
 		#print(list (self.item.polygon()))
 		
@@ -984,8 +1343,47 @@ class LevelControlWidget(QtWidgets.QWidget):
 		
 		layout = QtWidgets.QFormLayout()
 		
-
+		self.hideButtons = []
+		
 		self.setLayout(layout)
+		
+		a = QtWidgets.QCheckBox(_('Cursor drag mode'))
+		a.setChecked(True)
+		a.stateChanged.connect(self.changeCursorMode)
+		layout.addRow(a)
+		
+		a = QtWidgets.QCheckBox(_('Hide HUD'))
+		a.stateChanged.connect(self.hideHUD)
+		layout.addRow(a)
+		
+		a = QtWidgets.QCheckBox(_('Hide entities'))
+		a.stateChanged.connect(self.hideEntities)
+		layout.addRow(a)
+		
+		a = QtWidgets.QCheckBox(_('Hide entities offset'))
+		a.stateChanged.connect(self.hideEntitiesOffset)
+		layout.addRow(a)
+		
+		a = QtWidgets.QCheckBox(_('Hide entities shadow'))
+		a.stateChanged.connect(self.hideEntitiesShadow)
+		layout.addRow(a)
+		
+		
+		a = QtWidgets.QCheckBox(_('Hide all geometry (walls, ...)'))
+		a.stateChanged.connect(self.hideGeometry)
+		layout.addRow(a)
+		
+		a = QtWidgets.QCheckBox(_('Hide walls'))
+		a.stateChanged.connect(self.hideWalls)
+		layout.addRow(a)
+		
+		a = QtWidgets.QCheckBox(_('Hide holes'))
+		a.stateChanged.connect(self.hideHoles)
+		layout.addRow(a)
+		
+		a = QtWidgets.QCheckBox(_('Hide basemaps'))
+		a.stateChanged.connect(self.hideBasemaps)
+		layout.addRow(a)
 		
 	
 		a = QtWidgets.QCheckBox(_('Hide panels'))
@@ -1004,6 +1402,32 @@ class LevelControlWidget(QtWidgets.QWidget):
 		self.logWidget = QtWidgets.QPlainTextEdit('Log...')
 		layout.addRow(self.logWidget)
 		# self.logWidget.setFixedWidth(300)
+		
+		self.layout = layout
+		
+		
+	def changeCursorMode(self, state):
+		if state == QtCore.Qt.Checked:
+			#RubberBandDrag
+			self.levelEditor.graphicView.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
+		else:
+			self.levelEditor.graphicView.setDragMode(QtWidgets.QGraphicsView.NoDrag)
+			
+		
+		
+	def loadHideButtons(self):
+		
+		for b in self.hideButtons:
+			self.layout.removeWidget(b)
+		
+		self.hideButtons = []
+		
+		for type in self.levelEditor.entities_types:
+			a = QtWidgets.QCheckBox(_('Hide entities [' + type + ']'))
+			a.setProperty('entType', type)
+			a.stateChanged.connect(self.hideEntityType)
+			self.hideButtons.append(a)
+			self.layout.addRow(a)
 		
 		
 	def hideBackgrounds(self, state):
@@ -1025,6 +1449,48 @@ class LevelControlWidget(QtWidgets.QWidget):
 				p.show()
 		
 		
+	def hideGeometry(self, state):
+		if state == QtCore.Qt.Checked:
+			for p in [*self.levelEditor.walls, *self.levelEditor.basemaps, *self.levelEditor.holes]:
+				
+				p.hide()
+		else:
+			for p in [*self.levelEditor.walls, *self.levelEditor.basemaps, *self.levelEditor.holes]:
+				
+				p.show()
+		
+
+	def hideBasemaps(self, state):
+		if state == QtCore.Qt.Checked:
+			for p in self.levelEditor.basemaps:
+				
+				p.hide()
+		else:
+			for p in self.levelEditor.basemaps:
+				
+				p.show()
+		
+	def hideWalls(self, state):
+		if state == QtCore.Qt.Checked:
+			for p in self.levelEditor.walls:
+				
+				p.hide()
+		else:
+			for p in self.levelEditor.walls:
+				
+				p.show()
+				
+	def hideHoles(self, state):
+		if state == QtCore.Qt.Checked:
+			for p in self.levelEditor.holes:
+				
+				p.hide()
+		else:
+			for p in self.levelEditor.holes:
+				
+				p.show()
+			
+		
 	def hidePanels(self, state):
 		if state == QtCore.Qt.Checked:
 			for p in self.levelEditor.panelsImages:
@@ -1032,6 +1498,55 @@ class LevelControlWidget(QtWidgets.QWidget):
 		else:
 			for p in self.levelEditor.panelsImages:
 				p.show()
+	
+	def hideHUD(self, state):
+		if state == QtCore.Qt.Checked:
+			for p in self.levelEditor.HUD:
+				p.hide()
+		else:
+			for p in self.levelEditor.HUD:
+				p.show()
+	
+	def hideEntities(self, state):
+		if state == QtCore.Qt.Checked:
+			for p in self.levelEditor.entities:
+				p.hide()
+		else:
+			for p in self.levelEditor.entities:
+				p.show()
+				
+		for p in self.hideButtons:
+			p.setChecked(state == QtCore.Qt.Checked)
+				
+				
+	def hideEntitiesOffset(self, state):
+		if state == QtCore.Qt.Checked:
+			for p in self.levelEditor.entities:
+				if hasattr(p, 'offset'):
+					p.offset.hide()
+		else:
+			for p in self.levelEditor.entities:
+				if hasattr(p, 'offset'):
+					p.offset.show()
+				
+	def hideEntitiesShadow(self, state):
+		if state == QtCore.Qt.Checked:
+			for p in self.levelEditor.entities:
+				if hasattr(p, 'shadow'):
+					p.shadow.hide()
+		else:
+			for p in self.levelEditor.entities:
+				if hasattr(p, 'shadow'):
+					p.shadow.show()
 			
-		
+	def hideEntityType(self, state):
+		entType = self.sender().property('entType')
+		if state == QtCore.Qt.Checked:
+			for p in self.levelEditor.entities:
+				if p.type == entType:
+					p.hide()
+		else:
+			for p in self.levelEditor.entities:
+				if p.type == entType:
+					p.show()
 

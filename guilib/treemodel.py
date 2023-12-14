@@ -2,13 +2,38 @@ from PyQt5 import QtGui, QtCore
 from PyQt5.QtCore import Qt
 
 expandedRole = Qt.UserRole+1
+itemRole = Qt.UserRole+2
 expandedRoleWithoutFilter = Qt.UserRole+3
+containsRole = Qt.UserRole+4
+expandWithoutContainsRole = Qt.UserRole+5 # for nodes that contains a parent that contains filter, and that are expanded despite themselves not containing filter
 
 class FilterModel(QtCore.QSortFilterProxyModel):
 	
+	def __init__(self):
+            QtCore.QSortFilterProxyModel.__init__(self)
+            self.expandResults = 0
 
 	def filterAcceptsRow(self, sourceRow, sourceParent):
 		col0 = self.sourceModel().index(sourceRow, 0, sourceParent)
+		
+		
+		data = self.sourceModel().data(col0, Qt.DisplayRole)
+		
+		# item = self.sourceModel().data(col0, itemRole)
+		# print(data)
+		if data is None : return False
+		# if data is None : return True
+		# contains = self.filterRegExp().pattern() in data
+		contains = self.filterRegExp().indexIn(data) != -1
+		# contains = data.contains(self.filterRegExp())
+		
+		
+		
+		
+		self.sourceModel().setData(col0, contains, containsRole)
+		self.sourceModel().setData(col0, 0, expandWithoutContainsRole) # reset
+		
+		
 		# do bottom to top filtering
 		if (self.sourceModel().hasChildren(col0)):
 			
@@ -32,16 +57,51 @@ class FilterModel(QtCore.QSortFilterProxyModel):
 			pass
 
 		
-		data = self.sourceModel().data(col0, Qt.DisplayRole)
+		
+		
+		
+		
+		# if(data == "chars"): print("chars", self.sourceModel().data(col0, containsRole),  self.sourceModel().data(col0, expandWithoutContainsRole))
+		
+		
+		
+		parent_expandWithoutContains = self.sourceModel().data(sourceParent, expandWithoutContainsRole)
+		if(parent_expandWithoutContains == None):parent_expandWithoutContains = 0
+		
+		
 		# print(data)
-		if data is None : return False
-		# if data is None : return True
-		# contains = self.filterRegExp().pattern() in data
-		contains = self.filterRegExp().indexIn(data) != -1
-		# contains = data.contains(self.filterRegExp())
+		
+		
+		# if(data == "chars"): print("chars parent", self.sourceModel().data(sourceParent, containsRole),  parent_expandWithoutContains)
+		
+		
+		
 		if(contains and self.filterRegExp().pattern() != '') :
 			# print(data)
 			self.sourceModel().setData(col0, True, expandedRole)
+			
+		
+		
+		# and item.parentItem != None
+		
+		# NOTE this is a cool feature to allow to expand folder level 1 when you search for a term and it matches a folder
+		elif self.expandResults > 0  and self.sourceModel().data(sourceParent, containsRole) == True:
+			self.sourceModel().setData(col0, 1, expandWithoutContainsRole)
+			self.sourceModel().setData(col0, True, expandedRole)
+			return True # means we show it (don't filter out)
+		elif parent_expandWithoutContains >= 1 and  self.expandResults > parent_expandWithoutContains:
+		# elif self.sourceModel().data(sourceParent, expandWithoutContainsRole) < self.expandResults:
+			print("parent_expandWithoutContains was", parent_expandWithoutContains, self.expandResults, self.sourceModel().data(col0, Qt.DisplayRole))
+			self.sourceModel().setData(col0, parent_expandWithoutContains+1, expandWithoutContainsRole)
+			self.sourceModel().setData(col0, True, expandedRole)
+			return True
+			# return False
+		else:
+			self.sourceModel().setData(col0, 0, expandWithoutContainsRole) # reset
+			# print("parent value was", data, parent_expandWithoutContains, self.expandResults)
+                #else:
+                    #print(self.sourceModel().data(sourceParent, Qt.DisplayRole))
+                    
 		#print(contains, self.sourceModel().data(col0, Qt.DisplayRole))
 		return contains
 		# return True
@@ -52,6 +112,8 @@ class TreeItem(object):
         self.itemData = data
         self.isExpanded = False
         self.isExpandedWithoutFilter = False
+        self.containsFilter = False
+        self.expandWithoutContains = 0
         self.childItems = []
 
     def append(self, item):

@@ -10,12 +10,40 @@ from data import ParsedLine, FileWrapper
 
 class Entity(QtWidgets.QGraphicsItemGroup):
 	
-	AVAILABLE_MODELS = []
-	PIXMAP_CACHE = {}
-	WARNED_NO_IDLE = []
-	LOADED_MODELS_REFERENCE = {}
+	PROJECTS_VARS = {}
 	
 	
+	@classmethod
+	def projectChanged(cls, projectRoot=None):
+		if(projectRoot != None):
+			Entity.ROOT_PATH = projectRoot
+		else :
+			Entity.ROOT_PATH = os.path.dirname(settings.get_option('general/data_path', '/home/piccolo/workspace/OpenBOR/data')) + os.sep
+		
+		
+		if(Entity.ROOT_PATH in Entity.PROJECTS_VARS):
+			vars = Entity.PROJECTS_VARS[Entity.ROOT_PATH]
+			
+			Entity.AVAILABLE_MODELS = vars['AVAILABLE_MODELS']
+			Entity.PIXMAP_CACHE = vars['PIXMAP_CACHE']
+			Entity.WARNED_NO_IDLE = vars['WARNED_NO_IDLE']
+			Entity.LOADED_MODELS_REFERENCE = vars['LOADED_MODELS_REFERENCE']
+		else:
+			
+		
+			Entity.AVAILABLE_MODELS = []
+			Entity.PIXMAP_CACHE = {}
+			Entity.WARNED_NO_IDLE = []
+			Entity.LOADED_MODELS_REFERENCE = {}
+			
+			vars = {}
+			
+			vars['AVAILABLE_MODELS'] = Entity.AVAILABLE_MODELS
+			vars['PIXMAP_CACHE'] = Entity.PIXMAP_CACHE
+			vars['WARNED_NO_IDLE'] = Entity.WARNED_NO_IDLE
+			vars['LOADED_MODELS_REFERENCE'] = Entity.LOADED_MODELS_REFERENCE
+			
+			Entity.PROJECTS_VARS[Entity.ROOT_PATH] = vars
 	
 	
 	def __init__(self, entName='rugal', line=-1, parentWidget=None, loadAllAnims=False, defaultAnim='idle', shadow=True, offset=False):
@@ -25,6 +53,8 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		self.z = None
 		self.altitude = None
 		self.at = None
+		
+		self.type = 'Unknown'
 		
 		self.reference = None
 		
@@ -50,7 +80,10 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 			self.anims = reference.anims
 			self.allAnimLoaded = reference.allAnimLoaded
 			self.modelPath = reference.modelPath
+			self.type = reference.type
 			self.entityModelFound = True
+			
+			
 			
 			self.xOffset = 0
 			self.yOffset = 0
@@ -215,7 +248,10 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 			part = pLine2.next()
 			if(part != None) : part = part.lower()
 			
-			if part == 'anim':
+			if(part == 'type'):
+				self.type = pLine2.next().lower()
+			
+			elif part == 'anim':
 				skipAnim = False
 				animName = pLine2.next().lower()
 				
@@ -301,6 +337,8 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 	def actualizeFrame(self):
 		if(self.timer != 0) : return
 		# print('actualizing frame to ', self.frames[self.currentFrame]['path'])
+		
+		if(self.currentFrame >= len(self.frames)): return
 		px = Entity.PIXMAP_CACHE[self.frames[self.currentFrame]['path']]
 		self.frameWidth = px.width()
 		self.frameHeight = px.height()
@@ -581,6 +619,8 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 		
 		self.type = type
 		
+		# print("Wall create with type", type)
+		
 		#self.dot5.setPixmap(QtGui.QPixmap('icons/arrow3.png'))
 		
 		self.dots = [self.dot1, self.dot2, self.dot3, self.dot4, self.dot5, self.dot6]
@@ -639,6 +679,18 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 		#self.addToGroup(self.dot4)
 		
 		
+
+	def hide(self):
+		for dot in self.dots:
+			dot.hide()
+			
+		QtWidgets.QGraphicsItemGroup.hide(self)
+		
+	def show(self):
+		for dot in self.dots:
+			dot.show()
+			
+		QtWidgets.QGraphicsItemGroup.show(self)
 
 		
 	def setParts(self):
@@ -1249,3 +1301,127 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 	
 	def __str__(self):
 		return str(self.xOffset + int(self.x())) + ' ' + str(self.zOffset + int(self.y())) + ' ' + str(int(self.coords['xSize'])) + ' ' + str(int(self.coords['zSize'])) + ' ' + str(int(self.coords['aMin'])) +  ' ' + str(int(self.coords['aMax']))
+	
+	
+class FontObject(QtWidgets.QGraphicsItemGroup):
+	
+	def __init__(self, text, fontSprite=None):
+		QtWidgets.QGraphicsItemGroup.__init__(self)
+		
+		self.fontSprite = fontSprite
+		self.loadFont()
+		
+		yOffset = 0
+		
+		i = 0
+		for letter in text:
+			
+			letter_pos = self.letters.find(letter)
+			
+			#print("letter is", letter, letter_pos)
+			
+			if(letter_pos != -1):
+				
+				px = self.charsPX[letter_pos]
+		
+				item = QtWidgets.QGraphicsPixmapItem(px)
+				item.setPos(i*(self.charWidth), yOffset)
+				
+				self.addToGroup(item)
+			i+=1
+	
+	
+	def loadFont(self):
+		#FONT WORK
+		
+		print('font path', Entity.ROOT_PATH + '/sprites/font.gif')
+		
+		fonts = [ {'path':Entity.ROOT_PATH + 'data/sprites/font.gif', 'yOffset':-400},
+				 {'path':'/home/piccolo/workspace/OpenBOR/tmp/data/sprites/font2.gif', 'yOffset':-300},
+			{'path':'/home/piccolo/workspace/OpenBOR/tmp/data/sprites/font4.gif', 'yOffset':-200},
+			{'path':'/home/piccolo/workspace/OpenBOR/tmp/data/sprites/font6.gif', 'yOffset':-100}
+			]
+		
+		
+		
+		if(self.fontSprite != None):
+			fontData = {'path':self.fontSprite, 'yOffset':-400}
+		else:
+		
+			fontData = fonts[0]
+		
+			
+		fontImage = loadSprite(fontData['path'])
+		charWidth = int(fontImage.width() / 16)
+		self.charWidth = charWidth
+		charHeight = int(fontImage.height() / 16)
+		# charHeight = charWidth
+		print("charWidth", charWidth)
+		
+		x = 0
+		y = 0
+		
+		# letters = '0 1 2 3 4 5 6 7 8 9 A B C D E F 0 1 2 3 4 5 6 7 8 9 A B C D E F ! " # $ % & Â´ ( )  * + , - . / 0 1 2 3 4 5 6 7 8 9 : ; { = } ? @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z [ \ ] ^ ` a b c d e f g h i j k l m n o p q r s t u v w x y z'
+		# letters = letters.replace(' ', '')
+		
+		letters = '0123456789ABCDEF0123456789ABCDEF!"#$%&Â´()*+,-./0123456789:;{=}?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^ `abcdefghijklmnopqrstuvwxyz'
+		self.letters = letters
+		
+		charsPX = []
+		
+		for y in range(8):
+			for i in range(16):
+			
+		
+				charIMG = fontImage.copy(i*charWidth, y*charHeight, charWidth, charHeight)
+			
+				px = QtGui.QPixmap.fromImage(charIMG)
+				
+				charsPX.append(px)
+				
+				#item = QtWidgets.QGraphicsPixmapItem(px)
+				#item.setPos(i*(charWidth+5), y*(charHeight+5))
+				#self.scene.addItem(item)
+				
+		self.charsPX = charsPX
+		
+		
+	def writeText(self):
+		phrase_to_draw = "This test sentence was built"
+		phrase_to_draw2 = "with CMT font parser"
+		
+		# phrase_to_draw = "01 ABC"
+		
+		
+		yOffset = fontData['yOffset']
+		i = 0
+		for letter in phrase_to_draw:
+			
+			letter_pos = letters.find(letter)
+			
+			print("letter is", letter, letter_pos)
+			
+			if(letter_pos != -1):
+				
+				px = charsPX[letter_pos]
+		
+				item = QtWidgets.QGraphicsPixmapItem(px)
+				item.setPos(i*(charWidth+5), yOffset)
+				self.scene.addItem(item)
+			i+=1
+		
+		i = 0
+		for letter in phrase_to_draw2:
+			
+			letter_pos = letters.find(letter)
+			
+			print("letter is", letter, letter_pos)
+			
+			if(letter_pos != -1):
+				
+				px = charsPX[letter_pos]
+		
+				item = QtWidgets.QGraphicsPixmapItem(px)
+				item.setPos(i*(charWidth+5), yOffset+charHeight+5)
+				self.scene.addItem(item)
+			i+=1

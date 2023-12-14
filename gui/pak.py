@@ -6,21 +6,24 @@ from common import settings
 from gui.util import FileInput
 from PyQt5 import QtCore, QtWidgets
 
+#blabla dd  deee
+
 # List of files (other than sprites images and model files) that need to be copied too
 OTHERS = ('.wav',)
 
 class PakWidget(QtWidgets.QWidget):
-	def __init__(self):
-		QtWidgets.QWidget.__init__(self)
+	def __init__(self, parent):
+		QtWidgets.QWidget.__init__(self, parent)
+		self.parent = parent # prevent garbabe collector to delete parent dialog
 		layout = QtWidgets.QFormLayout()
 		
 		dataPath = settings.get_option('general/data_path', '')
 		charsFolderPath = os.path.join(dataPath, 'chars')
-		self.charsFolder = FileInput('folder', charsFolderPath, 'Select chars folder', dataPath)
+		self.charsFolder = FileInput(self, 'folder', charsFolderPath, 'Select chars folder', dataPath)
 		layout.addRow(_('Workbase chars folder') + ' : ', self.charsFolder)
 		
 		outCharsFolderPath = settings.get_option('pak/chars_out_path', os.path.join(dataPath, 'publishData' + os.sep + 'chars'))
-		self.outCharsFolder = FileInput('folder', outCharsFolderPath, 'Select chars folder', dataPath)
+		self.outCharsFolder = FileInput(self, 'folder', outCharsFolderPath, 'Select chars folder', dataPath)
 		layout.addRow(_('Publish chars folder') + ' : ', self.outCharsFolder)
 		
 		button = QtWidgets.QPushButton(_('Start process'))

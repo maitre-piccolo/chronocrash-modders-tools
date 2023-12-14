@@ -17,6 +17,7 @@ from gui.main.fileselector import FileSelector, File
 from gui.main.everydayeditor import EverydayEditor
 from gui.entity import EntityEditorWidget
 from gui.level import LevelEditorWidget
+from gui.level.items import Entity
 
 ROOT_PATH = '/home/piccolo/workspace/OpenBOR/'
 
@@ -27,8 +28,10 @@ from qutepart.syntax.colortheme import ColorTheme
 
 class MainEditorWidget(QtWidgets.QWidget):
 	
-	def __init__(self):
+	def __init__(self, core):
 		QtWidgets.QWidget.__init__(self)
+		
+		self.core = core
 		layout = QtWidgets.QHBoxLayout()
 		splitter = QtWidgets.QSplitter(self)
 		self.splitter = splitter
@@ -89,8 +92,22 @@ class MainEditorWidget(QtWidgets.QWidget):
 		
 		self.currentView = 'text'
 		
+	def backupUnsaved(self):
+		self.updateFD()
+		
+		self.fileSelector.backupUnsaved()
+		
+		
+		
+		for key in self.favorites:
+			fd = self.favorites[key]
+			if not fd.saved:
+				fd.save()
+				#fd.backupUnsaved()
+	
 	def close(self, all=False):
 		self.levelEditor.looping = False
+		self.backupUnsaved()
 		return self.fileSelector.close(all)
 		
 		
@@ -102,6 +119,7 @@ class MainEditorWidget(QtWidgets.QWidget):
 
 	def entitiesHaveBeenReloaded(self):
 		self.entityEditor.frameEditor.bindingEditor.reloadModels()
+		self.entityEditor.frameEditor.onionSkinEditor.reloadModels()
 		
 		
 	def loadProject(self, path=None):
@@ -116,21 +134,50 @@ class MainEditorWidget(QtWidgets.QWidget):
 		FileSelector.ROOT_PATH = ROOT_PATH
 		EntityEditorWidget.ROOT_PATH = ROOT_PATH
 		
-				
-		self.fileSelector.loadLibrary(True)
+		Entity.projectChanged(ROOT_PATH)
+		LevelEditorWidget.projectChanged(ROOT_PATH)
+		
+		self.entityEditor.projectChanged(ROOT_PATH)
+		
+		self.fileSelector.projectChanged(ROOT_PATH)	
+		self.fileSelector.setMode('library')
+		self.fileSelector.loadLibrary(False)
+		
+		self.menuBar.addProjectQuickAccess(path)
+		# self.fileSelector.loadLibrary(True)
 		
 	def loadFile(self, fd, rel=True):
 		print('\nMAIN WIDGET loading file', fd)
 		#if(type(f) == str) : path = f
 		path = fd.path
 		self.headerWidget.setInfo(fd)
+		
+		self.updateFD()
+		
+		if(fd.category != 'Level' and self.currentView in ('level')):
+			self.setView("text")
+			self.headerWidget.textAction.setChecked(True)
+			
+		if(fd.category != 'Entity' and self.currentView in ('anim', 'frame')):
+			self.setView("text")
+			self.headerWidget.textAction.setChecked(True)
+
+		
+		#if(fd.category == 'Level' and self.currentView in ('anim', 'frame')):
+			#self.setView("text")
+			#self.headerWidget.textAction.setChecked(True)
+		   
+		#if(fd.category == 'Entity' and self.currentView in ('level')):
+			#self.setView("text")
+			#self.headerWidget.textAction.setChecked(True)
 
 		
 		self.editor.setCurrent(fd)
 		if self.currentView in ('anim', 'frame'):
 			self.entityEditor.loadLines(fd.lines)
 		elif self.currentView == 'level':
-			self.levelEditor.loadLines(fd.lines)
+			print('z', fd.z)
+			self.levelEditor.loadFile(fd)
 			
 			
 		if self.currentView == "favorite":
@@ -222,9 +269,14 @@ class MainEditorWidget(QtWidgets.QWidget):
 		
 		favorites = {'Log': logPath, 'Todo':todoPath}
 		
+		numberOfTodoShortcuts = settings.get_option('misc/number_of_todo_shortcuts', 1)
+		for i in range(1, numberOfTodoShortcuts):
+			todoPath = os.path.join(data_path, 'TODO' + str(i+1) + '.txt')
+			favorites[str(i+1)] = todoPath
+		
 		for key, path in favorites.items():
 			fd = File(path)
-			fd.loadFromDisk()
+			fd.loadFromDisk(True)
 			self.favorites[key] = fd
 	
 	
@@ -278,6 +330,10 @@ class MainEditorWidget(QtWidgets.QWidget):
 		elif view == 'level':
 			for w in widgets : w.hide()
 			self.levelEditor.show()
+			if(hasattr(self.editor.current(), 'z')):
+				self.levelEditor.z = self.editor.current().z
+			if(hasattr(self.editor.current(), 'HUD_settings')):
+				self.levelEditor.HUD_settings = self.editor.current().HUD_settings
 			self.levelEditor.loadLines(self.editor.getLines())
 		elif view == 'favorite':
 			for w in widgets : w.hide()
@@ -321,7 +377,17 @@ class MainEditorWidget(QtWidgets.QWidget):
 		
 		ColorTheme.setThemeDescr(data2, dict(themes.EDITOR_THEME.items('Highlighting C - Schema ' + themes.EDITOR_THEME.name)))
 		
+		self.editor.updateTheme()
+		self.entityEditor.updateTheme()
 		
+		
+		
+		
+	# This function updates the content of file object (FD) with editor lines.
+	# But also, first, if currentView is animation or level, it updates editor lines with rebuilded lines.
+	# And then only, it updates the content of FD with editor lines
+	
+	# if the tie between current editor (self.editor.editor) is broken, then anim and level view will fill the wrong FD.
 	def updateFD(self):
 		# TODO update data from current editor (eg entityEditor) in main editor if view is not text
 		if(self.currentView == 'anim'):
@@ -404,6 +470,8 @@ class HeaderWidget(QtWidgets.QWidget):
 		b5 = self.buttonBar.addAction(labels['Level'], lambda:self.parent.setView('level'))
 		b5.setToolTip('Level')
 		
+		
+		self.textAction = b1
 		self.animationAction = b2
 		self.levelAction = b5
 	

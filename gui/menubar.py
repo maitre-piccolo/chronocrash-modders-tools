@@ -15,6 +15,9 @@ class MenuBar(QtWidgets.QMenuBar):
 		self.core = parent
 		QtWidgets.QMenuBar.__init__(self, parent)
 		
+		
+		
+		
 		#fileMenu = QtWidgets.QMenu(_('&File'))
 		fileMenu = self.addMenu(_('&File'))
 		fileMenu.addAction(_('&New'), self.core.newFile, QtGui.QKeySequence(self.tr("Ctrl+N", "File|New")))
@@ -32,9 +35,11 @@ class MenuBar(QtWidgets.QMenuBar):
 		#self.addMenu(editMenu)
 		
 		
-		viewMenu = self.addMenu(_('&View'))
-		viewMenu.addAction(_('Project selector'), self.changeProject)
-		viewMenu.addAction(_('Story editor'), self.dialogEdit)
+		self.projects_quickly_loadable = []
+		self.viewMenu = self.addMenu(_('&View'))
+		self.viewMenu.addAction(_('Project selector'), self.changeProject)
+		self.viewMenu.addAction(_('Backups viewer'), self.backupViewer)
+		self.viewMenu.addAction(_('Story editor'), self.dialogEdit)
 		
 		
 		self.sessionMenu = self.addMenu(_('Sess&ion'))
@@ -70,6 +75,7 @@ class MenuBar(QtWidgets.QMenuBar):
 		toolMenu = self.addMenu(_('&Tools'))
 		
 		toolMenu.addAction(_('Tool dialog'), self.toolSelect)
+		toolMenu.addAction(_('Font preview'), self.openFontPreview)
 		
 		
 		#projectMenu = self.addMenu(_('&Project'))
@@ -88,11 +94,11 @@ class MenuBar(QtWidgets.QMenuBar):
 		a.setChecked(autoCollapse)
 		
 		
-		def smallScreen():
+		def setSmallSceen():
 			autoCollapse = settings.get_option('gui/small_screen', False)
 			settings.set_option('gui/small_screen', not autoCollapse)
 		
-		a = optionMenu.addAction(_('Small screen mode'), smallScreen)
+		a = optionMenu.addAction(_('Small screen mode'), setSmallSceen)
 		a.setCheckable(True)
 		smallScreen = settings.get_option('gui/small_screen', False)
 		a.setChecked(smallScreen)
@@ -174,12 +180,129 @@ class MenuBar(QtWidgets.QMenuBar):
 			settings.set_option('gui/opengl_rendering', openGLRendering)
 			self.informRestart()
 		
-		a = optionMenu.addAction(_('OpenGL Rendering)'), setOpenGLRendering)
+		a = optionMenu.addAction(_('OpenGL Rendering'), setOpenGLRendering)
 		a.setCheckable(True)
 		openGLRendering = settings.get_option('gui/opengl_rendering', False)
 		a.setChecked(openGLRendering)
-
 		
+		
+		def disableAutoBackup():
+			disableAutoBackupProp = settings.get_option('general/disable_auto_backup', False)
+			disableAutoBackupProp = not disableAutoBackupProp
+			
+			
+			settings.set_option('general/disable_auto_backup', disableAutoBackupProp)
+			# self.informRestart()
+		
+		a = optionMenu.addAction(_('Disable basic Auto-Backup'), disableAutoBackup)
+		a.setCheckable(True)
+		disableAutoBackupProp = settings.get_option('general/disable_auto_backup', False)
+		print("disable autobackup", disableAutoBackupProp)
+		a.setChecked(disableAutoBackupProp)
+		
+		
+		def disableAdvancedAutoBackup():
+			openGLRendering = settings.get_option('general/disable_advanced_auto_backup', False)
+			openGLRendering = not openGLRendering
+			
+			
+			settings.set_option('general/disable_advanced_auto_backup', openGLRendering)
+			# self.informRestart()
+		
+		a = optionMenu.addAction(_('Disable advanced Auto-Backup'), disableAdvancedAutoBackup)
+		a.setCheckable(True)
+		openGLRendering = settings.get_option('general/disable_advanced_auto_backup', False)
+		a.setChecked(openGLRendering)
+		
+		
+		def usePIL():
+			usePILOption = settings.get_option('general/usePIL_for_sprites', True)
+			usePILOption = not usePILOption
+			
+			
+			settings.set_option('general/usePIL_for_sprites', usePILOption)
+			# self.informRestart()
+			
+			util.USE_PIL = usePILOption
+			self.informRestart()
+		
+		a = optionMenu.addAction(_('Use PIL to interpret sprites'), usePIL)
+		a.setCheckable(True)
+		usePILOption = settings.get_option('general/usePIL_for_sprites', True)
+		a.setChecked(usePILOption)
+		util.USE_PIL = usePILOption
+		
+		
+		def enableCompletion():
+			completionEnabled = settings.get_option('editor/completion_enabled', True)
+			completionEnabled = not completionEnabled
+			
+			
+			settings.set_option('editor/completion_enabled', completionEnabled)
+			# self.informRestart()
+			
+			
+			self.informRestart()
+		
+		a = optionMenu.addAction(_('Enable completion'), enableCompletion)
+		a.setCheckable(True)
+		completionEnabled = settings.get_option('editor/completion_enabled', True)
+		a.setChecked(completionEnabled)
+		
+		
+		def setSearchOnTextChange():
+			searchOnTextChange = settings.get_option('misc/search_on_text_change', False)
+			searchOnTextChange = not searchOnTextChange
+			
+			
+			settings.set_option('misc/search_on_text_change', searchOnTextChange)
+			# self.informRestart()
+			
+			
+			self.informRestart()
+		
+		a = optionMenu.addAction(_('Search on text change (without pressing enter)'), setSearchOnTextChange)
+		a.setCheckable(True)
+		searchOnTextChange = settings.get_option('misc/search_on_text_change', False)
+		a.setChecked(searchOnTextChange)
+		
+		
+		def setCheckMissingExtension():
+			checkForMissingExt = settings.get_option('misc/check_for_missing_extension', False)
+			checkForMissingExt = not checkForMissingExt
+			
+			
+			settings.set_option('misc/check_for_missing_extension', checkForMissingExt)
+			# self.informRestart()
+			util.CHECK_MISSING_EXTENSION = checkForMissingExt
+			
+			self.informRestart()
+		
+		a = optionMenu.addAction(_('Check for missing extensions'), setCheckMissingExtension)
+		a.setCheckable(True)
+		checkForMissingExt = settings.get_option('misc/check_for_missing_extension', False)
+		a.setChecked(checkForMissingExt)
+		util.CHECK_MISSING_EXTENSION = checkForMissingExt
+		
+		
+		def setAutoAddEmptyLines():
+			value = settings.get_option('entity/auto_add_empty_line_between_animations', True)
+			value = not value
+			
+			
+			settings.set_option('entity/auto_add_empty_line_between_animations', value)
+	
+			
+		
+		a = optionMenu.addAction(_('Force empty lines between animations'), setAutoAddEmptyLines)
+		a.setCheckable(True)
+		value = settings.get_option('entity/auto_add_empty_line_between_animations', True)
+		a.setChecked(value)
+	
+	
+		
+		self.runMenu = self.addMenu(_('&Run'))
+		self.reloadRunPrograms()
 		
 
 		helpMenu = self.addMenu(_('&Help'))
@@ -194,7 +317,12 @@ class MenuBar(QtWidgets.QMenuBar):
 		
 		#for module in self.core.loadedModules:
 			#self.loadModuleMenus(module)
-		
+	
+
+	def addProjectQuickAccess(self, path):
+		if(path not in self.projects_quickly_loadable):
+			self.projects_quickly_loadable.append(path)
+			self.viewMenu.addAction(_('Quick switch to') + ' : ' + path, lambda: self.core.mainWidget.loadProject(path))
 		
 	def reloadSessionsList(self):
 		sessionMenu = self.sessionMenu
@@ -234,6 +362,10 @@ class MenuBar(QtWidgets.QMenuBar):
 	def checkForNewFiles(self):
 		progressNotifier = self.core.statusBar.addProgressNotifier(self.core.reloadLibraries)
 		self.core.DB.checkForNewFiles(progressNotifier)
+		
+		
+	def backupViewer(self):
+		self.core.setMode('backupViewer')
 		
 	def changeProject(self):
 		self.core.setMode('project')
@@ -305,6 +437,84 @@ class MenuBar(QtWidgets.QMenuBar):
 			self.addMenu(music)
 		
 
+	def addProgramToRun(self):
+		
+		listPrograms = settings.get_option('misc/run_menu_programs', [])
+		
+		path = QtWidgets.QFileDialog.getOpenFileName(self)
+		path = path[0]
+		if path == '':
+			return
+		else:
+			listPrograms.append(path)
+			settings.set_option('misc/run_menu_programs', listPrograms)
+			self.reloadRunPrograms()
+			
+		
+		
+	def deleteRunProgram(self, name=None):
+		if name is None and self.sender() != None:
+			name = self.sender().data()
+			
+		if name is not None:
+			listPrograms = settings.get_option('misc/run_menu_programs', [])
+			listPrograms.remove(name)
+			settings.set_option('misc/run_menu_programs', listPrograms)
+			self.reloadRunPrograms()
+		
+		
+	
+	def reloadRunPrograms(self):
+		
+		self.runMenu.clear()
+		
+		listPrograms = settings.get_option('misc/run_menu_programs', [])
+		
+		i = 1
+		for f in listPrograms:
+			keySeq = settings.get_option('shortcuts/run_program_' + str(i), 'Ctrl+' + str(i))
+			a = self.runMenu.addAction(f, self.runProgram, QtGui.QKeySequence(self.tr(keySeq)))
+			a.setData(f)
+			i+=1
+		
+		self.runMenu.addSeparator()
+		self.runMenu.addAction(_('Add new program'), self.addProgramToRun)
+		
+		if(len(listPrograms) >0):
+			deleteMenu = self.runMenu.addMenu(_('Delete'))
+			for f in listPrograms:
+				a = deleteMenu.addAction(f, self.deleteRunProgram)
+				a.setData(f)
+				
+		def setCWDOption():
+			changeCWD = settings.get_option('misc/run_menu_cwd_program_location', False)
+			settings.set_option('misc/run_menu_cwd_program_location', not changeCWD)
+		
+		a = self.runMenu.addAction(_('Run program from program location (CWD)'), setCWDOption)
+		a.setCheckable(True)
+		changeCWD = settings.get_option('misc/run_menu_cwd_program_location', False)
+		a.setChecked(changeCWD)
+			
+	
+	def runProgram(self, name=None):
+		changeCWD = settings.get_option('misc/run_menu_cwd_program_location', False)
+		
+		
+		
+		if name is None and self.sender() != None:
+			name = self.sender().data()
+		
+		if(changeCWD):
+			cwd = os.path.dirname(name)
+		else:
+			cwd = None
+			
+		if name is not None:
+			import subprocess
+			subprocess.Popen([name], cwd=cwd)
+
+		
+
 	def newSession(self):
 		self.core.setSession('')
 		
@@ -319,6 +529,11 @@ class MenuBar(QtWidgets.QMenuBar):
 			self.core.setSession(text, True, savePrevious=False)
 		self.reloadSessionsList()
 	
+	
+	def openFontPreview(self):
+		from gui.fontpreview import FontPreview
+		w = FontPreview()
+		w.show()
 	
 	def toolSelect(self):
 		from tools import ToolWidget

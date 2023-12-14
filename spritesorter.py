@@ -23,7 +23,7 @@ class SpriteSorterWidget(QtGui.QWidget):
 		layout.addWidget(self.iconViewer, 0)
 		
 		dataPath = settings.get_option('general/datapath', '')
-		self.spriteFolder = FileInput('folder', settings.get_option('sprite_sorter/folder', ''), 'Select sprite folder', dataPath)
+		self.spriteFolder = FileInput(self, 'folder', settings.get_option('sprite_sorter/folder', ''), 'Select sprite folder', dataPath)
 		
 		loadButton = QtGui.QPushButton(_('Load'))
 		loadButton.clicked.connect(self.loadSprites)
