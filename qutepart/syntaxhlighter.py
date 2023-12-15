@@ -97,6 +97,8 @@ class SyntaxHighlighter(QObject):
     _MAX_PARSING_TIME_BIG_CHANGE_SEC = 0.4
     # when user is typing text - response shall be quick
     _MAX_PARSING_TIME_SMALL_CHANGE_SEC = 0.02
+    
+    FORCE_BOLD = False
 
     _globalTimer = GlobalTimer()
 
@@ -171,6 +173,7 @@ class SyntaxHighlighter(QObject):
 
     @staticmethod
     def formatConverterFunction(format):
+        print('FORMAT', format.bold)
         if format == qutepart.syntax.TextFormat():
             return None  # Do not apply default format. Performance optimization
 
@@ -186,7 +189,7 @@ class SyntaxHighlighter(QObject):
             qtFormat.setBackground(backgroundColor)
 
         qtFormat.setFontItalic(format.italic)
-        qtFormat.setFontWeight(QFont.Bold if format.bold else QFont.Normal)
+        qtFormat.setFontWeight(QFont.Bold if SyntaxHighlighter.FORCE_BOLD or format.bold else QFont.Normal)
         qtFormat.setFontUnderline(format.underline)
         qtFormat.setFontStrikeOut(format.strikeOut)
 

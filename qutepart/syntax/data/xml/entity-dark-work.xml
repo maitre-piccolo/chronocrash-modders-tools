@@ -105,55 +105,7 @@
     </list>
     <contexts>
       <context attribute="Normal Text" lineEndContext="#stay" name="Normal">
-        <DetectSpaces />
-	<keyword attribute="Command" context="#stay" String="commands" name="Command"/>
-        <Detect2Chars attribute="Comment 2" context="Hash comment 2" char="#" char1="#" />
-	<DetectChar attribute="Comment" char="#" context="Hash comment"/>
-	<keyword attribute="Keyword" context="#stay" String="keywords"/>
-	
-<!--	<RegExpr attribute="Preprocessor" context="Outscoped" String="#\s*if\s+0\s*$" beginRegion="PP" firstNonSpace="true" />
-        <DetectChar context="AfterHash" char="#" firstNonSpace="true" lookAhead="true" />
-        <StringDetect attribute="Region Marker" context="Region Marker" String="//BEGIN" beginRegion="Region1" firstNonSpace="true" />
-        <StringDetect attribute="Region Marker" context="Region Marker" String="//END" endRegion="Region1" firstNonSpace="true" />
         
-        <keyword attribute="Data Type" context="#stay" String="types"/>
-        <DetectIdentifier />
-        <DetectChar attribute="Symbol" context="#stay" char="{" beginRegion="Brace1" />
-        <DetectChar attribute="Symbol" context="#stay" char="}" endRegion="Brace1" />
-        <Float attribute="Float" context="#stay">
-          <AnyChar String="fF" attribute="Float" context="#stay"/>
-        </Float>
-        <HlCOct attribute="Octal" context="#stay"/>
-        <HlCHex attribute="Hex" context="#stay"/>
-        <RegExpr attribute="Binary" context="#stay" String="0b[01]+[ul]{0,3}" insensitive="true" />-->
-	
-	
-<!--        <Int attribute="Decimal" context="#stay" >
-          <StringDetect attribute="Decimal" context="#stay" String="ULL" insensitive="true"/>
-          <StringDetect attribute="Decimal" context="#stay" String="LUL" insensitive="true"/>
-          <StringDetect attribute="Decimal" context="#stay" String="LLU" insensitive="true"/>
-          <StringDetect attribute="Decimal" context="#stay" String="UL" insensitive="true"/>
-          <StringDetect attribute="Decimal" context="#stay" String="LU" insensitive="true"/>
-          <StringDetect attribute="Decimal" context="#stay" String="LL" insensitive="true"/>
-          <StringDetect attribute="Decimal" context="#stay" String="U" insensitive="true"/>
-          <StringDetect attribute="Decimal" context="#stay" String="L" insensitive="true"/>
-        </Int>-->
-	
-	
-<!--         <HlCChar attribute="Char" context="#stay"/> -->
-<!--         <DetectChar attribute="String" context="String" char="&quot;"/> -->
-<!--         <IncludeRules context="##Doxygen" /> -->
-        <Detect2Chars attribute="Comment" context="Commentar 2" char="/" char1="*" beginRegion="Comment"/>
-	<StringDetect attribute="Frame" context="Frame" String="frame " insensitive="true" firstNonSpace="true"/>
-	<StringDetect attribute="Keyword" context="Anim" String="anim\s" insensitive="true" firstNonSpace="true"/>
-	<keyword attribute="Keyword" context="Anim" String="boldKeys"/>
-	
-<!-- 	<StringDetect attribute="Attack" context="Attack" String="attack " insensitive="true" firstNonSpace="true"/> -->
-	<keyword attribute="Attack" context="Attack" String="attacks" firstNonSpace="true"/>
-	
-	<StringDetect attribute="Script" context="Script" String="@script" insensitive="true"/>
-	<StringDetect attribute="@cmd" context="@cmd" String="@cmd" insensitive="true"/>
-<!--         <AnyChar attribute="Symbol" context="#stay" String=":!%&amp;()+,-/.*&lt;=&gt;?[]|~^&#59;"/> -->
       </context>
 
      <!-- <context attribute="String" lineEndContext="#pop" name="String">
@@ -173,7 +125,7 @@
         <IncludeRules context="##Alerts" />
       </context>
       
-      <context name="Hash comment 2" attribute="Comment 2" lineEndContext="#pop">
+       <context name="Hash comment 2" attribute="Comment 2" lineEndContext="#pop">
         <LineContinue attribute="Comment 2" context="#stay"/>
       </context>
       
@@ -239,18 +191,18 @@
       
       
     </contexts>
-    <itemDatas>
-      <itemData name="Normal Text"  defStyleNum="dsNormal" spellChecking="false"/>
+    <itemDatas >
+      <itemData name="Normal Text"   defStyleNum="dsNormal" spellChecking="false"/>
        <itemData name="Script Text"  color="#5555FF" defStyleNum="dsNormal" spellChecking="false"/>
       <itemData name="Keyword"      defStyleNum="dsKeyword" spellChecking="false"/>
-       <itemData name="Command"     color="#0B2161" spellChecking="false"/>
+       <itemData name="Command"     color="#7598ff" spellChecking="false"/>
 <!--          <itemData name="Command"     defStyleNum="dsCommand" spellChecking="false"/> -->
        
-        <itemData name="@cmd"     italic="true" color="#886A08" spellChecking="false"/>
+        <itemData name="@cmd"     italic="true" color="#bda249" spellChecking="false"/>
 	  <itemData name="Script"      defStyleNum="dsRegionMarker" spellChecking="false"/>
 	
-         <itemData name="Frame"      color="#21610B" defStyleNum="dsNormal" spellChecking="false"/>
-	 <itemData name="Attack"      color="#DF013A" defStyleNum="dsNormal" spellChecking="false"/>
+         <itemData name="Frame"      color="#69b54e" defStyleNum="dsNormal" spellChecking="false"/>
+	 <itemData name="Attack"      color="#ff7b9d" defStyleNum="dsNormal" spellChecking="false"/>
        
       <itemData name="Data Type"    defStyleNum="dsDataType" spellChecking="false"/>
       <itemData name="Decimal"      defStyleNum="dsDecVal" spellChecking="false"/>
@@ -261,8 +213,8 @@
       <itemData name="Char"         defStyleNum="dsChar" spellChecking="false"/>
       <itemData name="String"       defStyleNum="dsString"/>
       <itemData name="String Char"  defStyleNum="dsSpecialChar"/>
-      <itemData name="Comment"      defStyleNum="dsComment"/>
-      <itemData name="Comment 2"  color="#C38647"     defStyleNum="dsComment"/>
+      <itemData name="Comment"     color="#9EFCFF"  defStyleNum="dsComment"/>
+      <itemData name="Comment 2"  color="#C4FF93" color2="#6EEE9B"    defStyleNum="dsComment"/>
       <itemData name="Symbol"       defStyleNum="dsNormal" spellChecking="false"/>
       <itemData name="Preprocessor" defStyleNum="dsPreprocessor" spellChecking="false"/>
       <itemData name="Prep. Lib"    defStyleNum="dsImport" spellChecking="false"/>

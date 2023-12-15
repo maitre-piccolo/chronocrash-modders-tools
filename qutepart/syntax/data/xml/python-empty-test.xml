@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language>
+<!-- Python syntax highlightning v0.9 by Per Wigren -->
+<!-- Python syntax highlighting v1.9 by Michael Bueker (improved keyword differentiation) -->
+<!-- Python syntax highlighting v1.97 by Paul Giannaros -->
+<!-- Python syntax highlighting v1.99 by Primoz Anzur -->
+<!-- Python syntax highlighting v2.01 by Paul Giannaros:
+	* full format character support
+	* unicode string modifier supported -->
+<!-- v2.02 remove RegExpr for nums and make indent consistent -->
+<!-- v2.03 highlight decorators, remove operator regex, don't highlight parens as operators -->
+<!-- v2.04 make alerts visible even if they are directly after ''' or # without a space -->
+<!-- v2.06 decorator names can (and often do) contain periods -->
+<!-- v2.07 add support for %prog and co, see bug 142832 -->
+<!-- v2.08 add missing overloaders, new Python 3 statements, builtins, and keywords -->
+<language name="PPython" version="2.27" style="python" kateversion="5.0" section="Scripts" extensions="*.py;*.pyw;SConstruct;SConscript" mimetype="application/x-python;text/x-python" casesensitive="1" author="Michael Bueker" license="" firstLineGlobs="#!*python*">
+	<highlighting>
+	
+		<contexts>
+			<context name="Normal" attribute="Normal Text" lineEndContext="#stay">
+				
+			</context>
+
+			
+
+			
+			
+
+			
+
+			
+
+			
+		</contexts>
+
+		<itemDatas>
+			<itemData name="Normal Text"  spellChecking="false"/>
+			
+			
+		</itemDatas>
+	</highlighting>
+	
+</language>
+
+<!-- kate: space-indent off; indent-width 4; -->

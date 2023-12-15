@@ -171,9 +171,11 @@ class SyntaxManager:
     def _getSyntaxByXmlFileName(self, xmlFileName, formatConverterFunction):
         """Get syntax by its xml file name
         """
+        # print("getSyntaxByXmlFileName")
         import qutepart.syntax.loader  # delayed import for avoid cross-imports problem
 
         with self._loadedSyntaxesLock:
+            # print("getSyntaxByXmlFileName check", xmlFileName in self._loadedSyntaxes)
             if not xmlFileName in self._loadedSyntaxes:
                 xmlFilePath = os.path.join(os.path.dirname(__file__), "data", "xml", xmlFileName)
                 syntax = Syntax(self)
@@ -225,6 +227,7 @@ class SyntaxManager:
             * sourceFilePath
         First parameter in the list has biggest priority
         """
+        print('GET SYNTAX')
         syntax = None
 
         if syntax is None and xmlFileName is not None:

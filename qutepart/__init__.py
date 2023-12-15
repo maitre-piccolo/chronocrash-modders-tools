@@ -1533,6 +1533,10 @@ class EverydayPart(Qutepart):
 		
 		self.completionEnabled = settings.get_option('editor/completion_enabled', True)
 		
+		
+		SyntaxHighlighter.FORCE_BOLD = settings.get_option('editor/force_bold', True)
+		# SyntaxHighlighter.FORCE_BOLD = False
+		
 		self.selectionChanged.connect(self.highlightCurrentWord)
 		#self.newExtraSelection.connect(self.addExtraSelection)
 		

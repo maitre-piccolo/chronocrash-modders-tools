@@ -394,6 +394,10 @@ class EverydayEditor(AbstractEverydayEditor):
 		
 		viewRevisions = self.buttonBar.addAction( _('View revisions'), self.viewRevisions)
 		
+		self.boldButton = self.buttonBar.addAction( _('Bold'), self.toggleBold)
+		self.boldButton.setCheckable(True)
+		self.boldButton.setChecked(settings.get_option('editor/force_bold', True))
+		
 		layout.addWidget(self.buttonBar, 0)
 		
 		layout.addWidget(editorLayout, 1)
@@ -768,6 +772,12 @@ class EverydayEditor(AbstractEverydayEditor):
 			current.lines = self.getLines()
 			current.save()
 	
+	
+	
+	def toggleBold(self):
+		checked = self.boldButton.isChecked()
+		settings.set_option('editor/force_bold', checked)
+		QtWidgets.QMessageBox.information(self, _('Please restart'), _("This setting will be applied on next restart"))
 	
 	def updateFD(self):
 		self.editor.fd.lines = list(self.editor.lines)

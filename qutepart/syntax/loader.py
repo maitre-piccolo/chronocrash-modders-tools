@@ -360,6 +360,7 @@ _ruleClassDict = \
 
 
 def _loadContexts(highlightingElement, parser, attributeToFormatMap, formatConverterFunction):
+    print("LOAD CONTEXTS")
     contextsElement = highlightingElement.find('contexts')
 
     xmlElementList = contextsElement.findall('context')
@@ -390,6 +391,7 @@ def _loadContext(context, xmlElement, attributeToFormatMap, formatConverterFunct
     _makeContextSwitcher must have references to all defined contexts
     """
     attribute = _safeGetRequiredAttribute(xmlElement, 'attribute', '<not set>').lower()
+    print(context.name, "ATTRIBUTE", attribute)
     if attribute != '<not set>':  # there are no attributes for internal contexts, used by rules. See perl.xml
         try:
             format = attributeToFormatMap[attribute]
@@ -536,6 +538,7 @@ def _loadSyntaxDescription(root, syntax):
 
 
 def loadSyntax(syntax, filePath, formatConverterFunction = None):
+    print("LOAD SYNTAX")
     _logger.debug("Loading syntax %s", filePath)
     with open(filePath, 'r', encoding='utf-8') as definitionFile:
         try:
