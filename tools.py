@@ -30,9 +30,7 @@ class ToolWidget(QtWidgets.QWidget):
 		actionsLayout.addWidget(button)
 		
 		
-		button = QtWidgets.QPushButton(_('Orphans finder'))
-		button.clicked.connect(lambda: self.loadSection('orphans'))
-		actionsLayout.addWidget(button)
+		
 		
 		
 		button = QtWidgets.QPushButton(_('Shift offsets'))
@@ -43,13 +41,20 @@ class ToolWidget(QtWidgets.QWidget):
 		button.clicked.connect(lambda: self.loadSection('scale_offsets'))
 		actionsLayout.addWidget(button)
 		
-		button = QtWidgets.QPushButton(_('Generate command list'))
-		button.clicked.connect(lambda: self.loadSection('gen_command_list'))
-		actionsLayout.addWidget(button)
 		
 		button = QtWidgets.QPushButton(_('Prepare PAK'))
 		button.clicked.connect(lambda: self.loadSection('prepare_pak'))
 		actionsLayout.addWidget(button)
+		
+		button = QtWidgets.QPushButton(_('Orphans finder'))
+		button.clicked.connect(lambda: self.loadSection('orphans'))
+		actionsLayout.addWidget(button)
+		
+		button = QtWidgets.QPushButton(_('Generate command list'))
+		button.clicked.connect(lambda: self.loadSection('gen_command_list'))
+		actionsLayout.addWidget(button)
+		
+		
 		
 		button = QtWidgets.QPushButton(_('Normalize sounds volume'))
 		button.clicked.connect(lambda: self.loadSection('norm_sounds'))

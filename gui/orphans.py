@@ -15,6 +15,10 @@ class OrphanWidget(QtWidgets.QWidget):
 		
 		dataPath = settings.get_option('general/data_path', '')
 		
+		layout.addRow(QtWidgets.QLabel('Warning : this tool will delete files from the input folder.'))
+		layout.addRow(QtWidgets.QLabel('If you want to make a copy that includes only files used, use "Prepare PAK" tool instead'))
+		
+		
 		self.singleChar = FileInput(self, 'openFile', dataPath, 'Select char model', dataPath)
 		layout.addRow(_('Single char model') + ' : ', self.singleChar)
 		
@@ -39,6 +43,11 @@ class OrphanWidget(QtWidgets.QWidget):
 		layout.addRow(QtWidgets.QLabel("Found"))
 		self.logWidgetFound = QtWidgets.QPlainTextEdit('Log found...')
 		layout.addRow(self.logWidgetFound)
+		
+		
+		button = QtWidgets.QPushButton(_('Create copy'))
+		#button.clicked.connect(self.process)
+		layout.addRow(button)
 		
 		self.setLayout(layout)
 		

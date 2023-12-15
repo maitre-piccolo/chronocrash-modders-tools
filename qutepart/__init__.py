@@ -397,7 +397,8 @@ class Qutepart(QPlainTextEdit):
                                                       lambda: self._onShortcutSelectAndScroll(down = True))
 
         # indentation
-        self.increaseIndentAction = createAction('Increase indentation', 'Tab',
+        if EverydayPart.tabAlwaysIndent:
+	        self.increaseIndentAction = createAction('Increase indentation', 'Tab',
                                                  self._onShortcutIndent,
                                                  'indent.png')
         self.decreaseIndentAction = createAction('Decrease indentation', 'Shift+Tab',

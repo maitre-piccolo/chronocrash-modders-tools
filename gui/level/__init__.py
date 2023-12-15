@@ -110,9 +110,12 @@ class LevelEditorWidget(QtWidgets.QWidget):
 		self.wallControlWidget = WallControlWidget(self)
 		self.entityControlWidget = EntityControlWidget(self)
 		
+		self.logWidget = QtWidgets.QPlainTextEdit('Log...')
+		
 		self.rightPanel.addTab(self.levelControlWidget, _('Level'))
 		self.rightPanel.addTab(self.wallControlWidget, _('Wall'))
 		self.rightPanel.addTab(self.entityControlWidget, _('Entity'))
+		self.rightPanel.addTab(self.logWidget, _('Log'))
 		layout.addWidget(self.rightPanel, 0)
 		
 		
@@ -172,7 +175,7 @@ class LevelEditorWidget(QtWidgets.QWidget):
 	def logWarning(self, warning):
 		self.softWarnings.append(warning)
 		text = '\n\n'.join(self.softWarnings)
-		self.levelControlWidget.logWidget.setPlainText(text)
+		self.logWidget.setPlainText(text)
 		
 	def loadVideoMode(self):
 		ROOT_PATH = os.path.dirname(settings.get_option('general/data_path', ''))
@@ -1259,6 +1262,8 @@ class WallControlWidget(QtWidgets.QWidget):
 						self.levelEditor.HUD.append(lifeBar)
 						
 				for pName in ['p1namej', 'p2namej', 'p3namej', 'p4namej'] :
+					if pName not in HUD:
+						continue
 					x1 = HUD[pName]['x1']
 					y1 = HUD[pName]['y1']
 					pNameObject = FontObject(pName)
@@ -1268,6 +1273,8 @@ class WallControlWidget(QtWidgets.QWidget):
 					self.levelEditor.HUD.append(pNameObject)
 					
 				for pIcon in ['p1icon', 'p2icon', 'p3icon', 'p4icon'] :
+					if pIcon not in HUD:
+						continue
 					x = HUD[pIcon]['x']
 					y = HUD[pIcon]['y']
 					lifeBar = QtWidgets.QGraphicsRectItem(x, y, 25, 25)
@@ -1369,6 +1376,10 @@ class LevelControlWidget(QtWidgets.QWidget):
 		layout.addRow(a)
 		
 		
+		label = QtWidgets.QLabel('HIDE GEOMETRY')
+		label.setStyleSheet('QLabel { font-weight:bold; margin-top:20px;}');
+		layout.addRow(label)
+		
 		a = QtWidgets.QCheckBox(_('Hide all geometry (walls, ...)'))
 		a.stateChanged.connect(self.hideGeometry)
 		layout.addRow(a)
@@ -1385,6 +1396,11 @@ class LevelControlWidget(QtWidgets.QWidget):
 		a.stateChanged.connect(self.hideBasemaps)
 		layout.addRow(a)
 		
+		
+		label = QtWidgets.QLabel('HIDE LAYERS')
+		label.setStyleSheet('QLabel { font-weight:bold; margin-top:20px;}');
+		layout.addRow(label)
+		
 	
 		a = QtWidgets.QCheckBox(_('Hide panels'))
 		a.stateChanged.connect(self.hidePanels)
@@ -1399,8 +1415,8 @@ class LevelControlWidget(QtWidgets.QWidget):
 		c.stateChanged.connect(self.hideBackgrounds)
 		layout.addRow(c)
 		
-		self.logWidget = QtWidgets.QPlainTextEdit('Log...')
-		layout.addRow(self.logWidget)
+		
+		#layout.addRow(self.logWidget)
 		# self.logWidget.setFixedWidth(300)
 		
 		self.layout = layout
@@ -1421,6 +1437,10 @@ class LevelControlWidget(QtWidgets.QWidget):
 			self.layout.removeWidget(b)
 		
 		self.hideButtons = []
+		
+		label = QtWidgets.QLabel('HIDE ENTITIES by type')
+		label.setStyleSheet('QLabel { font-weight:bold; margin-top:20px;}');
+		self.layout.addRow(label)
 		
 		for type in self.levelEditor.entities_types:
 			a = QtWidgets.QCheckBox(_('Hide entities [' + type + ']'))
