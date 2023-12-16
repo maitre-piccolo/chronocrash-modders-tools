@@ -1,4 +1,4 @@
-DEBUG:root:2023-12-15 22:49:32.003448
+DEBUG:root:2023-12-16 16:28:35.116787
 DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/journal.log
 DEBUG:PIL.PngImagePlugin:STREAM b'IHDR' 16 13
 DEBUG:PIL.PngImagePlugin:STREAM b'bKGD' 41 6
@@ -30,33 +30,47 @@ DEBUG:PIL.PngImagePlugin:STREAM b'PLTE' 56 768
 DEBUG:PIL.PngImagePlugin:STREAM b'tRNS' 836 1
 DEBUG:PIL.PngImagePlugin:STREAM b'pHYs' 849 9
 DEBUG:PIL.PngImagePlugin:STREAM b'IDAT' 870 291
+ERROR:root:CRASH
+NoneType: None
+DEBUG:root:Traceback (most recent call last):
+  File "/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/entity/animselector.py", line 244, in refresh
+    self.loadFrom()
+  File "/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/entity/animselector.py", line 249, in loadFrom
+    lines = self.parent.editor.lines
+            ^^^^^^^^^^^^^^^^^^
+AttributeError: 'builtin_function_or_method' object has no attribute 'editor'
+
 DEBUG:root:close event
-DEBUG:root:MAIN FRAME QUIT EVENT <PyQt5.QtGui.QCloseEvent object at 0x7f03142fe290>
-DEBUG:root:2023-12-15 22:49:38.501014 STARTING SAVE SESSION : [DEV] CCMT 2023
-DEBUG:root:FILES TO SAVE : [<gui.main.fileselector.File object at 0x7f03003a1950>, <gui.main.fileselector.File object at 0x7f03003a2650>, <gui.main.fileselector.File object at 0x7f03003a3090>, <gui.main.fileselector.File object at 0x7f03003a0ad0>, <gui.main.fileselector.File object at 0x7f03003a86d0>, <gui.main.fileselector.File object at 0x7f03003ab7d0>, <gui.main.fileselector.File object at 0x7f03003abfd0>, <gui.main.fileselector.File object at 0x7f03003ab690>, <gui.main.fileselector.File object at 0x7f03003a9210>, <gui.main.fileselector.File object at 0x7f03003a8350>, <gui.main.fileselector.File object at 0x7f03003a8310>, <gui.main.fileselector.File object at 0x7f03003ab4d0>, <gui.main.fileselector.File object at 0x7f03003a9a10>, <gui.main.fileselector.File object at 0x7f03003af250>, <gui.main.fileselector.File object at 0x7f03003aef50>, <gui.main.fileselector.File object at 0x7f03003ad490>, <gui.main.fileselector.File object at 0x7f03003adc50>, <gui.main.fileselector.File object at 0x7f03003ae690>, <gui.main.fileselector.File object at 0x7f03003aedd0>, <gui.main.fileselector.File object at 0x7f03003af610>, <gui.main.fileselector.File object at 0x7f03003afb90>, <gui.main.fileselector.File object at 0x7f03003adb10>, <gui.main.fileselector.File object at 0x7f03003acd50>, <gui.main.fileselector.File object at 0x7f03003ad450>, <gui.main.fileselector.File object at 0x7f0300394190>, <gui.main.fileselector.File object at 0x7f0300394390>, <gui.main.fileselector.File object at 0x7f0300394290>, <gui.main.fileselector.File object at 0x7f0300394590>, <gui.main.fileselector.File object at 0x7f0300394790>, <gui.main.fileselector.File object at 0x7f0300394950>, <gui.main.fileselector.File object at 0x7f0300394b50>, <gui.main.fileselector.File object at 0x7f0300394d50>, <gui.main.fileselector.File object at 0x7f0300394f10>, <gui.main.fileselector.File object at 0x7f0300395090>, <gui.main.fileselector.File object at 0x7f0300395210>, <gui.main.fileselector.File object at 0x7f0300395390>, <gui.main.fileselector.File object at 0x7f0300395510>, <gui.main.fileselector.File object at 0x7f0300395690>, <gui.main.fileselector.File object at 0x7f03003958d0>, <gui.main.fileselector.File object at 0x7f03003959d0>, <gui.main.fileselector.File object at 0x7f0300395d50>, <gui.main.fileselector.File object at 0x7f0300395ed0>, <gui.main.fileselector.File object at 0x7f0300396050>, <gui.main.fileselector.File object at 0x7f03003961d0>, <gui.main.fileselector.File object at 0x7f0300396350>]
+DEBUG:root:MAIN FRAME QUIT EVENT <PyQt5.QtGui.QCloseEvent object at 0x7f471e614940>
+DEBUG:root:2023-12-16 16:29:21.961095 STARTING SAVE SESSION : [DEV] CCMT 2023
+DEBUG:root:FILES TO SAVE : [<gui.main.fileselector.File object at 0x7f471f7639d0>, <gui.main.fileselector.File object at 0x7f471f760090>, <gui.main.fileselector.File object at 0x7f471f765710>, <gui.main.fileselector.File object at 0x7f471f766090>, <gui.main.fileselector.File object at 0x7f471f767550>, <gui.main.fileselector.File object at 0x7f471f766c10>, <gui.main.fileselector.File object at 0x7f471f7661d0>, <gui.main.fileselector.File object at 0x7f471f766650>, <gui.main.fileselector.File object at 0x7f471f764890>, <gui.main.fileselector.File object at 0x7f471f766690>, <gui.main.fileselector.File object at 0x7f471f76d250>, <gui.main.fileselector.File object at 0x7f471f76cad0>, <gui.main.fileselector.File object at 0x7f471f76d2d0>, <gui.main.fileselector.File object at 0x7f471f76cf50>, <gui.main.fileselector.File object at 0x7f471f76db90>, <gui.main.fileselector.File object at 0x7f471f76f0d0>, <gui.main.fileselector.File object at 0x7f471f76fc50>, <gui.main.fileselector.File object at 0x7f471f76fe10>, <gui.main.fileselector.File object at 0x7f471f76cfd0>, <gui.main.fileselector.File object at 0x7f471f76d950>, <gui.main.fileselector.File object at 0x7f471f76ff10>, <gui.main.fileselector.File object at 0x7f471f770b10>, <gui.main.fileselector.File object at 0x7f471f7712d0>, <gui.main.fileselector.File object at 0x7f471f770ed0>, <gui.main.fileselector.File object at 0x7f471f7721d0>, <gui.main.fileselector.File object at 0x7f471f772c90>, <gui.main.fileselector.File object at 0x7f471f7724d0>, <gui.main.fileselector.File object at 0x7f471f773310>, <gui.main.fileselector.File object at 0x7f471f773e10>, <gui.main.fileselector.File object at 0x7f471f773210>, <gui.main.fileselector.File object at 0x7f471f773ad0>, <gui.main.fileselector.File object at 0x7f471f772a90>, <gui.main.fileselector.File object at 0x7f471f7708d0>, <gui.main.fileselector.File object at 0x7f471f758250>, <gui.main.fileselector.File object at 0x7f471f7582d0>, <gui.main.fileselector.File object at 0x7f471f758410>, <gui.main.fileselector.File object at 0x7f471f7585d0>, <gui.main.fileselector.File object at 0x7f471f758790>, <gui.main.fileselector.File object at 0x7f471f758950>, <gui.main.fileselector.File object at 0x7f471f758b10>, <gui.main.fileselector.File object at 0x7f471f758cd0>, <gui.main.fileselector.File object at 0x7f471f758e90>, <gui.main.fileselector.File object at 0x7f471f759090>, <gui.main.fileselector.File object at 0x7f471f759250>, <gui.main.fileselector.File object at 0x7f471f759410>, <gui.main.fileselector.File object at 0x7f471f759590>, <gui.main.fileselector.File object at 0x7f471f759890>]
 DEBUG:root:/home/piccolo/workspace/OpenBOR
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/scripts
 DEBUG:root:/home/piccolo/workspace/OpenBOR/tmp
 DEBUG:root:/home/piccolo/workspace/OpenBOR/tmp/data
 DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/scripts
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/levels
-DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui
-DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/data
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/levels/decontamination
 DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/qutepart
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars
-DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/akuma
+DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/data
 DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/common
 DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/guilib
-DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/backupviewer
-DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/entity
-DEBUG:root:/home/piccolo/workspace/OpenBOR/tmp/data/levels
-DEBUG:root:/home/piccolo/workspace/OpenBOR/tmp/data/levels/bossbg
-DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/project
-DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/level
-DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/main
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/levels/decontamination
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars
+DEBUG:root:/home/piccolo/workspace/OpenBOR/data/chars/akuma
+DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/levels/scenes
 DEBUG:root:/home/piccolo/workspace/OpenBOR/data/levels/scenes/transitions
+DEBUG:root:/home/piccolo/workspace/OpenBOR/tmp/data/levels
+DEBUG:root:/home/piccolo/workspace/OpenBOR/tmp/data/levels/bossbg
+DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/level
+DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/entity
+DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/main
+DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/backupviewer
+DEBUG:root:/run/media/piccolo/015AF545360D8260/DATA/openbor-utils/gui/project
+DEBUG:root:/home/piccolo/workspace/OpenBOR/tmp/default
+DEBUG:root:/home/piccolo/workspace/OpenBOR/tmp/default/data
+DEBUG:root:/home/piccolo/workspace/OpenBOR/tmp/default/data/chars
+DEBUG:root:/home/piccolo/workspace/OpenBOR/tmp/default/data/chars/f04
 DEBUG:root:END OF SAVE SESSION : [DEV] CCMT 2023
 DEBUG:common.settings:Saving settings...

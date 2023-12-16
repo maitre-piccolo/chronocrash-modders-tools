@@ -9,6 +9,8 @@ from operator import attrgetter
 
 import re
 
+from data import ParsedLine
+
 
 
 class MultiFilterMode:
@@ -57,7 +59,7 @@ class MultiFilterProxyModel(QtCore.QSortFilterProxyModel):
 
 
 class AnimSelector(QtWidgets.QWidget):
-	def __init__(self, parent):
+	def __init__(self, parent, options=['noRefresh']):
 		self.mainEditor = parent
 		QtWidgets.QWidget.__init__(self)
 		
@@ -93,7 +95,9 @@ class AnimSelector(QtWidgets.QWidget):
 		self.buttonBar.addSeparator()
 		#deleteIcon = QtGui.QIcon.fromTheme('list-remove')
 		#deleteAnim = self.buttonBar.addAction(libraryIcon, 'Remove', self.deleteAnim)
-		layout.addWidget(self.buttonBar, 0)
+		
+		if not'hideUpperBar' in options:
+			layout.addWidget(self.buttonBar, 0)
 		
 		
 		
@@ -138,6 +142,18 @@ class AnimSelector(QtWidgets.QWidget):
 		
 		hboxSearch.addWidget(self.searchEntry, 1)
 		hboxSearch.addWidget(searchButton)
+		
+		if not'noRefresh' in options:
+			reloadIcon = QtGui.QImage('icons/reload.svg')
+			if(theme == "Dark"): reloadIcon.invertPixels()
+			reloadIcon = QtGui.QIcon(QtGui.QPixmap.fromImage(reloadIcon))
+			
+			refreshButton = QtWidgets.QPushButton()
+			refreshButton.setIcon(reloadIcon)
+			refreshButton.clicked.connect(self.refresh)
+			
+			
+			hboxSearch.addWidget(refreshButton)
 		
 		
 		layout.addWidget(w, 0)
@@ -222,6 +238,74 @@ class AnimSelector(QtWidgets.QWidget):
 			if 'ID_edited' in d:
 				ID_edited = d['ID_edited']
 			self.append((d['ID'], d['label'], i, ID_edited))
+		
+		
+	def refresh(self):
+		self.loadFrom()
+			
+	def loadFrom(self, lines=None):
+		
+		if lines == None:
+			lines = self.mainEditor.editor.lines
+		
+		self.updating = True
+		self.currentAnim = None
+		
+		sectionLines = []
+		data = {'ID':'header', 'label':'', 'lines':sectionLines}
+		dicData = {'header':data}
+		fullData = [data]
+		
+		
+		#ent_cache = Cache('entities_data', EntityEditorWidget.ROOT_PATH)
+		
+		name = None
+		
+		for line in lines:
+			pLine = ParsedLine(line)
+			part = pLine.next()
+			if part != None : part = part.lower()
+			if part == 'anim':
+				label = pLine.getCom()
+				#print(pLine.parts, pLine.pos)
+				animID = pLine.next()
+				sectionLines = []
+				data = {'ID':animID, 'label':label, 'lines': sectionLines}
+				fullData.append(data)
+				dicData[animID] = data
+			#elif part == 'name':
+				#name = pLine.next().lower()
+				#if(model is None): model = name
+			#elif part == 'type':
+				#type = pLine.next().lower()
+				#if model is not None:
+					#try:
+						##ent_cache.data[model]['type'] = type
+						##ent_cache.save()
+						#pass
+					#except:
+						#print("no model named ", model)
+			#elif part == 'icon':
+				#icon = pLine.next()
+				#if model is not None:
+					#try:
+						#ent_cache.data[model]['icon'] = icon
+						#ent_cache.save()
+					#except:
+						#print("no model named ", model)
+			sectionLines.append(line)
+			
+		self.dicData = dicData
+		self.fullData = fullData
+		#print(fullData)
+		for key in dicData:
+			print(key)
+			
+		self.clear()
+		self.load(fullData)
+
+		
+		
 	
 	def loadAnim(self, index):
 		self.currentAnimID = index.data(AnimModel.itemRole).ID

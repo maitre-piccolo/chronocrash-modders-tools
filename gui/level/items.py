@@ -433,6 +433,8 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 	def setAt(self, at):
 		# print('shadow width', self.shadowWidth)
 		self.at = at
+		if(at == None):
+			return
 		x = self.x
 		y = self.z
 		if(x == None):
@@ -441,7 +443,7 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		
 		xOffset = self.xOffset
 		yOffset = self.yOffset
-		# print("HERE", x, y, self.at, xOffset, yOffset)
+		#print("HERE", x, y, self.at, xOffset, yOffset)
 		# if(not self.facingRight):
 		# 	xOffset =   -self.xOffset - self.frameWidth
 		self.setPos(x + self.at - xOffset, y - yOffset)

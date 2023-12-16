@@ -17,6 +17,8 @@ from data import ParsedLine
 
 from gui.main.fileselector import FileSelector, File
 from gui.entity import EntityEditorWidget
+from gui.entity.animselector import AnimSelector
+
 from gui.level import LevelEditorWidget
 
 ROOT_PATH = '/home/piccolo/workspace/OpenBOR/'
@@ -326,13 +328,33 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 		self.editor.find(text)
 
 	
+	
+	
 class EverydayEditor(AbstractEverydayEditor):
 	def __init__(self, parent):
 		AbstractEverydayEditor.__init__(self, parent)
+		
+		mainLayout = QtWidgets.QHBoxLayout()
+		
+		self.animSelector = AnimSelector(self, ['hideUpperBar'])
+		
+		
+		
+		
 		layout = QtWidgets.QVBoxLayout()
 		layout.setContentsMargins(5, 0, 5, 5)
 		# layout.setSpacing(0)
-		self.setLayout(layout)
+		
+		editorContainerWidget = QtWidgets.QWidget()
+		
+		editorContainerWidget.setLayout(layout)
+		
+		mainLayout.addWidget(editorContainerWidget, 1)
+		mainLayout.addWidget(self.animSelector, 0)
+		
+		self.animSelector.hide()
+		
+		self.setLayout(mainLayout)
 		
 		
 		self.stack1 = QtWidgets.QStackedWidget()
@@ -405,8 +427,8 @@ class EverydayEditor(AbstractEverydayEditor):
 		actionBox = QtWidgets.QHBoxLayout()
 		# findNext = QtWidgets.QPushButton(QtGui.QIcon.fromTheme('go-down'), None)
 		# findPrevious = QtWidgets.QPushButton(QtGui.QIcon.fromTheme('go-up'), None)
-		findNext = QtWidgets.QPushButton(undoIcon, None)
-		findPrevious = QtWidgets.QPushButton(redoIcon, None)
+		findNext = QtWidgets.QPushButton(redoIcon, None)
+		findPrevious = QtWidgets.QPushButton(undoIcon, None)
 		findNext.pressed.connect(self.search)
 		findPrevious.pressed.connect(self.searchPrevious)
 		searchEntry = QtWidgets.QLineEdit()
@@ -560,6 +582,11 @@ class EverydayEditor(AbstractEverydayEditor):
 		
 		#self.editor.selectedText = res
 	
+	
+	def loadAnim(self, ID):
+		#self.scrollTo(QtCore.QRegExp("anim(\\s)"+ID))
+		self.editor.search(QtCore.QRegExp("anim(\\s)"+ID))
+	
 	def notifyChange(self):
 		if self.updating : return
 		AbstractEverydayEditor.notifyChange(self)
@@ -651,6 +678,12 @@ class EverydayEditor(AbstractEverydayEditor):
 
 		stack.setCurrentWidget(editor)
 		editor.setFocus()
+		
+		if(fd.category == 'Entity'):
+			self.animSelector.show()
+			self.animSelector.loadFrom(editor.lines)
+		else:
+			self.animSelector.hide()
 		
 		
 		#self.editor.current.lines = list(self.editor.lines)

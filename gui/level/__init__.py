@@ -1415,6 +1415,10 @@ class LevelControlWidget(QtWidgets.QWidget):
 		c.stateChanged.connect(self.hideBackgrounds)
 		layout.addRow(c)
 		
+		label = QtWidgets.QLabel('HIDE ENTITIES by type')
+		label.setStyleSheet('QLabel { font-weight:bold; margin-top:20px;}');
+		layout.addRow(label)
+		
 		
 		#layout.addRow(self.logWidget)
 		# self.logWidget.setFixedWidth(300)
@@ -1438,9 +1442,7 @@ class LevelControlWidget(QtWidgets.QWidget):
 		
 		self.hideButtons = []
 		
-		label = QtWidgets.QLabel('HIDE ENTITIES by type')
-		label.setStyleSheet('QLabel { font-weight:bold; margin-top:20px;}');
-		self.layout.addRow(label)
+		
 		
 		for type in self.levelEditor.entities_types:
 			a = QtWidgets.QCheckBox(_('Hide entities [' + type + ']'))

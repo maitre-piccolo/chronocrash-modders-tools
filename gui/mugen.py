@@ -1,4 +1,4 @@
-import os, subprocess
+import os, subprocess, sys
 import re
 import shutil
 
@@ -110,7 +110,9 @@ class MugenWidget(QtWidgets.QWidget):
 		#if(os.path.isfile(output_folder)):
 		settings.set_option('mugen_tool/output_folder', output_folder)
 		
-		parts = output_folder.split(os.sep)
+		#parts = output_folder.split(os.sep)
+		pattern = r'[/\\|]'
+		parts = re.split(pattern, output_folder)
 		outputName = parts[-1]
 		
 		
@@ -121,14 +123,21 @@ class MugenWidget(QtWidgets.QWidget):
 		filename = os.path.basename(sff_path)
 		(modelName, extension) = os.path.splitext(filename)
 		
+		
+		toolsDir = '/run/media/piccolo/015AF545360D8260/DATA/openbor-utils'
+		
 
 
 		output_path = os.path.join(output_folder, 'src_' + outputName + '.txt')
 		
 		tmp_path = os.path.join(output_folder, 'tmp.txt')
 
-		cmd = 'wine other/sffextract.exe -d -i -o "' + tmp_path + '" "' + sff_path + '"'
-		subprocess.call(cmd, shell=True)
+		if(sys.platform.startswith('win')):
+			#cmd = 'other/sffextract.exe -d -i -o "' + tmp_path + '" "' + sff_path + '"'
+			subprocess.call('./other/sffextract.exe -d -i -o "' + tmp_path + '" "' + sff_path + '"', cwd='./other/')
+		else:
+			cmd = 'wine ' + toolsDir + '/other/sffextract.exe -d -i -o "' + tmp_path + '" "' + sff_path + '"'
+			subprocess.call(cmd, shell=True, cwd='./other/')
 		print('extraction done')
 		
 		
@@ -305,17 +314,32 @@ class MugenWidget(QtWidgets.QWidget):
 		outputFile.close()
 		
 		
-		i_param = '..\\' + modelName + '\*.pcx'
-		o_param = '..\\new\*.gif'
-		iviewPath = os.path.join(os.path.dirname(__file__), '../other') 
-		os.chdir(iviewPath)
+		if not os.path.isdir('./other/new'):
+			os.mkdir('./other/new')
 		
-		print(iviewPath)
+		
+		#i_param = '..\\' + modelName + '\*.pcx'
+		i_param =  modelName + '\*.pcx'
+		#o_param = '..\\new\*.gif'
+		o_param = 'new\*.gif'
+		iviewPath = os.path.join(os.path.dirname(__file__), '../other') 
+		#os.chdir(iviewPath)
+		
+		#print(iviewPath)
+		
+		
+		if(sys.platform.startswith('win')):
+			#cmd = 'other/sffextract.exe -d -i -o "' + tmp_path + '" "' + sff_path + '"'
+			subprocess.call('./other/i_view32.exe "' +   i_param + '" /convert="' + o_param + '"', cwd='./other/')
+		else:
 	
-		cmd = 'wine i_view32.exe "' + i_param + '" /convert="' + o_param + '"'
-		subprocess.call(cmd, shell=True)
+			cmd = 'wine ' + toolsDir +'/other/i_view32.exe "' +  i_param + '" /convert="' + o_param + '"'
+			print(cmd)
+			subprocess.call(cmd, shell=True, cwd='./other/')
 		i = START_INDEX
-		spritesPath = os.path.join(os.path.dirname(__file__), '../new')
+		#spritesPath = os.path.join(os.path.dirname(__file__), '../new')
+		# spritesPath = os.path.join(output_folder, 'new')
+		spritesPath = os.path.join('./other/new')
 		for key, groups in spriteGroups.items():
 			for key, spriteData in groups.items():
 				shutil.move(os.path.join(spritesPath, spriteData[0]), os.path.join(output_folder, spriteData[1]))
