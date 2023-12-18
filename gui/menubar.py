@@ -83,6 +83,11 @@ class MenuBar(QtWidgets.QMenuBar):
 		
 		
 		optionMenu = self.addMenu(_('&Options'))
+		self.optionMenu = optionMenu
+		
+		self.addOption('gui/double_click_to_load_element', False, 'Double click to load element in list', True)
+		
+		
 		
 		def autoCollapse():
 			autoCollapse = settings.get_option('gui/auto_collapse', True)
@@ -335,6 +340,21 @@ class MenuBar(QtWidgets.QMenuBar):
 			#self.loadModuleMenus(module)
 	
 
+	def addOption(self, key, defaultValue, label, informRestart=False):
+		def setValue():
+			value = settings.get_option(key, defaultValue)
+			settings.set_option(key, not value)
+			
+			if informRestart:
+				self.informRestart()
+		
+		a = self.optionMenu.addAction(_(label), setValue)
+		a.setCheckable(True)
+		value = settings.get_option(key, defaultValue)
+		a.setChecked(value)
+		
+		
+		
 	def addProjectQuickAccess(self, path):
 		if(path not in self.projects_quickly_loadable):
 			self.projects_quickly_loadable.append(path)

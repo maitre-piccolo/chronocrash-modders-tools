@@ -109,7 +109,10 @@ class ProjectSelector(QtWidgets.QWidget):
 		self.mainFrame.setMode('mainEditor')
 		if(not ProjectSelector.SESSION_LOADED):
 			logging.debug("Setting session from project manager...")
-			self.mainFrame.setSession(settings.get_option('general/last_session', 'Default'), savePrevious=False)
+			
+			if(QtWidgets.QMessageBox.question(self, _('Last session'), _('Do you want to load last session ?'), defaultButton=QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes):
+				self.loadLastSession = True
+				self.mainFrame.setSession(settings.get_option('general/last_session', 'Default'), savePrevious=False)
 			ProjectSelector.SESSION_LOADED = True
 		
 		

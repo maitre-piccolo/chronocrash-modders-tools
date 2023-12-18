@@ -628,7 +628,9 @@ class EntityEditorWidget(QtWidgets.QWidget):
 			#nIndex = cIndex.sibling(frameNumber, 0)
 			nIndex = self.frameViewer.model.createIndex(frameNumber, 0) 
 			self.updating = True
+			self.frameViewer.dontAutoFocus = True
 			self.frameViewer.setCurrentIndex(nIndex)
+			self.frameViewer.dontAutoFocus = False
 			self.updating = False
 			#self.frameEditor.loadFrame()
 
@@ -698,7 +700,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		print('processLines bindingMaskIdentifier', bindingMaskIdentifier)
 		
 		
-	
+		i = 0
 		for line in lines:
 			
 			pLine = ParsedLine(line)
@@ -713,6 +715,9 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				continue
 			
 			elif(part == 'anim'):
+				if(i > 0):
+					self.editor.lines[i] =  '#' + self.editor.lines[i]
+					continue
 				print("ANIM")
 				animName = pLine.next()
 				
@@ -1010,6 +1015,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				checkForBindingMask()
 				
 			
+			i+=1
 				
 				
 				
@@ -1302,8 +1308,20 @@ class FrameEditor(QtWidgets.QWidget):
 		self.buttonBar.addWidget(self.label)
 		self.buttonBar.addSeparator()
 		self.buttonBar.addAction(QtGui.QIcon.fromTheme('media-playback-start'), None, self.playFrames)
-		self.buttonBar.addAction(QtGui.QIcon.fromTheme('zoom-in'), None, self.graphicView.zoomIn)
-		self.buttonBar.addAction(QtGui.QIcon.fromTheme('zoom-out'), None, self.graphicView.zoomOut)
+		
+		theme = settings.get_option('gui/widgets_theme', None)
+		
+		icon = QtGui.QImage('icons/zoom-in.svg')
+		if(theme == "Dark"): icon.invertPixels()
+		icon = QtGui.QIcon(QtGui.QPixmap.fromImage(icon))
+		# QtGui.QIcon.fromTheme('zoom-in')
+		
+		self.buttonBar.addAction(icon, None, self.graphicView.zoomIn)
+		
+		icon = QtGui.QImage('icons/zoom-out.svg')
+		if(theme == "Dark"): icon.invertPixels()
+		icon = QtGui.QIcon(QtGui.QPixmap.fromImage(icon))
+		self.buttonBar.addAction(icon, None, self.graphicView.zoomOut)
 		
 		self.setVisualPropAction = self.buttonBar.addAction('Set visual property', self.toggleVisualPropertyMode)
 		menu = QtWidgets.QMenu()

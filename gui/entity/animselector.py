@@ -109,6 +109,8 @@ class AnimSelector(QtWidgets.QWidget):
 		self.treeView.setModel(self.filterModel)
 	
 		self.treeView.activated.connect(self.loadAnim)
+		if not settings.get_option('gui/double_click_to_load_element', False):
+			self.treeView.clicked.connect(self.loadAnim)
 		
 		header = self.treeView.header()
 		header.setStretchLastSection(False)

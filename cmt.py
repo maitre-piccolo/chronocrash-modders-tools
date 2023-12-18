@@ -79,6 +79,8 @@ class Frame(QtWidgets.QMainWindow):
 		QtWidgets.QMainWindow.__init__(self, parent)
 		self.setWindowTitle(TITLE)
 		
+	
+		
 		
 		try:
 			self.setWindowIcon(QtGui.QIcon("icons/CMT.png"))

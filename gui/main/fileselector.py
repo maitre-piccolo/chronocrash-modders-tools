@@ -350,7 +350,8 @@ class FileSelector(QtWidgets.QWidget):
 		#self.treeView.setModel(self.model)
 	
 		self.treeView.activated.connect(self.loadItem)
-		self.treeView.clicked.connect(self.loadItem)
+		if not settings.get_option('gui/double_click_to_load_element', False):
+			self.treeView.clicked.connect(self.loadItem)
 		self.treeView.mouseReleaseEvent = self.mouseReleaseEvent
 		
 		header = self.treeView.header()

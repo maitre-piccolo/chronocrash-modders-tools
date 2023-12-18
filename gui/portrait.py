@@ -45,6 +45,7 @@ class IconViewer(QtWidgets.QListView):
 	middleClick = QtCore.pyqtSignal(object)
 	
 	def __init__(self, parent, viewMode='icons'):
+		self.dontAutoFocus = False
 		QtWidgets.QListView.__init__(self, parent)
 		
 		#self.setUniformItemSizes(True)
@@ -84,9 +85,14 @@ class IconViewer(QtWidgets.QListView):
 		self.setWrapping(False)
 		
 		
+		
+		
 	def currentChanged(self, current, previous):
+		print(self.sender())
 		QtWidgets.QListView.currentChanged(self, current, previous)
 		self.currentChange.emit(current)
+		if not self.dontAutoFocus:
+			self.setFocus()
 
 	def clear(self):
 		self.model.items = []
