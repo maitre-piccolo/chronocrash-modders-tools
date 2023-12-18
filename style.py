@@ -159,8 +159,8 @@ QTabBar::tab:left, QTabBar::tab:right {
     border-right-color: #C2C7CB; /* same as the pane color */
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    padding: 20px 6px;
-    margin : 20px 1px;
+     padding: 20px 6px;
+    margin : 10px 1px; 
 }
 
 QTabWidget::tab-bar:left, QTabWidget::tab-bar:right {

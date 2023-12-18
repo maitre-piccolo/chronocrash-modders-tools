@@ -291,12 +291,28 @@ class MenuBar(QtWidgets.QMenuBar):
 			
 			
 			settings.set_option('entity/auto_add_empty_line_between_animations', value)
+			
 	
 			
 		
 		a = optionMenu.addAction(_('Force empty lines between animations'), setAutoAddEmptyLines)
 		a.setCheckable(True)
 		value = settings.get_option('entity/auto_add_empty_line_between_animations', True)
+		a.setChecked(value)
+		
+		
+		def setValue():
+			value = settings.get_option('editor/anim_selector_on_left', False)
+			value = not value
+			
+			
+			settings.set_option('editor/anim_selector_on_left', value)
+			self.informRestart()
+			
+		
+		a = optionMenu.addAction(_('Main editor - anim selector on left side'), setValue)
+		a.setCheckable(True)
+		value = settings.get_option('editor/anim_selector_on_left', False)
 		a.setChecked(value)
 	
 	

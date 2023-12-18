@@ -966,6 +966,13 @@ class FileSelector(QtWidgets.QWidget):
 		item = index.data(FileModel.itemRole)
 		fd = item.fd
 		if fd is None or (fd.path is not None and os.path.isdir(fd.path)): return
+	
+	
+		if fd.path in self.loadedFiles and self.loadedFiles[fd.path] != fd:
+			item.fd = self.loadedFiles[fd.path]
+			fd = self.loadedFiles[fd.path]
+			
+			
 		#if self.openedItem is not None:
 			#self.openedItem.state = 0
 

@@ -338,6 +338,10 @@ class EntityEditorWidget(QtWidgets.QWidget):
 			
 			
 		
+	def tmp(self):
+		QtWidgets.QMessageBox.warning(self, _('TMP'), str(len(self.fullData)) + ' ' + str(len(self.dicData.keys())))
+	
+	
 	def updateTheme(self):
 		theme = settings.get_option('gui/editor_theme', None)
 		if(theme != None and 'dark' in theme.lower()):
@@ -399,7 +403,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				if(lastLine.strip() != ''):
 					addLineBefore = True
 					
-				
+		# print(lines)
 		return lines
 
 		
@@ -1342,6 +1346,11 @@ class FrameEditor(QtWidgets.QWidget):
 		# self.onionSkinAction.setMenuPopupMode()
 		
 		self.onionSkinAction.setCheckable(True)
+		
+		
+		self.disableBoxBorderAction = self.buttonBar.addAction('Disable box border', self.disableBoxBorder)
+		self.disableBoxBorderAction.setCheckable(True)
+		self.disableBoxBorderAction.setChecked(settings.get_option('entity/disable_boxes_pen', False ))
 	
 		self.exportAnimationAction = self.buttonBar.addAction('Export', self.exportAnimation)
 		self.reloadSpritesAction = self.buttonBar.addAction('Reload sprites', self.reloadSprites)
@@ -1349,7 +1358,8 @@ class FrameEditor(QtWidgets.QWidget):
 		#self.buttonBar.addAction(QtGui.QIcon.fromTheme('edit-clear'), None, self.clear)
 		
 		
-		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.reloadSprites)
+		#QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.reloadSprites)
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.parent.tmp)
 		
 		# QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F3", "Flip Opponent")), self, self.flipOpponent)
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F6", "Flip Opponent")), self, self.flipOpponent)
@@ -1395,6 +1405,11 @@ class FrameEditor(QtWidgets.QWidget):
 		
 		self.endDrag.connect(self.endDragEvent)
 		
+	def disableBoxBorder(self):
+		
+		
+		self.disableBoxBorderAction.setChecked(settings.get_option('entity/disable_boxes_pen', self.disableBoxBorderAction.isChecked() ))
+		self.loadFrame()
 		
 	def drawOnionSkin(self):
 		if self.onionSkin != None:
@@ -1884,6 +1899,11 @@ class FrameEditor(QtWidgets.QWidget):
 				bbox = QtWidgets.QGraphicsRectItem(x-xOffset,y-yOffset,w,h)
 				bbox.setBrush(QtGui.QBrush(QtCore.Qt.blue))
 				bbox.setOpacity(0.3)
+				
+				if self.disableBoxBorderAction.isChecked():
+					pen = QtGui.QPen()
+					pen.setWidth(0)
+					bbox.setPen(pen)
 				self.scene.addItem(bbox)
 			
 		if(self.mode != 'attack' or not self.resetVisualPropAction.isChecked()):
@@ -1896,6 +1916,11 @@ class FrameEditor(QtWidgets.QWidget):
 					bbox = QtWidgets.QGraphicsRectItem(x-xOffset,y-yOffset,w,h)
 					bbox.setBrush(QtGui.QBrush(QtCore.Qt.red))
 					bbox.setOpacity(0.3)
+					if self.disableBoxBorderAction.isChecked():
+						pen = QtGui.QPen()
+						pen.setWidth(0)
+						bbox.setPen(pen)
+					
 					self.scene.addItem(bbox)
 				
 		xMin, xMax = anim.getRange(frameNumber)
@@ -1903,6 +1928,10 @@ class FrameEditor(QtWidgets.QWidget):
 			rangeBox = QtWidgets.QGraphicsRectItem(xMin,-10,xMax-xMin,20)
 			rangeBox.setBrush(QtGui.QBrush(QtCore.Qt.yellow))
 			rangeBox.setOpacity(0.3)
+			if self.disableBoxBorderAction.isChecked():
+				pen = QtGui.QPen()
+				pen.setWidth(0)
+				rangeBox.setPen(pen)
 			self.scene.addItem(rangeBox)
 			
 

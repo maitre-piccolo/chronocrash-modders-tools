@@ -207,6 +207,8 @@ class AnimSelector(QtWidgets.QWidget):
 		
 		
 	def enterEvent(self, e):
+		if(not hasattr(self.mainEditor, 'mainSplitter')):return
+		
 		if self.content.isVisible() and not settings.get_option('gui/auto_collapse', True) : return # Do not expand if already expanded
 		self.content.show()
 		self.cacheLabel.hide()
@@ -222,6 +224,7 @@ class AnimSelector(QtWidgets.QWidget):
 		self.searchEntry.selectAll()
 		
 	def leaveEvent(self, e):
+		if(not hasattr(self.mainEditor, 'mainSplitter')):return
 		if self.rect().contains(self.mapFromGlobal(QtGui.QCursor.pos())):
 			return
 		

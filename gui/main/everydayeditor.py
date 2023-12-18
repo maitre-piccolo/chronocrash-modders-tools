@@ -279,7 +279,10 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 		result = self.editor.find(text, options) # first try to search from cursor to end of document
 		
 		if(result):
-			self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
+			if(not self.dark):
+				self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
+			else:
+				self.searchEntry.setStyleSheet("QLineEdit { background: rgb(60, 145, 60); }");
 			return True
 		
 		elif(loop and not result):
@@ -291,14 +294,19 @@ class AbstractEverydayEditor(QtWidgets.QWidget):
 				self.editor.setTextCursor(self.editor.initialSearchPos)
 				self.editor.initialSearchPos = None
 			
-			
-				self.searchEntry.setStyleSheet("QLineEdit { background: rgb(255, 175, 175); }");
+				if(not self.dark):
+					self.searchEntry.setStyleSheet("QLineEdit { background: rgb(255, 175, 175); }");
+				else:
+					self.searchEntry.setStyleSheet("QLineEdit { background: rgb(120, 50, 50); }");
 				 # selection-background-color: rgb(233, 99, 0);
 				 
 				return False
 			else:
 				
-				self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
+				if(not self.dark):
+					self.searchEntry.setStyleSheet("QLineEdit { background: rgb(175, 255, 175); }");
+				else:
+					self.searchEntry.setStyleSheet("QLineEdit { background: rgb(60, 145, 60); }");
 				return True
 	
 			
@@ -349,8 +357,13 @@ class EverydayEditor(AbstractEverydayEditor):
 		
 		editorContainerWidget.setLayout(layout)
 		
-		mainLayout.addWidget(editorContainerWidget, 1)
-		mainLayout.addWidget(self.animSelector, 0)
+		if(settings.get_option('editor/anim_selector_on_left', False)):
+			
+			mainLayout.addWidget(self.animSelector, 0)
+			mainLayout.addWidget(editorContainerWidget, 1)
+		else:
+			mainLayout.addWidget(editorContainerWidget, 1)
+			mainLayout.addWidget(self.animSelector, 0)
 		
 		self.animSelector.hide()
 		
@@ -385,6 +398,11 @@ class EverydayEditor(AbstractEverydayEditor):
 		editorLayout.addWidget(self.stack2)
 		
 		theme = settings.get_option('gui/widgets_theme', None)
+		
+		if(theme == "Dark"):
+			self.dark = True
+		else:
+			self.dark = False
 		
 		
 		self.buttonBar = QtWidgets.QToolBar()
