@@ -176,7 +176,7 @@ class MainEditorWidget(QtWidgets.QWidget):
 		if self.currentView in ('anim', 'frame'):
 			self.entityEditor.loadLines(fd.lines)
 		elif self.currentView == 'level':
-			print('z', fd.z)
+			# print('z', fd.z)
 			self.levelEditor.loadFile(fd)
 			
 			

@@ -73,14 +73,33 @@ class LevelEditorWidget(QtWidgets.QWidget):
 		scene = LevelScene(self)
 		self.graphicView = view
 		self.scene = scene
+		
+		theme = settings.get_option('gui/widgets_theme', None)
 
 		self.buttonBar = QtWidgets.QToolBar()
-		self.buttonBar.addAction(QtGui.QIcon.fromTheme('zoom-in'), None, view.zoomIn)
-		self.buttonBar.addAction(QtGui.QIcon.fromTheme('zoom-out'), None, view.zoomOut)
+		
+		icon = QtGui.QImage('icons/zoom-in.svg')
+		if(theme == "Dark"): icon.invertPixels()
+		icon = QtGui.QIcon(QtGui.QPixmap.fromImage(icon))
+		# QtGui.QIcon.fromTheme('zoom-in')
+		self.buttonBar.addAction(icon, None, view.zoomIn)
+		
+		icon = QtGui.QImage('icons/zoom-out.svg')
+		if(theme == "Dark"): icon.invertPixels()
+		icon = QtGui.QIcon(QtGui.QPixmap.fromImage(icon))
+		self.buttonBar.addAction(icon, None, view.zoomOut)
 		self.buttonBar.addSeparator()
 		self.buttonBar.addAction(QtGui.QIcon.fromTheme('media-playback-start'), _('Play animations'), self.animateEntities)
 		# self.buttonBar.addAction(QtGui.QIcon.fromTheme('media-playback-start'), _('Flip entities'), self.flipEntitiesDirection)
 		
+		
+		self.buttonBar.addAction( _('Prev. wait'), self.prevWait)
+		self.buttonBar.addAction( _('Next wait'), self.nextWait)
+		
+		self.buttonBar.addSeparator()
+		
+		self.tintAction = self.buttonBar.addAction( _('Tint by groups'), self.tintByGroups)
+		self.tintAction.setCheckable(True)
 		
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F7", "Flip Opponent")), self, self.flipEntitiesDirection)
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F8", "Next Frame")), self, self.nextFrame)
@@ -130,8 +149,45 @@ class LevelEditorWidget(QtWidgets.QWidget):
 		self.videoMode = 0
 		self.scrollPosition = 0
 		self.scrollPosition_Z = 0
+		
+		self.currentWait = None
 		# hide shadows
 		
+		
+	def prevWait(self):
+		if len(self.waits) > 0:
+			if(self.currentWait == None):
+				self.currentWait = 0
+			else:
+				self.currentWait -= 1
+				
+			if(self.currentWait < 0):
+				self.currentWait = len(self.waits)-1
+			
+			self.scrollPosition = self.waits[self.currentWait]
+			self.adjustToScrollPos()
+			self.graphicView.centerOn(self.scrollPosition, 100)
+	
+	def nextWait(self):
+		if len(self.waits) > 0:
+			if(self.currentWait == None):
+				self.currentWait = 0
+			else:
+				self.currentWait += 1
+				
+			if(self.currentWait > len(self.waits)-1):
+				self.currentWait = 0
+			
+			self.scrollPosition = self.waits[self.currentWait]
+			self.adjustToScrollPos()
+			self.graphicView.centerOn(self.scrollPosition, 100)
+		
+	
+	def tintByGroups(self):
+		
+		for e in self.entities:
+			e.tint(self.tintAction.isChecked())
+	
 	def actualizeEntities(self):
 		for e in self.entities:
 			e.actualizeFrame()
@@ -231,7 +287,8 @@ class LevelEditorWidget(QtWidgets.QWidget):
 		Recreate the text with the current data
 	'''
 	def rebuildText(self):
-				
+		
+		# group = -1
 			
 		self.updating = True
 		newLines = []
@@ -277,10 +334,15 @@ class LevelEditorWidget(QtWidgets.QWidget):
 				line = pLine.getText()
 			elif part.lower() == 'group':
 				inEntity = False
+				
 			elif part.lower() == 'spawn':
 				currentEntity += 1
 				inEntity = True
 				e = self.entities[currentEntity]
+				# e.groupNumber = group
+			elif part.lower() == 'flip':
+				continue
+				
 			elif part.lower() == 'coords':
 				if inEntity:
 					e = self.entities[currentEntity]
@@ -291,6 +353,9 @@ class LevelEditorWidget(QtWidgets.QWidget):
 			elif part.lower() == 'at':
 				if inEntity:
 					e = self.entities[currentEntity]
+					if( e.facingRight):
+						line = 'flip 1'
+						newLines.append(line)
 					line = 'at ' + str(e.at)
 					
 					inEntity = False
@@ -557,6 +622,9 @@ class EntityControlWidget(QtWidgets.QWidget):
 			self.lineEdits[field] = QtWidgets.QLineEdit()
 			self.lineEdits[field].setValidator(validator)
 			layout.addRow(_(field) + ' : ', self.lineEdits[field])
+		
+		self.flipCheckBox = QtWidgets.QCheckBox()
+		layout.addRow(_('Flip') + ' : ', self.flipCheckBox)
 			
 		button = QtWidgets.QPushButton(_('Update'))
 		button.clicked.connect(self.update)
@@ -589,6 +657,7 @@ class EntityControlWidget(QtWidgets.QWidget):
 		self.lineEdits['x'].setText(str(x))
 		self.lineEdits['z'].setText(str(y))
 		self.lineEdits['at'].setText(str(self.item.at))
+		self.flipCheckBox.setChecked(self.item.facingRight)
 		if(alt != None):
 			self.lineEdits['altitude (y)'].setText(str(alt))
 		else:
@@ -606,6 +675,8 @@ class EntityControlWidget(QtWidgets.QWidget):
 		#self.item.zOffset = int(self.lineEdits['zOffset'].text())
 		self.item.x = int(self.lineEdits['x'].text())
 		self.item.z = int(self.lineEdits['z'].text())
+		
+		self.item.setDirection(self.flipCheckBox.isChecked())
 		
 		if(self.lineEdits['altitude (y)'].text() != ''):
 			self.item.altitude = int(self.lineEdits['altitude (y)'].text())
@@ -1003,6 +1074,8 @@ class WallControlWidget(QtWidgets.QWidget):
 		e = None
 		isInScript = False
 		i = 0
+		groupNumber = 0
+		
 		for line in lines:
 			i += 1
 			pLine = ParsedLine(line)
@@ -1050,9 +1123,11 @@ class WallControlWidget(QtWidgets.QWidget):
 				
 				if(loadEntities):
 					e = Entity(pLine.next(), i, self.levelEditor, defaultAnim="idle", loadAllAnims=True, offset=True)
+					e.setDirection(False)
 					if(e.type not in self.levelEditor.entities_types):
 						self.levelEditor.entities_types.append(e.type)
 					self.levelEditor.entities.append(e)
+					e.groupNumber = groupNumber
 				nextAt = 'spawn'
 				
 			elif part.lower() == 'coords':
@@ -1062,6 +1137,7 @@ class WallControlWidget(QtWidgets.QWidget):
 					
 				if(loadEntities):
 					e = self.levelEditor.entities[-1]
+					
 					e.x = int(pLine.next())
 					try:
 						e.z = int(pLine.next())
@@ -1076,11 +1152,25 @@ class WallControlWidget(QtWidgets.QWidget):
 				parts = []
 				while pLine.next() != None:
 					parts.append(int(pLine.getCurrent()))
-				self.levelEditor.groups.append(Group(*parts))
+					
+				groupNumber += 1
+				groupObject = Group(*parts)
+				groupObject.setColor( groupNumber)
+				self.levelEditor.groups.append(groupObject)
 				nextAt = 'group'
+				
+				
+				
 				
 			elif part.lower() == 'wait':
 				nextAt = 'wait'
+				
+			elif part.lower() == 'flip':
+				flip = int(pLine.next())
+				if flip == 1:
+					# print('flipping', e.name)
+					e.setDirection(not e.facingRight)
+					# e.actualizeFrame()
 
 			elif part.lower() == 'wall':
 				parts = []

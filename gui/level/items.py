@@ -53,6 +53,7 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		self.z = None
 		self.altitude = None
 		self.at = None
+		self.groupNumber = 0
 		
 		self.type = 'Unknown'
 		
@@ -145,7 +146,13 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		px = Entity.PIXMAP_CACHE[self.fPath]
 		self.frameWidth = px.width()
 		self.frameHeight = px.height()
+		
+		
 		self.frameItem = QtWidgets.QGraphicsPixmapItem(px)
+
+		
+		
+			
 		
 		
 		if('shadow' not in Entity.PIXMAP_CACHE):
@@ -480,6 +487,76 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 	def showSquareOffsetChanged(self,show):
 		self.squareOffset.setVisible(show)
 		
+		
+	def tint(self, tint):
+		
+		defaultColors = [
+	   (230, 0, 0),
+	   (230, 230, 0),
+	   (0, 230, 230),
+	   (230, 0, 230),
+	   (0, 230, 0),
+	   (0, 0, 230)
+	   
+	   ]
+		
+		colors = []
+		for i in range(6):
+			defaultValue = QtGui.QColor(*defaultColors[i]).name()
+			value = settings.get_option('level/group_tint_color' + str(i), defaultValue)
+			colors.append(value)
+		
+		
+		if(self.groupNumber == 0): return
+		group = self.groupNumber
+		while group > 6:
+			group = group % 6
+		
+		
+	
+		color = colors[group-1]
+		
+		
+# 		px = Entity.PIXMAP_CACHE[self.fPath]
+# 		self.frameWidth = px.width()
+# 		self.frameHeight = px.height()
+# 		
+		
+# 		self.frameItem = QtWidgets.QGraphicsPixmapItem(px)
+		if(tint):
+		
+			# color = QtGui.QColor(*color)
+			color = QtGui.QColor(color)
+			effect = QtWidgets.QGraphicsColorizeEffect()
+			effect.setColor(color)
+			effect.setStrength(1.0)
+			self.frameItem.setGraphicsEffect(effect)
+			# image = QtGui.QImage(px)
+			# mainColor = image.color(0)
+			# for x in range(image.width()):
+			# 	for y in range(image.height()):
+			# 		pixel = image.pixel(x, y)
+			# 		if pixel == mainColor: continue
+			# 		grayPixel = QtGui.qGray(pixel)
+			# 		dstPixel = QtGui.qRgba(grayPixel, grayPixel, grayPixel, 255)
+			# 		image.setPixel(x, y, dstPixel)
+			# self.frameItem = QtWidgets.QGraphicsPixmapItem(QtGui.QPixmap.fromImage(image))
+		else:
+			
+			self.frameItem.setGraphicsEffect(None)
+			return 
+			px = Entity.PIXMAP_CACHE[self.fPath]
+			
+# 			px = Entity.PIXMAP_CACHE[self.frames[self.currentFrame]['path']]
+# 			self.frameWidth = px.width()
+# 			self.frameHeight = px.height()
+# 			
+			# self.frameWidth = px.width()
+			# self.frameHeight = px.height()
+			# self.removeFromGroup(self.frameItem)
+			self.frameItem.setPixmap(px)
+			
+		
 	def width(self):
 		return self.frameWidth
 
@@ -490,7 +567,12 @@ class Bar(QtWidgets.QGraphicsItemGroup):
 	def at(self, pos):
 		
 		pen = QtGui.QPen()
-		brush = QtGui.QBrush(QtGui.QColor(*self.COLOR))
+		if(hasattr(self, 'overWriteColor')):
+			color = self.overWriteColor
+			
+		else:
+			color = QtGui.QColor(*self.COLOR)
+		brush = QtGui.QBrush(color)
 		pen.setWidth(4)
 		pen.setBrush(brush)
 		
@@ -500,7 +582,7 @@ class Bar(QtWidgets.QGraphicsItemGroup):
 		self.textItem.setPos(pos-10, self.TEXT_POS)
 		self.line = QtWidgets.QGraphicsLineItem(pos, self.LINE_Y1 , pos, self.LINE_Y2)
 		
-		self.textItem.setDefaultTextColor(QtGui.QColor(*self.COLOR))
+		self.textItem.setDefaultTextColor(color)
 		self.line.setPen(pen)
 		
 		self.addToGroup(self.line)
@@ -519,6 +601,37 @@ class Group(Bar):
 		Bar.__init__(self)
 		self.min = min
 		self.max = max
+		
+	def setColor(self, groupNumber):
+		self.groupNumber = groupNumber
+		defaultColors = [
+		(230, 0, 0),
+		(230, 230, 0),
+		(0, 230, 230),
+		(230, 0, 230),
+		(0, 230, 0),
+		(0, 0, 230)
+		
+		]
+		
+		colors = []
+		for i in range(6):
+			defaultValue = QtGui.QColor(*defaultColors[i]).name()
+			value = settings.get_option('level/group_tint_color' + str(i), defaultValue)
+			colors.append(value)
+		
+		
+		if(self.groupNumber == 0): return
+		group = self.groupNumber
+		while group > 6:
+			group = group % 6-1
+		
+		
+
+		color = colors[group-1]
+		
+		self.overWriteColor = QtGui.QColor( color)
+		
 		
 		
 class Wait(Bar):

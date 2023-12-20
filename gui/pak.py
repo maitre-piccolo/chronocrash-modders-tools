@@ -46,7 +46,7 @@ class PakWidget(QtWidgets.QWidget):
 		modelFiles = []
 		spriteFiles = []
 
-		f = open(os.path.join(dataPath, 'models.txt'), 'rU')
+		f = open(os.path.join(dataPath, 'models.txt'), 'r')
 		data = f.readlines()
 		p = re.compile('^[^#](.*)data/chars/(.*).txt')
 
@@ -65,7 +65,7 @@ class PakWidget(QtWidgets.QWidget):
 		p = re.compile('^[^#](.*)data/chars/([^/]*)([^.]*)(.*)')
 		#p2 = re.compile('^[^#](.*)data\\chars\\([^.]*)(.*)')
 		for modelFile in modelFiles:
-			f = open(baseFolder + os.sep + modelFile, 'rU') # 'r'
+			f = open(baseFolder + os.sep + modelFile, 'r') # 'r'
 			
 			data = f.readlines()
 

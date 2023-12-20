@@ -1011,6 +1011,11 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				if prop != None:
 					frame['drawmethod_' + prop] = pLine.next()
 					
+			
+			elif(part == 'move'):
+				value = parseInt(pLine.next())
+				frame['move'] = value
+			
 			elif(bindingMaskIdentifier != None):
 				checkForBindingMask()
 				
@@ -1376,8 +1381,8 @@ class FrameEditor(QtWidgets.QWidget):
 		#self.buttonBar.addAction(QtGui.QIcon.fromTheme('edit-clear'), None, self.clear)
 		
 		
-		#QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.reloadSprites)
-		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.parent.tmp)
+		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.reloadSprites)
+		#QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.parent.tmp)
 		
 		# QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F3", "Flip Opponent")), self, self.flipOpponent)
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F6", "Flip Opponent")), self, self.flipOpponent)
@@ -1853,11 +1858,20 @@ class FrameEditor(QtWidgets.QWidget):
 		self.scene.addItem(self.grid)
 		
 		
+		frameJump = 1
+		
+		
 		if frameNumber is None:
 			frameNumber = self.parent.currentFrame
 		else:
+			if(self.parent.currentFrame != None):
+				frameJump = frameNumber - self.parent.currentFrame
 			self.parent.currentFrame = frameNumber
 		self.label.setText('Frame ' + str(frameNumber))
+		
+		if frameNumber == 0:
+			self.moveX = 0
+			self.moveX_compound = 0
 		
 		if(frameNumber >= len(anim)) : return
 	
@@ -1880,6 +1894,16 @@ class FrameEditor(QtWidgets.QWidget):
 		xOffset *= scaleX
 		yOffset *= scaleY
 		#print('offset', xOffset, yOffset)
+		
+		if('move' in frame):
+			self.moveX = frame['move']
+		
+		if(frameJump > 0):
+			self.moveX_compound += self.moveX * frameJump
+		else:
+			self.moveX_compound += self.moveX * frameJump
+			
+		xOffset -= self.moveX_compound
 		
 		if frame['frame'] not in self.parent.pixmapCache:
 			image = loadSprite(os.path.join(EntityEditorWidget.ROOT_PATH, frame['frame']))

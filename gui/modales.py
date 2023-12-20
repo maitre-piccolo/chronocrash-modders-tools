@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from gui.util import FileInput
 from gui.settings.fontselector import FontSelector
 
-VERSION = '0.5.8.1 (18/12/23)'
+VERSION = '0.5.9.2 (20/12/23)'
 
 
 class ShortcutSettingsWidget(QtWidgets.QWidget):
@@ -248,7 +248,68 @@ class LevelSettingsWidget(QtWidgets.QWidget):
 	def save(self):
 		settings.set_option('level/line_weight', self.lineWeight.value())
 		settings.set_option('level/dot_size', self.dotSize.value())
+
+class LevelGroupsTintColorsSetter(QtWidgets.QWidget):
+	def __init__(self):
+		QtWidgets.QWidget.__init__(self)
+		lay = QtWidgets.QFormLayout()
 		
+		self.defaultColors = [
+		(230, 0, 0),
+		(230, 230, 0),
+		(0, 230, 230),
+		(230, 0, 230),
+		(0, 230, 0),
+		(0, 0, 230)
+		
+		]
+		
+		
+		self.colors = []
+		for i in range(6):
+			defaultValue = QtGui.QColor(*self.defaultColors[i]).name()
+			value = settings.get_option('level/group_tint_color' + str(i), defaultValue)
+			self.colors.append(value)
+			
+		
+
+		self.buttons = []
+		for i in range(6):
+			button = QtWidgets.QPushButton('    ')
+			button.setStyleSheet('QPushButton {background-color: ' + self.colors[i] + ' }')
+			button.clicked.connect(self.changeColor)
+			self.buttons.append(button)
+			lay.addRow(_('Color') + ' ' + str(i+1) + ' : ', button)
+		
+		self.setLayout(lay)
+
+		
+		
+		
+		
+		
+		
+	def changeColor(self):
+		
+		i = self.buttons.index(self.sender())
+		
+		defaultColor = self.colors[i]
+		
+		color = QtWidgets.QColorDialog.getColor(QtGui.QColor(defaultColor), self).name() 
+		
+		print('color', color)
+		
+		if(color != '#000000' and color != None and color != False):
+			settings.set_option('level/group_tint_color' + str(i), color)
+			
+			self.sender().setStyleSheet('QPushButton {background-color: ' + color + ' }')
+			
+			# settings.set_option('editor/color_highlighted_line', color)
+		
+	def save(self):
+		pass
+		# settings.set_option('level/line_weight', self.lineWeight.value())
+		# settings.set_option('level/dot_size', self.dotSize.value())		
 		
 class MiscSettingsWidget(QtWidgets.QWidget):
 	def __init__(self):
@@ -319,7 +380,8 @@ class SettingsEditor(QtWidgets.QDialog):
 		editorNode = addSection('editor', _('Editor'))
 		addSection('editor', _('Fonts and colors'), None, editorNode)
 		addSection('dialog', _('Dialog editor'))
-		addSection('level', _('Level editor'))
+		levelNode = addSection('level', _('Level editor'))
+		addSection('level_groups_tint_colors', _('Groups Tint Colors'), None, levelNode)
 		addSection('shortcuts', _('Keyboard shortcuts'))
 		addSection('misc', _('Miscellaneous'))
 		addSection('autobackup', _('Auto-Backup'))
@@ -378,6 +440,11 @@ class SettingsEditor(QtWidgets.QDialog):
 		self.widgetLayout.addWidget(w, 1)
 		w.hide()
 		self.widgets['level'] = w
+		
+		w = LevelGroupsTintColorsSetter()
+		self.widgetLayout.addWidget(w, 1)
+		w.hide()
+		self.widgets['level_groups_tint_colors'] = w
 		
 		w = ShortcutSettingsWidget()
 		self.widgetLayout.addWidget(w, 1)
