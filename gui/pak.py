@@ -17,6 +17,10 @@ class PakWidget(QtWidgets.QWidget):
 		self.parent = parent # prevent garbabe collector to delete parent dialog
 		layout = QtWidgets.QFormLayout()
 		
+		button = QtWidgets.QPushButton('What is this tool ?')
+		button.clicked.connect(self.showInfos)
+		layout.addRow(button )
+		
 		dataPath = settings.get_option('general/data_path', '')
 		charsFolderPath = os.path.join(dataPath, 'chars')
 		self.charsFolder = FileInput(self, 'folder', charsFolderPath, 'Select chars folder', dataPath)
@@ -32,12 +36,53 @@ class PakWidget(QtWidgets.QWidget):
 		
 		self.setLayout(layout)
 		
+	def showInfos(self):
+		txt = '''Some clarifications for the "prepake PAK" tool
+
+The tools asks you to set two folders : workbase chars folder, and publish chars folder.
+
+The two folders (workbase and publish) must be different.
+
+Workbase folder should be the path folder of your private dev chars folder (this one can't be empty, and must exists).
+
+And publish folder should be the path folder of the public "release" chars folder, the one you will use to build the pak that you will upload (this folder can be empty, and will be created if it doesn't exist).
+
+The purpose of the tool is to create a copy of your private dev chars folder that includes only the files referenced in txt files, so that you can have a lot of unused material/stuff in your private dev chars folder, and they won't be copied in the "release" version. Useful to create a trimmed version of chars folder for release, and reduce size of PAK.
+
+
+
+So for example, the paths should be something like C:/project path/data/chars for workbase folder
+and C:/project path/release/data/chars for publish folder
+
+It won't work if you use the same folders as one serves as the basis of the other.
+
+Also, note that it's not the data path that must but set, but data/chars
+
+For now this tool only works on chars folder.'''
+		
+		dialog = QtWidgets.QDialog(self, QtCore.Qt.Window)
+		dialog.setWindowTitle("Prepare PAK infos")
+		mainLayout = QtWidgets.QVBoxLayout()
+		
+		widget = QtWidgets.QPlainTextEdit(self)
+		widget.setPlainText(txt)
+		mainLayout.addWidget(widget)
+		
+		dialog.setLayout(mainLayout)
+		dialog.exec()
+		
 	def process(self):
 		dataPath = settings.get_option('general/data_path', '')
 		dig = True
 		files = []
 
 		baseFolder = self.charsFolder.text()
+		
+		dstroot = self.outCharsFolder.text()
+		
+		if(baseFolder == dstroot):
+			QtWidgets.QMessageBox.information(self, _('Warning'), _('Workbase path and publish path must be different'))
+			return
 
 		exclude = (
 			baseFolder + '/misc',
@@ -93,7 +138,7 @@ class PakWidget(QtWidgets.QWidget):
 		files = spriteFiles + modelFiles
 
 		size = 0
-		dstroot = self.outCharsFolder.text()
+		
 		settings.set_option('pak/chars_out_path', dstroot)
 		for f in files:
 			srcfile = f

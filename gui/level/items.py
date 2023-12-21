@@ -60,6 +60,8 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		self.reference = None
 		
 		self.allAnimLoaded = False
+		self.palettes = []
+		self.currentPalette = {'ID':''}
 
 		# print(entName)
 		self.parentWidget = parentWidget
@@ -83,6 +85,8 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 			self.modelPath = reference.modelPath
 			self.type = reference.type
 			self.entityModelFound = True
+			
+			self.palettes = reference.palettes
 			
 			
 			
@@ -224,7 +228,19 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		
 		self.facingRight = True
 		
+	
+	
+	def setPalette(self, paletteRelativePath):
 		
+		paletteImage = loadSprite(os.path.join(Entity.ROOT_PATH, paletteRelativePath))
+		
+		
+		self.currentPalette = {'ID':paletteRelativePath, 'colorTable': paletteImage.colorTable()}
+		
+
+		
+		self.changeAnimation(self.animUsed)
+		self.actualizeFrame()
 		
 		
 	def loadAnims(self, defaultAnim, loadAllAnims=False):
@@ -245,6 +261,7 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		yOffset = 0
 		self.currentFrame = 0
 		delay = 7
+		self.palettes = []
 		
 		if(self.reference != None): self.anims = self.reference.anims
 		else : self.anims = {}
@@ -257,6 +274,10 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 			
 			if(part == 'type'):
 				self.type = pLine2.next().lower()
+				
+			elif(part == 'palette' or part == 'alternatepal'):
+				print("adding palette")
+				self.palettes.append(pLine2.next())
 			
 			elif part == 'anim':
 				skipAnim = False
@@ -346,7 +367,7 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		# print('actualizing frame to ', self.frames[self.currentFrame]['path'])
 		
 		if(self.currentFrame >= len(self.frames)): return
-		px = Entity.PIXMAP_CACHE[self.frames[self.currentFrame]['path']]
+		px = Entity.PIXMAP_CACHE[self.frames[self.currentFrame]['path'] + self.currentPalette['ID']]
 		self.frameWidth = px.width()
 		self.frameHeight = px.height()
 		
@@ -366,7 +387,9 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 	def changeAnimation(self, animID, reloadAnims=False, reloadAllAnims=False):
 		if(reloadAnims):
 			self.loadAnims(animID, reloadAllAnims)
+		
 		if(animID in self.anims):
+			
 			# preload pixmaps
 			self.animUsed = animID
 			self.frames = self.anims[self.animUsed]
@@ -379,12 +402,17 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 			if(self.fPath == None): self.fPath = self.frames[0]['path']
 			
 			
+			options = {}
+			if self.currentPalette['ID'] != '':
+				options['colorTable'] = self.currentPalette['colorTable']
+			
 			for frame in self.frames:
 				fPath = frame['path']
-				if(fPath not in Entity.PIXMAP_CACHE):
-					image = loadSprite(os.path.join(Entity.ROOT_PATH, fPath))
+				if(fPath + self.currentPalette['ID'] not in Entity.PIXMAP_CACHE):
+					# print("here", fPath + self.currentPalette['ID'])
+					image = loadSprite(os.path.join(Entity.ROOT_PATH, fPath), 0, options)
 					px = QtGui.QPixmap.fromImage(image)
-					Entity.PIXMAP_CACHE[fPath] = px
+					Entity.PIXMAP_CACHE[fPath + self.currentPalette['ID']] = px
 			return True
 		else:
 			return False

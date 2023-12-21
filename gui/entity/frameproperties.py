@@ -52,7 +52,21 @@ class AbstractOverlayEditor(QtWidgets.QWidget):
 		self.entityAnimation.setObjectName("entityAnimCB")
 		layout.addWidget(self.entityAnimation, 4, 0)
 		
+		i=4
 		
+		i+=1
+		
+		layout.addWidget(QLabel(_("Entity palette")), i, 0)
+		i+=1
+		self.entityPalette = QtWidgets.QComboBox() # get option
+		self.entityPalette.setEditable(True)
+		# self.entityPalette.setCurrentText(settings.get_option('entity/last_' + self.SETTING_KEY + '_animation', 'idle'))
+		self.entityPalette.currentTextChanged.connect(self.entityPaletteChanged)
+		self.entityPalette.setObjectName("entityPaletteCB")
+		layout.addWidget(self.entityPalette, i, 0)
+		
+		
+		i+=1
 		if (self.SETTING_KEY == 'opponent'):
 			showSquareOffset = settings.get_option('entity/binding_show_square_offset', False)
 			showCrossOffset = settings.get_option('entity/binding_show_cross_offset', True)
@@ -60,18 +74,20 @@ class AbstractOverlayEditor(QtWidgets.QWidget):
 			self.showCrossOffset = QtWidgets.QCheckBox(_('Show cross offset'))
 			self.showCrossOffset.setChecked(showCrossOffset)
 			self.showCrossOffset.stateChanged.connect(self.showCrossOffsetChanged)
-			layout.addWidget(self.showCrossOffset, 5, 0)
+			layout.addWidget(self.showCrossOffset, i, 0)
 			
+			i+=1
 			self.showSquareOffset = QtWidgets.QCheckBox(_('Show square offset'))
 			self.showSquareOffset.setChecked(showSquareOffset)
 			self.showSquareOffset.stateChanged.connect(self.showSquareOffsetChanged)
-			layout.addWidget(self.showSquareOffset, 6, 0)
+			layout.addWidget(self.showSquareOffset, i, 0)
 			
 		else:
-			layout.addWidget(QtWidgets.QLabel('Frame'), 5, 0)
+			layout.addWidget(QtWidgets.QLabel('Frame'), i, 0)
 			self.frameSpinBox = QtWidgets.QSpinBox()
 			self.frameSpinBox.valueChanged.connect(self.updateFrame)
-			layout.addWidget(self.frameSpinBox, 6, 0)
+			i+=1
+			layout.addWidget(self.frameSpinBox, i, 0)
 		
 		
 		
@@ -96,10 +112,12 @@ class AbstractOverlayEditor(QtWidgets.QWidget):
 				if(self.SETTING_KEY == "opponent"):
 					self.parent.frameEditor.loadOpponent()
 					self.reloadAnims()
+					self.reloadPalettes()
 					self.parent.frameEditor.opponent = None
 				else:
 					self.parent.frameEditor.loadOnionSkinModel()
 					self.reloadAnims()
+					self.reloadPalettes()
 					self.parent.frameEditor.onionSkinEnt = None
 			else:
 				self.showOpponent.setChecked(True)
@@ -108,13 +126,20 @@ class AbstractOverlayEditor(QtWidgets.QWidget):
 				else:
 					self.parent.frameEditor.showOnionSkin(True)
 				self.reloadAnims()
+				self.reloadPalettes()
 	
 	def entityAnimationChanged(self, widget):
 		print("entity animation changed", self.entityAnimation.currentText())
 		if self.loadingAnims : return
 		if self.changeEntityAnimation():
 			self.showOpponent.setChecked(True)
-			
+	
+	
+	def entityPaletteChanged(self, widget):
+		print("entity palette changed", self.entityPalette.currentText())
+		if self.loadingAnims : return
+		if self.changeEntityPalette():
+			self.showOpponent.setChecked(True)
 			
 	def reloadModels(self):
 		self.loadingModels = True
@@ -145,6 +170,21 @@ class AbstractOverlayEditor(QtWidgets.QWidget):
 		self.entityAnimation.setCurrentText(default)
 		
 		self.loadingAnims = False
+		
+	def reloadPalettes(self, default=None):
+		
+		self.entityPalette.clear()
+		
+		if(self.SETTING_KEY == 'opponent'):
+			opponent = self.parent.frameEditor.opponent
+		else:
+			opponent = self.parent.frameEditor.onionSkinEnt
+		if(opponent != None):
+			self.entityPalette.addItems(opponent.palettes)
+		self.entityPalette.setCurrentText(default)
+		
+		# self.loadingAnims = False
+		
 		
 		
 	def changeEntityModel(self):
@@ -217,7 +257,35 @@ class AbstractOverlayEditor(QtWidgets.QWidget):
 		else:
 			if(txt not in Entity.AVAILABLE_MODELS): self.entityAnimation.setStyleSheet("QComboBox { background: rgb(255, 0, 0); selection-background-color: rgb(233, 99, 0); }");
 			return False
+		
+	def changeEntityPalette(self):
+		txt = self.entityPalette.currentText()
+		
+		if self.SETTING_KEY == 'opponent':
+		
+			opponent = self.parent.frameEditor.opponent
+		else:
+			opponent = self.parent.frameEditor.onionSkinEnt
 			
+		print("changePalette", self.SETTING_KEY, txt, opponent.palettes)
+			
+		if opponent == None: return False
+		if(txt in opponent.palettes):
+			opponent.setPalette(txt)
+			opponent.setAt(0)
+			opponent.actualizeFrame()
+			print("Loading palette")
+			
+			# settings.set_option('entity/last_' + self.SETTING_KEY + '_animation', txt)
+			# self.entityAnimation.setStyleSheet("QComboBox { background: rgb(0, 255, 0); selection-background-color: rgb(233, 99, 0); }");
+			
+			return True
+			
+		else:
+			# if(txt not in Entity.AVAILABLE_MODELS): self.entityAnimation.setStyleSheet("QComboBox { background: rgb(255, 0, 0); selection-background-color: rgb(233, 99, 0); }");
+			return False
+		
+	
 	def showOpponentChanged(self):
 		showOpponent = self.showOpponent.isChecked()
 		self.parent.frameEditor.showOpponent(showOpponent)

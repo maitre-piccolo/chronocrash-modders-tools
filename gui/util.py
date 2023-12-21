@@ -200,7 +200,7 @@ def getSpriteShowingPath(path):
 	
 
 	
-def loadSprite(path, transp=0):
+def loadSprite(path, transp=0, options={}):
 	
 	print('transp', transp);
 	
@@ -277,5 +277,9 @@ def loadSprite(path, transp=0):
 					image.setPixelColor(x,y,QtGui.QColor(255, 0, 0, 0))
  
 	# pixmap = QPixmap::fromImage(tmp);
+	
+	
+	if('colorTable' in options):
+		image.setColorTable(options['colorTable'])
 	
 	return image

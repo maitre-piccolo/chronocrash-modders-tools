@@ -309,6 +309,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		
 		self.updating = False
 		self.loadingAnim = False
+		self.currentPalette = None
 		
 		#self.editorTabWidget.currentChanged.connect(self.reloadText)
 		
@@ -441,6 +442,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 	
 	
 	def loadFile(self, path):
+		
 		f = open(path)
 		self.fullText = f.read()
 		f.close()
@@ -455,6 +457,10 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		
 		self.updating = True
 		self.currentAnim = None
+		
+		self.currentPalette =  None
+		
+		self.palettes = []
 		
 		sectionLines = []
 		data = {'ID':'header', 'label':'', 'lines':sectionLines}
@@ -497,6 +503,9 @@ class EntityEditorWidget(QtWidgets.QWidget):
 						ent_cache.save()
 					except:
 						print("no model named ", model)
+						
+			elif(part == 'palette' or part == 'alternatepal'):
+				self.palettes.append(pLine.next())
 			sectionLines.append(line)
 			
 		self.dicData = dicData
@@ -514,6 +523,29 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		self.updating = False
 		self.switchingFrame = False
 		
+		
+		self.frameEditor.paletteMenu.clear()
+		for p in self.palettes:
+			self.frameEditor.paletteMenu.addAction(p, self.changePalette)
+		
+	def changePalette(self):
+		paletteRelativePath = self.sender().text()
+		paletteImage = loadSprite(os.path.join(EntityEditorWidget.ROOT_PATH, paletteRelativePath))
+		
+		actualImage =loadSprite(os.path.join(EntityEditorWidget.ROOT_PATH, 'data/chars/abubo/259.gif'))
+		
+		actualImage.setColorTable(paletteImage.colorTable())
+		
+		self.currentPalette = {'colorTable': paletteImage.colorTable()}
+		
+		
+		# px = QtGui.QPixmap.fromImage(paletteImage)
+		px = QtGui.QPixmap.fromImage(actualImage)
+		item = QtWidgets.QGraphicsPixmapItem(px)
+		item.setPos(0, 0)
+		self.frameEditor.scene.addItem(item)
+		
+		self.frameEditor.reloadSprites()
 
 	def secondarySplitterMoved(self, pos, index):
 		print(pos, index)
@@ -685,6 +717,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		if lines is None : lines = self.editor.lines
 		frame = {}
 		self.frames = []
+		
 		#lines = text.split('\n')
 		
 		isInScript = False
@@ -698,6 +731,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 			bindingMaskIdentifier = pLineMask.identifier
 			if(bindingMaskIdentifier.startswith('#')): bindingMaskIdentifierIsComment = True
 		print('processLines bindingMaskIdentifier', bindingMaskIdentifier)
+		
 		
 		
 		i = 0
@@ -1016,6 +1050,9 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				value = parseInt(pLine.next())
 				frame['move'] = value
 			
+			
+			
+				
 			elif(bindingMaskIdentifier != None):
 				checkForBindingMask()
 				
@@ -1032,6 +1069,9 @@ class EntityEditorWidget(QtWidgets.QWidget):
 			self.frameViewer.model.append(Portrait.fromPath(path))
 			
 		self.anim = Anim(self.frames)
+		
+		
+		
 			
 			
 	'''
@@ -1328,7 +1368,7 @@ class FrameEditor(QtWidgets.QWidget):
 		icon = QtGui.QIcon(QtGui.QPixmap.fromImage(icon))
 		self.buttonBar.addAction(icon, None, self.graphicView.zoomOut)
 		
-		self.setVisualPropAction = self.buttonBar.addAction('Set visual property', self.toggleVisualPropertyMode)
+		self.setVisualPropAction = self.buttonBar.addAction('Set visual prop.', self.toggleVisualPropertyMode)
 		menu = QtWidgets.QMenu()
 		menu.addAction(_('Offset'), lambda:self.setMode('offset'))
 		menu.addAction(_('Body box'), lambda:self.setMode('bbox'))
@@ -1369,6 +1409,15 @@ class FrameEditor(QtWidgets.QWidget):
 		# self.onionSkinAction.setMenuPopupMode()
 		
 		self.onionSkinAction.setCheckable(True)
+		
+		
+		
+		self.paletteAction = self.buttonBar.addAction('Palette', self.toggleVisualPropertyMode)
+		self.paletteMenu = QtWidgets.QMenu()
+		self.paletteAction.setMenu(self.paletteMenu)
+		self.buttonBar.widgetForAction(self.paletteAction).setPopupMode(QtWidgets.QToolButton.InstantPopup)
+		
+		
 		
 		
 		self.disableBoxBorderAction = self.buttonBar.addAction('Disable box border', self.disableBoxBorder)
@@ -1906,7 +1955,10 @@ class FrameEditor(QtWidgets.QWidget):
 		xOffset -= self.moveX_compound
 		
 		if frame['frame'] not in self.parent.pixmapCache:
-			image = loadSprite(os.path.join(EntityEditorWidget.ROOT_PATH, frame['frame']))
+			options = {}
+			if self.parent.currentPalette != None:
+				options['colorTable'] = self.parent.currentPalette['colorTable']
+			image = loadSprite(os.path.join(EntityEditorWidget.ROOT_PATH, frame['frame']), 0, options)
 			self.parent.pixmapCache[ frame['frame'] ] = QtGui.QPixmap.fromImage(image)
 		image = self.parent.pixmapCache[ frame['frame'] ]
 		

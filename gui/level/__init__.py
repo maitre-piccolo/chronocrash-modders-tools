@@ -1171,6 +1171,13 @@ class WallControlWidget(QtWidgets.QWidget):
 					# print('flipping', e.name)
 					e.setDirection(not e.facingRight)
 					# e.actualizeFrame()
+					
+			elif part.lower() == 'map':
+				mapColor = int(pLine.next())
+				if mapColor < len(e.palettes):
+					e.setPalette(e.palettes[mapColor])
+				else:
+					self.levelEditor.logWarning('Problem at line ' + str(i) + ' : palette (map) does not exist')
 
 			elif part.lower() == 'wall':
 				parts = []
