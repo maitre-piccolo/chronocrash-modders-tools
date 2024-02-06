@@ -483,6 +483,8 @@ class EverydayEditor(AbstractEverydayEditor):
 		self.updating = False
 		# self.setAcceptDrops(True)
 		
+		
+		
 		self.setTabOrder(self.searchEntry, self.replaceEntry)
 		
 		
@@ -570,10 +572,19 @@ class EverydayEditor(AbstractEverydayEditor):
 				self.fileSelector.updateStates(obj.fd)
 			self.editor = obj
 			#return True
+			
+			self.checkChangeOutside()
 		#else:
 		return False
 	
-	
+	def checkChangeOutside(self):
+		fd = self.editor.fd
+		if not fd.checkMTime():
+			if(QtWidgets.QMessageBox.question(self, _('Refresh file'), _('This file was changed outside CMT, would you like to reload it ?'), defaultButton=QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes):
+				fd.loadFromDisk()
+				self.setLines(fd.lines)
+			else:
+				fd.updateMTime()
 
 	def keyPressEvent(self, e):
 		

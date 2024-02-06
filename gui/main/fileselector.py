@@ -32,6 +32,7 @@ class File:
 		self.state = 0
 		self.isVisible = False
 		self.isAddedToAView = False
+		self.mtime = None
 		
 		
 	def getLongText(self):
@@ -68,6 +69,20 @@ class File:
 		
 		File.DB.addBackup([self.path, content, 1, 1])
 		
+	
+	def checkMTime(self):
+		if(not settings.get_option('general/check_external_file_update', True)): return True
+		if self.path is None or self.mtime is None:
+			return True
+			
+		mtime = os.path.getmtime(self.path)
+		if self.mtime != mtime:
+			return False
+		return True
+		
+	def updateMTime(self):
+		self.mtime = os.path.getmtime(self.path)
+	
 	def checkSave(self):
 		if self.originalLines == None : return
 		
@@ -113,6 +128,7 @@ class File:
 			self.originalLines = list(lines)
 			self.lines = lines
 			self.saved = True
+			self.mtime = os.path.getmtime(self.path)
 			
 		except FileNotFoundError:
 			print('File not found', self.path)
@@ -151,6 +167,7 @@ class File:
 		content = '\n'.join(self.lines)
 		f.write(content)
 		f.close()
+		self.mtime = os.path.getmtime(self.path)
 		
 		if(not settings.get_option('general/disable_advanced_auto_backup', False)):
 			File.DB.addBackup([self.path, content, 0, 1])
@@ -734,8 +751,19 @@ class FileSelector(QtWidgets.QWidget):
 	def loadLibrary(self, reset=False):
 		data = []
 		model = self.libraryModels[self.libraryMode]
-		self.filterModel.setSourceModel(model)
+		
+		if(self.mode == 'library'):
+			self.filterModel.setSourceModel(model)
 		if reset:
+			# clear all caches
+			ent_cache = Cache('entities_data', FileSelector.ROOT_PATH)
+			ent_cache.clear()
+			
+			self.mainEditor.clearCache()
+			
+			
+		
+		
 			model.reset()
 			#for model_to_reset in self.libraryModels.values():
 				#model_to_reset.reset()

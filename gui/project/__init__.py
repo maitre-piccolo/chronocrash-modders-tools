@@ -54,6 +54,12 @@ class ProjectSelector(QtWidgets.QWidget):
 		# projectWidget.setMinimumSize(-1, 800)
 		self.projectLayout.addWidget(QtWidgets.QLabel(_('Register a game project by clicking the add button\nand selecting the game data folder')))
 		
+		
+		self.askSessionCheckBox = QtWidgets.QCheckBox('Ask session')
+		self.askSessionCheckBox.setChecked(settings.get_option( 'general/ask_load_session_start', True))
+		self.askSessionCheckBox.stateChanged.connect(self.askSessionCheckBoxChanged)
+		self.layout.addWidget(self.askSessionCheckBox)
+		
 		scrollArea = QtWidgets.QScrollArea()
 		scrollArea.setWidgetResizable(True) # CRITICAL
 		scrollArea.setWidget(projectWidget)
@@ -81,6 +87,8 @@ class ProjectSelector(QtWidgets.QWidget):
 		# self.projectLayout.addSpacing(50)
 			
 
+	def askSessionCheckBoxChanged(self):
+		settings.set_option('general/ask_load_session_start', self.askSessionCheckBox.isChecked())
 
 	def addProject(self):
 		path = QtWidgets.QFileDialog.getExistingDirectory(self, _('Choose a mod data folder'))
@@ -101,6 +109,9 @@ class ProjectSelector(QtWidgets.QWidget):
 		
 		
 	def loadProject(self, project):
+		def loadSession():
+			self.mainFrame.setSession(settings.get_option('general/last_session', 'Default'), savePrevious=False)
+		
 		self.label.setText(_('Now loading project...'))
 		settings.set_option('general/data_path', project)
 		
@@ -110,9 +121,20 @@ class ProjectSelector(QtWidgets.QWidget):
 		if(not ProjectSelector.SESSION_LOADED):
 			logging.debug("Setting session from project manager...")
 			
-			if(QtWidgets.QMessageBox.question(self, _('Last session'), _('Do you want to load last session ?'), defaultButton=QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes):
-				self.loadLastSession = True
-				self.mainFrame.setSession(settings.get_option('general/last_session', 'Default'), savePrevious=False)
+			askLoad = settings.get_option( 'general/ask_load_session_start', True)
+			
+			
+			if(askLoad):
+				if(QtWidgets.QMessageBox.question(self, _('Last session'), _('Do you want to load last session ?'), defaultButton=QtWidgets.QMessageBox.Yes) == QtWidgets.QMessageBox.Yes):
+					settings.set_option( 'general/load_session_start', True)
+					loadSession()
+				else:
+					settings.set_option( 'general/load_session_start', False)
+			else:
+				if(settings.get_option( 'general/load_session_start', True)):
+					loadSession()
+				
+				
 			ProjectSelector.SESSION_LOADED = True
 		
 		

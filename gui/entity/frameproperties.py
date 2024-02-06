@@ -722,6 +722,33 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 		
 		
 		
+		# ******     RANGEZ BOX       ********
+		self.rangezGB = CustomGroupBox(_('Range Z'))
+		layout = QtWidgets.QGridLayout()
+		
+		self.rangezGB.setLayout(layout)
+		self.rangezGB.addClicked.connect(self.addBox)
+		self.rangezGB.deleteClicked.connect(self.deleteBox)
+		
+		zMin = QtWidgets.QSpinBox()
+		zMax = QtWidgets.QSpinBox()
+		
+		self.widgets['rangez'] = {'zMin':zMin, 'zMax':zMax}
+		
+		layout.addWidget(QLabel(_("Z min")), 0, 0)
+		layout.addWidget(zMin, 1, 0)
+		layout.addWidget(QLabel(_("Z max")), 0, 1)
+		layout.addWidget(zMax, 1, 1)
+		
+		self.showRangeZ = QtWidgets.QCheckBox(_('Visualize range Z'))
+		self.showRangeZ.setChecked(settings.get_option('entity/visualize_rangez', True))
+		self.showRangeZ.stateChanged.connect(self.visualizeRangeZChanged)
+		layout.addWidget(self.showRangeZ, 2, 0)
+		
+		self.layout.addWidget(self.rangezGB, 0)
+		
+		
+		
 		#self.layout.addWidget(ButtonGroupBox(), 0)
 		
 		self.layout.addStretch(1)
@@ -729,7 +756,7 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 		
 		self.loading = False
 		
-		for w in list([delay] + list(self.widgets['offset'].values()) + list(self.widgets['bbox'].values()) + list(self.widgets['range'].values()) + list(self.widgets['attack'].values())):
+		for w in list([delay] + list(self.widgets['offset'].values()) + list(self.widgets['bbox'].values()) + list(self.widgets['range'].values()) + list(self.widgets['rangez'].values()) + list(self.widgets['attack'].values())):
 			w.setRange(-1000000,1000000)
 			w.valueChanged.connect(self.valueChanged)
 		
@@ -738,7 +765,11 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 		
 		self.bboxGB.setDisabled(True)
 		self.attackGB.setDisabled(True)
-		
+	
+	
+	def visualizeRangeZChanged(self):
+		settings.set_option('entity/visualize_rangez', self.showRangeZ.isChecked())
+		self.parent.frameEditor.loadFrame()
 		
 	def addBox(self):
 		if len(self.parent.anim) == 0 : return
@@ -748,6 +779,12 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 		elif self.sender() == self.bboxGB:
 			data = self.parent.frames[self.parent.currentFrame]
 			data['bbox'] = BBox()
+		elif self.sender() == self.rangeGB:
+			data = self.parent.frames[0]
+			data['range'] = (-10, 100)
+		elif self.sender() == self.rangezGB:
+			data = self.parent.frames[0]
+			data['rangez'] = (-15, 15)
 			
 		self.parent.rebuildText()
 		self.parent.frameEditor.loadFrame()
@@ -760,12 +797,18 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 		elif self.sender() == self.bboxGB:
 			data = self.parent.frames[self.parent.currentFrame]
 			data['bbox'].delete = True
+		elif self.sender() == self.rangeGB:
+			data = self.parent.frames[0]
+			data['deleteRange'] = True
+		elif self.sender() == self.rangezGB:
+			data = self.parent.frames[0]
+			data['deleteRangez'] = True
 			
 		self.parent.rebuildText()
 		self.parent.frameEditor.loadFrame()
 		
 		
-	def loadData(self, data):
+	def loadData(self, data, anim):
 		
 		self.loading = True
 		delay = 0
@@ -824,13 +867,22 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 			self.attackGB.setDisabled(True)
 			
 			
-		if 'range' in data:
+		if 'range' in anim.frames[0]:
 			self.rangeGB.setDisabled(False)
-			xMin, xMax = data['range']
+			xMin, xMax = anim.frames[0]['range']
 			self.widgets['range']['xMin'].setValue(xMin)
 			self.widgets['range']['xMax'].setValue(xMax)
 		else:
 			self.rangeGB.setDisabled(True)
+			
+			
+		if 'rangez' in anim.frames[0]:
+			self.rangezGB.setDisabled(False)
+			zMin, zMax = anim.frames[0]['rangez']
+			self.widgets['rangez']['zMin'].setValue(zMin)
+			self.widgets['rangez']['zMax'].setValue(zMax)
+		else:
+			self.rangezGB.setDisabled(True)
 			
 			
 			
@@ -928,12 +980,20 @@ class FramePropertiesEditor(QtWidgets.QWidget):
 			updateNotEmpty(abox, 'size.z.background', depth)
 			
 		
+		frame0 = self.parent.frames[0]
+		if 'range' in frame0:
 			
-		if 'range' in data:
-			xMin, xMax = data['range']
+			xMin, xMax = frame0['range']
 			xMin = self.widgets['range']['xMin'].value()
 			xMax = self.widgets['range']['xMax'].value()
-			data['range'] = [xMin, xMax]
+			frame0['range'] = [xMin, xMax]
+			
+		if 'rangez' in frame0:
+			
+			xMin, xMax = frame0['rangez']
+			xMin = self.widgets['rangez']['zMin'].value()
+			xMax = self.widgets['rangez']['zMax'].value()
+			frame0['rangez'] = [xMin, xMax]
 
 
 	def valueChanged(self, *args):

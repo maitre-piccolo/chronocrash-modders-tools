@@ -1,11 +1,12 @@
 import os, re, time
+# blabla
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia
 from PyQt5.QtWidgets import *
 
 from common import util
 from common import settings
-from gui.util import FileInput, loadSprite
+from gui.util import FileInput, loadSprite, loadACTPalette
 
 from gui.portrait import IconViewer, Portrait
 
@@ -71,6 +72,89 @@ class Platform:
 		self.data[0] += self.xOffset
 		self.data[1] += self.yOffset
 		print(self.data)
+		
+		
+class Range3DBox:
+	def __init__(self, params, zParams, data=[]):
+		if(len(data) == 0):
+			z1 = zParams[0]
+			z2 = zParams[1]
+			depth = abs(z2 - z1)
+			width = params[1] - params[0]
+			
+			decalage = depth
+			
+			# I should always align the intersection of the box with z 0 at x 0.
+			decalageTop = depth - z2
+			decalageDown = depth + z1
+			
+			
+			# decalageTop = depth
+			# decalageDown = depth
+			# decalageDown
+			 
+			
+			data = [params[0],z2, -0+decalageTop, -0-decalageDown, width+decalageTop, width-decalageDown, depth,30]
+		while len(data) < 8:
+			data.append(0)
+		self.data = data
+		self.wall = None
+		
+	def getWall(self, xOffset=0, yOffset=0):
+		data = list(self.data)
+		data[0] -= xOffset
+		data[1] -= yOffset
+		self.xOffset = xOffset
+		self.yOffset = yOffset
+		self.wall = Wall(self, *data)
+		
+		# pen = QtGui.QPen(QtGui.QColor(255,255,0, 150))
+		pen = QtGui.QPen(QtGui.QColor(0,0,0, 50))
+		pen.setWidth(2)
+		
+		self.wall.line1.setPen(pen)
+		self.wall.line1.hide()
+		# self.wall.line1.setOpacity(0.3)
+		self.wall.line2.setPen(pen)
+		self.wall.line2.hide()
+		# self.wall.line2.setOpacity(0.3)
+		self.wall.line3.setPen(pen)
+		self.wall.line3.hide()
+		# self.wall.line3.setOpacity(0.3)
+		self.wall.line4.setPen(pen)
+		self.wall.line4.hide()
+		# self.wall.line4.setOpacity(0.3)
+		
+		brush = QtGui.QBrush(QtGui.QColor(255,255,0, 100))
+		# self.wall.mainItem.setOpacity(0.3)
+		self.wall.mainItem.setBrush(brush)
+		self.wall.mainItem.setPen(pen)
+		
+		brush = QtGui.QBrush(QtGui.QColor(255,255,0, 100))
+		# self.wall.second.setOpacity(0.3)
+		self.wall.second.setBrush(brush)
+		self.wall.second.setPen(pen)
+		self.wall.second.hide()
+		
+		
+		self.wall.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, False);
+		self.wall.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, False);
+		
+		#self.wall.updated.connect(self.platformUpdated)
+		return self.wall
+		
+	def getParams(self):
+		return self.data
+		
+	def getText(self):
+		print(self.data)
+		return 'platform ' + ' '.join(map(str, map(int, self.data)))
+	
+	def platformUpdated(self):
+		self.data = list(self.wall.getParams())[0:8] # don't take type
+		self.data[0] += self.xOffset
+		self.data[1] += self.yOffset
+		print(self.data)
 	
 	
 class Anim:
@@ -106,6 +190,18 @@ class Anim:
 			return int(val)
 		else:
 			return val
+		
+	def getRange3DBox(self, frameNumber=None):
+		if 'range3DBox' in self.frames[0]:
+			box = self.frames[0]['range3DBox']
+		else:
+			if 'rangez' in self.frames[0]:
+				zParams = self.frames[0]['rangez']
+			else:
+				zParams = [-15, 15]
+			box = Range3DBox(self.frames[0]['range'], zParams)
+			
+		return box
 		
 	def getPlatform(self, frameNumber=None):
 		if frameNumber is None:
@@ -461,6 +557,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		self.currentPalette =  None
 		
 		self.palettes = []
+		self.currentFrame = 0
 		
 		sectionLines = []
 		data = {'ID':'header', 'label':'', 'lines':sectionLines}
@@ -508,6 +605,9 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				self.palettes.append(pLine.next())
 			sectionLines.append(line)
 			
+		
+		self.modelName = model
+		
 		self.dicData = dicData
 		self.fullData = fullData
 		#print(fullData)
@@ -525,25 +625,37 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		
 		
 		self.frameEditor.paletteMenu.clear()
+		self.frameEditor.paletteMenu.addAction("None", self.changePalette)
 		for p in self.palettes:
 			self.frameEditor.paletteMenu.addAction(p, self.changePalette)
 		
 	def changePalette(self):
 		paletteRelativePath = self.sender().text()
-		paletteImage = loadSprite(os.path.join(EntityEditorWidget.ROOT_PATH, paletteRelativePath))
 		
-		actualImage =loadSprite(os.path.join(EntityEditorWidget.ROOT_PATH, 'data/chars/abubo/259.gif'))
+		if paletteRelativePath == 'None':
+			self.currentPalette = None
+			
+		else:
 		
-		actualImage.setColorTable(paletteImage.colorTable())
+			if(paletteRelativePath.lower().endswith('.act')):
+				self.currentPalette = {'colorTable': loadACTPalette(os.path.join(EntityEditorWidget.ROOT_PATH, paletteRelativePath))}
+			else:
+			
+				paletteImage = loadSprite(os.path.join(EntityEditorWidget.ROOT_PATH, paletteRelativePath))
+				self.currentPalette = {'colorTable': paletteImage.colorTable()}
 		
-		self.currentPalette = {'colorTable': paletteImage.colorTable()}
+		# actualImage =loadSprite(os.path.join(EntityEditorWidget.ROOT_PATH, 'data/chars/abubo/259.gif'))
+		
+		# actualImage.setColorTable(paletteImage.colorTable())
+		
+		
 		
 		
 		# px = QtGui.QPixmap.fromImage(paletteImage)
-		px = QtGui.QPixmap.fromImage(actualImage)
-		item = QtWidgets.QGraphicsPixmapItem(px)
-		item.setPos(0, 0)
-		self.frameEditor.scene.addItem(item)
+		# px = QtGui.QPixmap.fromImage(actualImage)
+		# item = QtWidgets.QGraphicsPixmapItem(px)
+		# item.setPos(0, 0)
+		# self.frameEditor.scene.addItem(item)
 		
 		self.frameEditor.reloadSprites()
 
@@ -716,6 +828,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		
 		if lines is None : lines = self.editor.lines
 		frame = {}
+		old_frames = self.frames
 		self.frames = []
 		
 		#lines = text.split('\n')
@@ -735,6 +848,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		
 		
 		i = 0
+		nF = 0 # number of Frame
 		for line in lines:
 			
 			pLine = ParsedLine(line)
@@ -749,11 +863,15 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				continue
 			
 			elif(part == 'anim'):
+				animName = pLine.next()
+				if animName is None: # need at least one space, so that we don't process line "anim" because user might be typing "animheight" 
+					continue
+				
 				if(i > 0):
 					self.editor.lines[i] =  '#' + self.editor.lines[i]
 					continue
 				print("ANIM")
-				animName = pLine.next()
+				#animName = pLine.next()
 				
 				reloadLib = False
 				reloadWholeLines = False
@@ -841,7 +959,9 @@ class EntityEditorWidget(QtWidgets.QWidget):
 					frame['frame'] = path
 					self.frames.append(frame)
 					frame = {}
-				
+				nF +=1
+			elif(part == '{attack'):
+				frame['attack'] = old_frames[nF]['attack']
 			elif(part == 'delay'):
 				#delay = int(float(pLine.next()))
 				delay = parseInt(pLine.next())
@@ -883,6 +1003,15 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				x = parseInt(pLine.next())
 				y = parseInt(pLine.next())
 				frame['offset'] = (x, y)
+				
+				
+			elif(part == 'sound'):
+				soundPath = pLine.next()
+				if soundPath == None:
+					continue
+				frame['sound'] = soundPath
+				if soundPath not in self.frameEditor.sounds:
+					self.frameEditor.sounds[ soundPath ] = QtMultimedia.QSound(os.path.join(EntityEditorWidget.ROOT_PATH, soundPath), self)
 			
 			elif(part.startswith('bbox')):
 				
@@ -1030,7 +1159,20 @@ class EntityEditorWidget(QtWidgets.QWidget):
 			elif(part == 'range'):
 				xMin = parseInt(pLine.next())
 				xMax = parseInt(pLine.next())
-				frame['range'] = (xMin, xMax)
+				
+				if(len(self.frames) > 0):
+					self.frames[0]['range'] = (xMin, xMax)
+				else:
+					frame['range'] = (xMin, xMax)
+					
+			elif(part == 'rangez'):
+				xMin = parseInt(pLine.next())
+				xMax = parseInt(pLine.next())
+				
+				if(len(self.frames) > 0):
+					self.frames[0]['rangez'] = (xMin, xMax)
+				else:
+					frame['rangez'] = (xMin, xMax)
 				
 			elif(part == 'platform'):
 				data = []
@@ -1077,16 +1219,21 @@ class EntityEditorWidget(QtWidgets.QWidget):
 	'''
 		Recreate the animation editor text with the current animation data
 	'''
-	def rebuildText(self):
+	def rebuildText(self, expanded=False, updateEditor=True):
 		
 		print('REBUILDING ANIM TEXT')
 		
 		legacy = settings.get_option('misc/legacy_commands', False)
-		self.updating = True
-		self.editor.saveScroll()
+		compactBlocks = settings.get_option('misc/compact_boxes_blocks', False)
+		if(not compactBlocks):
+			expanded = True # force expanded
+		
+		if(updateEditor):
+			self.updating = True
+			self.editor.saveScroll()
 		lines = self.editor.lines # self.editor.text.split('\n')
 		
-		filled = {'bbox':False, 'attack':False, 'delay':False, 'offset':False, 'range':False, 'platform':False, 'bind':False}
+		filled = {'bbox':False, 'attack':False, 'delay':False, 'offset':False, 'range':False, 'rangez':False, 'platform':False, 'bind':False}
 		
 		newLines = []
 		currentFrame = 0
@@ -1137,6 +1284,17 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				inLineScript = True
 			elif(part == '@end_script'):
 				inLineScript = False
+				
+			elif(part == '{attack'):
+				if(not expanded):
+					filled['attack'] = True # so as to not trigger automatic add of attack in frame section
+				else:
+					# not filling attack will trigger automatic add of attack in frame section
+					continue # this will skip this line in rebuilded text
+				
+				
+				# print('rebuild text', '{attack...')
+				
 			elif(not inLineScript and part == 'frame'):
 				# Before ending current frame, fill new data (from frameEditor)
 				if not filled['offset'] and 'offset' in self.anim[currentFrame]:
@@ -1166,8 +1324,13 @@ class EntityEditorWidget(QtWidgets.QWidget):
 					xMin, xMax = self.anim[currentFrame]['range']
 					newLines.append('	range ' + str(xMin) + ' ' + str(xMax))
 					
+				
+				if not filled['rangez'] and 'rangez' in self.anim[currentFrame]:
+					xMin, xMax = self.anim[currentFrame]['rangez']
+					newLines.append('	rangez ' + str(xMin) + ' ' + str(xMax))
+					
 				currentFrame += 1
-				filled = {'bbox':False, 'attack':False, 'delay':False, 'offset':False, 'range':False, 'platform':False, 'bind':False}
+				filled = {'bbox':False, 'attack':False, 'delay':False, 'offset':False, 'range':False, 'rangez':False, 'platform':False, 'bind':False}
 				
 			elif(part == 'offset'):
 				filled[part] = True
@@ -1218,7 +1381,11 @@ class EntityEditorWidget(QtWidgets.QWidget):
 						del self.anim[currentFrame]['attack']
 						continue
 
-					newLines.extend(self.anim[currentFrame]['attack'].getText().split('\n'))
+					# newLines.extend(self.anim[currentFrame]['attack'].getText().split('\n'))
+					if expanded:
+						newLines.extend(self.anim[currentFrame]['attack'].getText().split('\n'))
+					else:
+						newLines.extend(self.anim[currentFrame]['attack'].getCompactText().split('\n'))
 					continue
 				
 					#newParts = ' '.join(map(str, self.anim[currentFrame]['attack']))
@@ -1235,8 +1402,26 @@ class EntityEditorWidget(QtWidgets.QWidget):
 				
 			elif(part == 'range'):
 				filled[part] = True
+				
+				if('deleteRange' in self.anim[0] and self.anim[0]['deleteRange'] == True):
+					del self.anim[0]['range']
+					del self.anim[0]['deleteRange'] # not needed but just in case
+					continue
+				
 				pLine.next()
-				newParts = ' '.join(map(str, self.anim[currentFrame]['range']))
+				newParts = ' '.join(map(str, self.anim[0]['range']))
+				pLine.parts[pLine.pos:] = newParts
+				
+			elif(part == 'rangez'):
+				filled[part] = True
+				
+				if('deleteRangez' in self.anim[0] and self.anim[0]['deleteRangez'] == True):
+					del self.anim[0]['rangez']
+					del self.anim[0]['deleteRangez'] # not needed but just in case
+					continue
+				
+				pLine.next()
+				newParts = ' '.join(map(str, self.anim[0]['rangez']))
 				pLine.parts[pLine.pos:] = newParts
 				
 
@@ -1245,9 +1430,13 @@ class EntityEditorWidget(QtWidgets.QWidget):
 			newLines.append(line)
 			
 	
-		self.editor.lines = newLines #self.editor.setPlainText('\n'.join(newLines))
-		self.editor.restoreScroll()
-		self.updating = False
+		if(updateEditor):
+			
+			self.editor.lines = newLines #self.editor.setPlainText('\n'.join(newLines))
+			self.editor.restoreScroll()
+			self.updating = False
+			
+		return newLines
 		
 		
 		
@@ -1284,9 +1473,14 @@ class EntityEditorWidget(QtWidgets.QWidget):
 	def validateChanges(self):
 		if self.currentAnim is not None:
 			#self.rebuildText() # WARNING
-			print(self.editor.lines)
+			# print(self.editor.lines)
+			compactBlocks = settings.get_option('misc/compact_boxes_blocks', False)
+			if compactBlocks:
+				expandedLines = self.rebuildText(True, False)
+			else:
+				expandedLines = list(self.editor.lines)
 			del self.dicData[self.currentAnim]['lines'][:]
-			self.dicData[self.currentAnim]['lines'].extend( list(self.editor.lines))
+			self.dicData[self.currentAnim]['lines'].extend(expandedLines )
 
 	
 				
@@ -1430,6 +1624,14 @@ class FrameEditor(QtWidgets.QWidget):
 		#self.buttonBar.addAction(QtGui.QIcon.fromTheme('edit-clear'), None, self.clear)
 		
 		
+		self.previewSound = settings.get_option('entity/preview_sound', False )
+		
+		
+		self.previewSoundAction = self.buttonBar.addAction('Preview sound', self.setPreviewSound)
+		self.previewSoundAction.setCheckable(True)
+		self.previewSoundAction.setChecked(settings.get_option('entity/preview_sound', False ))
+		
+		
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.reloadSprites)
 		#QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.parent.tmp)
 		
@@ -1452,7 +1654,7 @@ class FrameEditor(QtWidgets.QWidget):
 		QtWidgets.QShortcut(QtGui.QKeySequence(settings.get_option('shortcuts/previous_frame_global', 'Ctrl+Left')), self.parent, self.previousFrame, self.previousFrame)
 		
 		
-
+		self.sounds = {}
 		
 		leftLayout.addWidget(self.buttonBar, 0)
 		leftLayout.addWidget(view, 1)
@@ -1477,11 +1679,19 @@ class FrameEditor(QtWidgets.QWidget):
 		
 		self.endDrag.connect(self.endDragEvent)
 		
+		
+		
+		
 	def disableBoxBorder(self):
 		
 		
 		self.disableBoxBorderAction.setChecked(settings.get_option('entity/disable_boxes_pen', self.disableBoxBorderAction.isChecked() ))
 		self.loadFrame()
+		
+		
+	def setPreviewSound(self):
+		self.previewSound = self.previewSoundAction.isChecked()
+		settings.set_option('entity/preview_sound', self.previewSound)
 		
 	def drawOnionSkin(self):
 		if self.onionSkin != None:
@@ -1604,6 +1814,8 @@ class FrameEditor(QtWidgets.QWidget):
 		
 		
 	def exportAnimation(self):
+		usePalette = True
+		
 		import subprocess
 		args = [settings.get_option('misc/imagemagick_path', 'convert')]
 		
@@ -1613,11 +1825,31 @@ class FrameEditor(QtWidgets.QWidget):
 		args.append('0')
 		delay = 7
 		
+		lookFolder = EntityEditorWidget.ROOT_PATH
+		
 		pil_frames = []
 		pil_dur = []
 		pil_offsets = []
+		
+		tmp_files = []
+		
 		for i, frame in enumerate(self.parent.anim):
-			path = os.path.join(EntityEditorWidget.ROOT_PATH, frame['frame'])
+			if usePalette:
+				
+				options = {}
+				if self.parent.currentPalette != None:
+					options['colorTable'] = self.parent.currentPalette['colorTable']
+					options['colorTable'][0] = QtGui.QColor(255, 0, 255, 0).rgb()
+				image = loadSprite(os.path.join(EntityEditorWidget.ROOT_PATH, frame['frame']), 0, options)
+				self.parent.pixmapCache[ frame['frame'] ] = QtGui.QPixmap.fromImage(image)
+				
+			
+			
+				path = os.path.join(lookFolder, 'export_tmp_file_' + str(i) + '.png')
+				tmp_files.append(path)
+				self.parent.pixmapCache[ frame['frame'] ].save(path)
+			else:
+				path = os.path.join(EntityEditorWidget.ROOT_PATH, frame['frame'])
 			pil_frames.append(path)
 			if 'delay' in frame:
 				delay = frame['delay']
@@ -1635,7 +1867,7 @@ class FrameEditor(QtWidgets.QWidget):
 			args.append(path)
 			
 			
-		lookFolder = EntityEditorWidget.ROOT_PATH
+		
 		
 		import pathlib
 		
@@ -1737,7 +1969,11 @@ class FrameEditor(QtWidgets.QWidget):
 			# color = rgb_im.getpixel((1, 1))
 			
 			# color = pil_img.getpixel((1, 1))
-			result = Image.new(pil_img.mode, (canvasWidth, canvasHeight))
+			if(usePalette):
+				
+				result = Image.new(pil_img.mode, (canvasWidth, canvasHeight), (255, 0, 255, 0))
+			else:
+				result = Image.new(pil_img.mode, (canvasWidth, canvasHeight))
 			# print(pil_img.mode)
 			
 			if(pil_img.mode == "P"):
@@ -1814,10 +2050,13 @@ class FrameEditor(QtWidgets.QWidget):
 		#args.append('Optimize')
 		
 		
+		defaultName = self.parent.modelName   + "_" + self.parent.currentAnim + ".gif"
 		
-		path = QtWidgets.QFileDialog.getSaveFileName(self, directory=lookFolder+ os.sep+ 'animation.gif')[0]
+		path = QtWidgets.QFileDialog.getSaveFileName(self, directory=lookFolder+ os.sep+ defaultName)[0]
 		if(path is not None and path != ''):
 			make_gif(path)
+			for path in tmp_files:
+				os.remove(path)
 			# args.append(path)
 			# subprocess.call(args)
 			# pass
@@ -1892,6 +2131,11 @@ class FrameEditor(QtWidgets.QWidget):
 		
 		
 	def loadFrame(self, frameNumber=None):
+		
+		# testSound = '/home/piccolo/workspace/OpenBOR/tmp/avengers/data/chars/wolverine/ilfaitchaud.wav'
+		# QtMultimedia.QSound(testSound, self).play()
+		# QtMultimedia.QSound.play(os.path.join(EntityEditorWidget.ROOT_PATH, frame['sound']))
+
 		print('Loading frame', frameNumber)
 
 		anim = self.parent.anim
@@ -1905,6 +2149,7 @@ class FrameEditor(QtWidgets.QWidget):
 		
 		#self.scene.setBackgroundBrush(QtGui.QBrush(gradient));
 		self.scene.addItem(self.grid)
+		self.grid.setZValue(-9999)
 		
 		
 		frameJump = 1
@@ -1944,6 +2189,8 @@ class FrameEditor(QtWidgets.QWidget):
 		yOffset *= scaleY
 		#print('offset', xOffset, yOffset)
 		
+		
+		
 		if('move' in frame):
 			self.moveX = frame['move']
 		
@@ -1961,6 +2208,12 @@ class FrameEditor(QtWidgets.QWidget):
 			image = loadSprite(os.path.join(EntityEditorWidget.ROOT_PATH, frame['frame']), 0, options)
 			self.parent.pixmapCache[ frame['frame'] ] = QtGui.QPixmap.fromImage(image)
 		image = self.parent.pixmapCache[ frame['frame'] ]
+		
+		
+		if flipX == 1:
+			# xOffset *= -1
+			xOffset = int(image.width()) - xOffset
+			pass
 		
 		if scaleX != 1 or scaleY != 1:
 			#image = image.scaled(image.width() * scaleX, image.height() * scaleY)
@@ -2017,16 +2270,24 @@ class FrameEditor(QtWidgets.QWidget):
 					
 					self.scene.addItem(bbox)
 				
-		xMin, xMax = anim.getRange(frameNumber)
+		xMin, xMax = anim.getRange(0)
 		if xMin != None:
-			rangeBox = QtWidgets.QGraphicsRectItem(xMin,-10,xMax-xMin,20)
-			rangeBox.setBrush(QtGui.QBrush(QtCore.Qt.yellow))
-			rangeBox.setOpacity(0.3)
-			if self.disableBoxBorderAction.isChecked():
-				pen = QtGui.QPen()
-				pen.setWidth(0)
-				rangeBox.setPen(pen)
-			self.scene.addItem(rangeBox)
+			
+			if(settings.get_option('entity/visualize_rangez', True)):
+				# the 3d box
+				self.scene.addItem(anim.getRange3DBox().getWall(0, 0))
+			else:
+				# the flat box
+				rangeBox = QtWidgets.QGraphicsRectItem(xMin,-10,xMax-xMin,20)
+				rangeBox.setBrush(QtGui.QBrush(QtCore.Qt.yellow))
+				rangeBox.setOpacity(0.3)
+				if self.disableBoxBorderAction.isChecked():
+					pen = QtGui.QPen()
+					pen.setWidth(0)
+					rangeBox.setPen(pen)
+				self.scene.addItem(rangeBox)
+			
+			
 			
 
 		if 'platform' in anim[frameNumber]:
@@ -2042,7 +2303,7 @@ class FrameEditor(QtWidgets.QWidget):
 			
 		self.scene.addRect(-5,-5,10,10) #offset
 		self.scene.addRect(-1,-1,2,2) #offset precise
-		self.propEditor.loadData(frame)
+		self.propEditor.loadData(frame, anim)
 		self.bindingEditor.loadData(frame)
 		
 		
@@ -2140,18 +2401,28 @@ class FrameEditor(QtWidgets.QWidget):
 					path = os.path.join(EntityEditorWidget.ROOT_PATH, frame['frame'])
 					self.parent.currentFrame = i
 					self.refresh.emit()
+					
+					if self.loop == 0 and self.previewSound and 'sound' in frame:
+						# print('PLAY SOUND', os.path.join(EntityEditorWidget.ROOT_PATH, frame['sound']))
+						# QtMultimedia.QSound(os.path.join(EntityEditorWidget.ROOT_PATH, frame['sound'])).play()
+						self.sounds[frame['sound']].play()
+						# QtMultimedia.QSound.play(os.path.join(EntityEditorWidget.ROOT_PATH, frame['sound']))
+					
 					if 'delay' in frame:
 						delay = frame['delay']
 						if(delay == 0):
 							delay = 1 # prevent delay 0 as it can cause a nastyloop
 					#self.loadFrame(i)
 					time.sleep(delay / 100)
+				self.loop += 1
 				
 		if self.looping:
+			self.loop = 0
 			self.looping = False
 			return
 		
 		self.looping = True
+		self.loop = 0
 		play()
 		
 	def nextFrame(self):

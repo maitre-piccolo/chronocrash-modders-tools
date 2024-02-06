@@ -319,6 +319,9 @@ class MenuBar(QtWidgets.QMenuBar):
 		a.setCheckable(True)
 		value = settings.get_option('editor/anim_selector_on_left', False)
 		a.setChecked(value)
+		
+		
+		self.addOption('general/check_external_file_update', True, 'Check external file updates', False)
 	
 	
 		

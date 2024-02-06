@@ -73,6 +73,7 @@ class LevelEditorWidget(QtWidgets.QWidget):
 		scene = LevelScene(self)
 		self.graphicView = view
 		self.scene = scene
+		scene.setSceneRect(-10000, -10000, 20000.0, 20000.0)
 		
 		theme = settings.get_option('gui/widgets_theme', None)
 
@@ -100,6 +101,11 @@ class LevelEditorWidget(QtWidgets.QWidget):
 		
 		self.tintAction = self.buttonBar.addAction( _('Tint by groups'), self.tintByGroups)
 		self.tintAction.setCheckable(True)
+		
+		self.showGroupAction = self.buttonBar.addAction('Show group', self.tintByGroups)
+		self.showGroupMenu = QtWidgets.QMenu()
+		self.showGroupAction.setMenu(self.showGroupMenu)
+		self.buttonBar.widgetForAction(self.showGroupAction).setPopupMode(QtWidgets.QToolButton.InstantPopup)
 		
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F7", "Flip Opponent")), self, self.flipEntitiesDirection)
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F8", "Next Frame")), self, self.nextFrame)
@@ -341,7 +347,14 @@ class LevelEditorWidget(QtWidgets.QWidget):
 				e = self.entities[currentEntity]
 				# e.groupNumber = group
 			elif part.lower() == 'flip':
-				continue
+				if inEntity:
+					continue
+			elif part.lower() in ('item', '2pitem', '3pitem', '4pitem'):
+				if inEntity:
+					continue
+			elif part.lower() == 'map':
+				if inEntity:
+					continue
 				
 			elif part.lower() == 'coords':
 				if inEntity:
@@ -353,10 +366,31 @@ class LevelEditorWidget(QtWidgets.QWidget):
 			elif part.lower() == 'at':
 				if inEntity:
 					e = self.entities[currentEntity]
+					if(e.mapColor != 0):
+						line = 'map ' + str(e.mapColor)
+						newLines.append(line)
+						
+						
+					
 					if( e.facingRight):
 						line = 'flip 1'
 						newLines.append(line)
+						
+					if(e.dropItem != ''):
+						newLines.append('item ' + e.dropItem)
+						
+					if(e.dropItem2 != ''):
+						newLines.append('2pitem ' + e.dropItem2)
+						
+					if(e.dropItem3 != ''):
+						newLines.append('3pitem ' + e.dropItem3)
+						
+					if(e.dropItem4 != ''):
+						newLines.append('4pitem ' + e.dropItem4)
+						
 					line = 'at ' + str(e.at)
+					
+
 					
 					inEntity = False
 			
@@ -369,6 +403,26 @@ class LevelEditorWidget(QtWidgets.QWidget):
 			wall = self.walls[i]
 			line = 'wall ' + str(wall)
 			newLines.append(line)
+			
+		for i in range(currentEntity+1, len(self.entities)):
+			ent = self.entities[i]
+			newLines.append('')
+			line = 'spawn ' + ent.name
+			newLines.append(line)
+			
+			x, y, alt = ent.getCoords()
+			line = 'coords ' + str(x) + ' ' + str(y)
+			if(alt != None):
+				line += ' ' + str(alt)
+			newLines.append(line)
+			
+			if( ent.facingRight):
+				line = 'flip 1'
+				newLines.append(line)
+		
+			line = 'at ' + str(ent.at)
+			newLines.append(line)
+			
 		self.updating = False
 		return newLines
 
@@ -447,7 +501,24 @@ class LevelEditorWidget(QtWidgets.QWidget):
 			
 		for fg in self.frontPanelsImages:
 			fg.setPos(fg.xRatio*self.scrollPosition + fg.xOffset, fg.zRatio*self.scrollPosition_Z + fg.zOffset) # fg.pos().y()
+	
+	
+	def showGroup(self):
+		groupText = self.sender().text()
+		if(groupText == 'All'):
+			for p in self.entities:
+				p.show()
+		else:
 		
+			parts = groupText.split(' ')
+			groupNumber = int(parts[0]) # - 1
+			print('groupNumber', groupNumber)
+			
+			for p in self.entities:
+				if p.groupNumber == groupNumber:
+					p.show()
+				else:
+					p.hide()
 		
 class LevelScene(QtWidgets.QGraphicsScene):
 	def __init__(self, parent):
@@ -478,11 +549,18 @@ class LevelScene(QtWidgets.QGraphicsScene):
 		elif action == copy:
 			self.clipboardItem = item
 		elif action == paste:
-			wall = self.clipboardItem.copy(e.scenePos().x(), e.scenePos().y())
-			self.parent().walls.append(wall)
-			self.addItem(wall)
-			for dot in wall.dots:
-				self.addItem(dot)
+			if(type(self.clipboardItem) == Wall):
+				wall = self.clipboardItem.copy(e.scenePos().x(), e.scenePos().y())
+				self.parent().walls.append(wall)
+				self.addItem(wall)
+				for dot in wall.dots:
+					self.addItem(dot)
+			else:
+				ent = self.clipboardItem.copy(int(e.scenePos().x()), int(e.scenePos().y()))
+				if(ent.type not in self.parent().entities_types):
+					self.parent().entities_types.append(ent.type)
+				self.parent().entities.append(ent)
+				self.addItem(ent)
 			self.clipboardItem = None
 			
 		e.setAccepted(True)
@@ -530,6 +608,7 @@ class ImageWidget(QtWidgets.QGraphicsView):
 			self.setViewport(gl);
 
 		scene = LevelScene(self)
+		scene.setSceneRect(0, 0, 10000.0, 10000.0)
 		self.pic = QtGui.QPixmap('icons/8.jpg')
 		#scene.addItem(QtWidgets.QGraphicsPixmapItem(pic))
 		self.image = QtWidgets.QGraphicsPixmapItem(self.pic)
@@ -542,8 +621,12 @@ class ImageWidget(QtWidgets.QGraphicsView):
 		#self.zoom = 1 # DEPRECATED
 		self.scaleFactor = 1.0
 		
+		# self.setTransformationAnchor(QtWidgets.QGraphicsView.NoAnchor)
+		# self.setResizeAnchor(QtWidgets.QGraphicsView.NoAnchor)
+		# self.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
 		
-		self.setMouseTracking(True)
+		
+		# self.setMouseTracking(True)
 		
 	
 		
@@ -559,7 +642,7 @@ class ImageWidget(QtWidgets.QGraphicsView):
 		#self.image.setPixmap(pic)
 		
 		if e.angleDelta().y() > 0:
-			self.zoomIn()
+			self.zoomIn(e)
 			return
 			self.image.setPixmap(self.pic.scaled(self.scaleFactor * self.pic.size()))
 			#self.scaleImage(1.25)
@@ -568,7 +651,7 @@ class ImageWidget(QtWidgets.QGraphicsView):
 			factor = self.zoom / (self.zoom + 0.1)
 			self.zoom += 0.1
 		else:
-			self.zoomOut()
+			self.zoomOut(e)
 			return
 			self.image.setPixmap(self.pic.scaled(self.scaleFactor * self.pic.size()))
 			#self.scaleImage(0.8)
@@ -585,15 +668,37 @@ class ImageWidget(QtWidgets.QGraphicsView):
 		self.scaleFactor *= factor
 		self.scale(factor, factor)
 		
-	def zoom(self, factor):
+	def zoom(self, factor, e=None):
+		if e == None:
+			self.scaleFactor *= factor
+			self.scale(factor, factor)
+			return
+		
+		oldPos = self.mapToScene(e.pos())
+		
+		targetViewportPos = e.pos();
+		targetScenePos = self.mapToScene(e.pos())
+		
 		self.scaleFactor *= factor
 		self.scale(factor, factor)
 		
-	def zoomIn(self):
-		self.zoom(1.25)
+		# newPos = self.mapToScene(e.pos())
+		# delta = newPos - oldPos
+		# self.translate(delta.x(), delta.y())
+		self.centerOn(targetScenePos)
+		deltaViewportPos = targetViewportPos - QtCore.QPointF(self.viewport().width() / 2.0, self.viewport().height() / 2.0)
+		viewportCenter = self.mapFromScene(targetScenePos) - deltaViewportPos;
+		self.centerOn(self.mapToScene(viewportCenter.toPoint()));
 		
-	def zoomOut(self):
-		self.zoom(0.8)
+		
+		# if (e != None):
+		# 	self.centerOn(e.scenePosition().x(), e.scenePosition().y())
+		
+	def zoomIn(self, e=None):
+		self.zoom(1.25, e)
+		
+	def zoomOut(self, e=None):
+		self.zoom(0.8, e)
 	
 class EntityControlWidget(QtWidgets.QWidget):
 	def __init__(self, parent):
@@ -614,7 +719,7 @@ class EntityControlWidget(QtWidgets.QWidget):
 		self.frameLabel = QtWidgets.QLabel()
 		layout.addRow(self.frameLabel)
 		
-		fields = ('x', 'z', 'altitude (y)', 'at')
+		fields = ('x', 'z', 'altitude (y)', 'at', 'Map')
 		
 		self.lineEdits = {}
 		validator = QtGui.QIntValidator()
@@ -625,10 +730,32 @@ class EntityControlWidget(QtWidgets.QWidget):
 		
 		self.flipCheckBox = QtWidgets.QCheckBox()
 		layout.addRow(_('Flip') + ' : ', self.flipCheckBox)
+		
+		
+		layout.addRow(QtWidgets.QLabel(''))
+		
+		layout.addRow(QtWidgets.QLabel('Items drop'))
+		
+		
+		for i in range(4):
+			le = QtWidgets.QLineEdit()
+			if(i == 0):
+			
+				le.setPlaceholderText(str(i+1) + ' player')
+			else:
+				le.setPlaceholderText(str(i+1) + ' players')
+			self.lineEdits['item' + str(i+1)] = le
+		
+		layout.addRow(self.lineEdits['item1'], self.lineEdits['item2'])
+		layout.addRow(self.lineEdits['item3'], self.lineEdits['item4'])
+		
+		layout.addRow(QtWidgets.QLabel(''))
 			
 		button = QtWidgets.QPushButton(_('Update'))
 		button.clicked.connect(self.update)
 		layout.addRow(button)
+		
+		
 		
 		button = QtWidgets.QPushButton(_('Hide'))
 		button.clicked.connect(self.hide)
@@ -657,11 +784,18 @@ class EntityControlWidget(QtWidgets.QWidget):
 		self.lineEdits['x'].setText(str(x))
 		self.lineEdits['z'].setText(str(y))
 		self.lineEdits['at'].setText(str(self.item.at))
+		self.lineEdits['Map'].setText(str(self.item.mapColor))
 		self.flipCheckBox.setChecked(self.item.facingRight)
 		if(alt != None):
 			self.lineEdits['altitude (y)'].setText(str(alt))
 		else:
 			self.lineEdits['altitude (y)'].setText('')
+			
+		self.lineEdits['item1'].setText ( self.item.dropItem)
+		self.lineEdits['item2'].setText( self.item.dropItem2)
+		self.lineEdits['item3'].setText( self.item.dropItem3)
+		self.lineEdits['item4'].setText( self.item.dropItem4)
+		
 		
 		
 	
@@ -683,7 +817,22 @@ class EntityControlWidget(QtWidgets.QWidget):
 			
 		self.item.setAt(int(self.lineEdits['at'].text()))
 		
+		self.item.updateShadowPos()
+		
+		mapColor = int(self.lineEdits['Map'].text())
+		if mapColor < len(self.item.palettes):
+			self.item.mapColor = mapColor
+			self.item.setPalette(self.item.palettes[mapColor])
+			
+		self.item.dropItem = self.lineEdits['item1'].text()
+		self.item.dropItem2 = self.lineEdits['item2'].text()
+		self.item.dropItem3 = self.lineEdits['item3'].text()
+		self.item.dropItem4 = self.lineEdits['item4'].text()
+		
 		self.levelEditor.selectionChanged()
+		
+		
+		
 		# self.item.update()
 		#print(list (self.item.polygon()))
 		
@@ -1073,6 +1222,7 @@ class WallControlWidget(QtWidgets.QWidget):
 		previousFirstPart = None
 		e = None
 		isInScript = False
+		inEntity = False # Not used, can use nextAt == 'spawn' instead
 		i = 0
 		groupNumber = 0
 		
@@ -1123,7 +1273,8 @@ class WallControlWidget(QtWidgets.QWidget):
 				
 				if(loadEntities):
 					e = Entity(pLine.next(), i, self.levelEditor, defaultAnim="idle", loadAllAnims=True, offset=True)
-					e.setDirection(False)
+					if e.forceFacing == None and e.type != 'none':
+						e.setDirection(False)
 					if(e.type not in self.levelEditor.entities_types):
 						self.levelEditor.entities_types.append(e.type)
 					self.levelEditor.entities.append(e)
@@ -1166,15 +1317,29 @@ class WallControlWidget(QtWidgets.QWidget):
 				nextAt = 'wait'
 				
 			elif part.lower() == 'flip':
+				if(nextAt != 'spawn'): continue
 				flip = int(pLine.next())
-				if flip == 1:
+				if flip == 1 and e.forceFacing == None:
 					# print('flipping', e.name)
 					e.setDirection(not e.facingRight)
 					# e.actualizeFrame()
 					
+			elif part.lower() in ('item', '2pitem', '3pitem', '4pitem'):
+				if(nextAt != 'spawn'): continue
+				item = pLine.next()
+				# print('item is', item)
+				if part.lower() == 'item':e.dropItem = item
+				elif part.lower() == '2pitem':e.dropItem2 = item
+				elif part.lower() == '3pitem':e.dropItem3 = item
+				elif part.lower() == '4pitem':e.dropItem4 = item
+				
+					
 			elif part.lower() == 'map':
+				if(nextAt != 'spawn'): continue
 				mapColor = int(pLine.next())
+				# print('map', e.name, mapColor, e.x, e.z)
 				if mapColor < len(e.palettes):
+					e.mapColor = mapColor
 					e.setPalette(e.palettes[mapColor])
 				else:
 					self.levelEditor.logWarning('Problem at line ' + str(i) + ' : palette (map) does not exist')
@@ -1313,6 +1478,13 @@ class WallControlWidget(QtWidgets.QWidget):
 		print("self.fullWidth", self.fullWidth)
 		
 		
+		self.levelEditor.showGroupMenu.clear()
+		self.levelEditor.showGroupMenu.addAction("All", self.levelEditor.showGroup)
+		self.levelEditor.showGroupMenu.addAction("0", self.levelEditor.showGroup)
+		i = 1
+		for p in self.levelEditor.groups:
+			self.levelEditor.showGroupMenu.addAction(str(i) + ' (' + str(p.min) + ' ' + str(p.max) + ' at ' + str(p.pos) +')', self.levelEditor.showGroup)
+			i+=1
 			
 		
 		
@@ -1449,6 +1621,8 @@ class LevelControlWidget(QtWidgets.QWidget):
 		
 		self.hideButtons = []
 		
+		self.hideStates = {'geometry':False, 'walls':False, 'holes':False, 'basemaps':False, 'panels':False, 'front_panels':False, 'backgrounds':False, 'ent_shadows':False, 'ent_offsets':False}
+		
 		self.setLayout(layout)
 		
 		a = QtWidgets.QCheckBox(_('Cursor drag mode'))
@@ -1534,6 +1708,33 @@ class LevelControlWidget(QtWidgets.QWidget):
 		
 	def loadHideButtons(self):
 		
+		if(self.hideStates['ent_shadows']):
+			self.hideEntitiesShadow(QtCore.Qt.Checked)
+			
+		if(self.hideStates['ent_offsets']):
+			self.hideEntitiesOffset(QtCore.Qt.Checked)
+		
+		if(self.hideStates['panels']):
+			self.hidePanels(QtCore.Qt.Checked)
+		
+		if(self.hideStates['front_panels']):
+			self.hideFrontPanels(QtCore.Qt.Checked)
+			
+		if(self.hideStates['backgrounds']):
+			self.hideBackgrounds(QtCore.Qt.Checked)
+		
+		if(self.hideStates['geometry']):
+			self.hideGeometry(QtCore.Qt.Checked)
+			
+		if(self.hideStates['walls']):
+			self.hideWalls(QtCore.Qt.Checked)
+			
+		if(self.hideStates['holes']):
+			self.hideWalls(QtCore.Qt.Checked)
+			
+		if(self.hideStates['basemaps']):
+			self.hideWalls(QtCore.Qt.Checked)
+		
 		for b in self.hideButtons:
 			self.layout.removeWidget(b)
 		
@@ -1545,35 +1746,46 @@ class LevelControlWidget(QtWidgets.QWidget):
 			a = QtWidgets.QCheckBox(_('Hide entities [' + type + ']'))
 			a.setProperty('entType', type)
 			a.stateChanged.connect(self.hideEntityType)
+			
+			if('ent_' + type in self.hideStates and self.hideStates['ent_' + type]):
+				# self.hideEntityType(type)
+				a.setChecked(True)
+			
 			self.hideButtons.append(a)
 			self.layout.addRow(a)
 		
 		
 	def hideBackgrounds(self, state):
 		if state == QtCore.Qt.Checked:
+			self.hideStates['backgrounds'] = True
 			for p in self.levelEditor.backgroundsImages:
 				p.hide()
 		else:
+			self.hideStates['backgrounds'] = False
 			for p in self.levelEditor.backgroundsImages:
 				p.show()
 				
 	def hideFrontPanels(self, state):
 		
 		if state == QtCore.Qt.Checked:
+			self.hideStates['front_panels'] = True
 			for p in self.levelEditor.frontPanelsImages:
 				#print('hide front', p)
 				p.hide()
 		else:
+			self.hideStates['front_panels'] = False
 			for p in self.levelEditor.frontPanelsImages:
 				p.show()
 		
 		
 	def hideGeometry(self, state):
 		if state == QtCore.Qt.Checked:
+			self.hideStates['geometry'] = True
 			for p in [*self.levelEditor.walls, *self.levelEditor.basemaps, *self.levelEditor.holes]:
 				
 				p.hide()
 		else:
+			self.hideStates['geometry'] = False
 			for p in [*self.levelEditor.walls, *self.levelEditor.basemaps, *self.levelEditor.holes]:
 				
 				p.show()
@@ -1581,30 +1793,36 @@ class LevelControlWidget(QtWidgets.QWidget):
 
 	def hideBasemaps(self, state):
 		if state == QtCore.Qt.Checked:
+			self.hideStates['basemaps'] = True
 			for p in self.levelEditor.basemaps:
 				
 				p.hide()
 		else:
+			self.hideStates['basemaps'] = False
 			for p in self.levelEditor.basemaps:
 				
 				p.show()
 		
 	def hideWalls(self, state):
 		if state == QtCore.Qt.Checked:
+			self.hideStates['walls'] = True
 			for p in self.levelEditor.walls:
 				
 				p.hide()
 		else:
+			self.hideStates['walls'] = False
 			for p in self.levelEditor.walls:
 				
 				p.show()
 				
 	def hideHoles(self, state):
 		if state == QtCore.Qt.Checked:
+			self.hideStates['walls'] = True
 			for p in self.levelEditor.holes:
 				
 				p.hide()
 		else:
+			self.hideStates['walls'] = False
 			for p in self.levelEditor.holes:
 				
 				p.show()
@@ -1612,9 +1830,11 @@ class LevelControlWidget(QtWidgets.QWidget):
 		
 	def hidePanels(self, state):
 		if state == QtCore.Qt.Checked:
+			self.hideStates['panels'] = True
 			for p in self.levelEditor.panelsImages:
 				p.hide()
 		else:
+			self.hideStates['panels'] = False
 			for p in self.levelEditor.panelsImages:
 				p.show()
 	
@@ -1641,30 +1861,37 @@ class LevelControlWidget(QtWidgets.QWidget):
 	def hideEntitiesOffset(self, state):
 		if state == QtCore.Qt.Checked:
 			for p in self.levelEditor.entities:
+				self.hideStates['ent_offsets'] = True
 				if hasattr(p, 'offset'):
 					p.offset.hide()
 		else:
+			self.hideStates['ent_offsets'] = False
 			for p in self.levelEditor.entities:
 				if hasattr(p, 'offset'):
 					p.offset.show()
 				
 	def hideEntitiesShadow(self, state):
 		if state == QtCore.Qt.Checked:
+			self.hideStates['ent_shadows'] = True
 			for p in self.levelEditor.entities:
 				if hasattr(p, 'shadow'):
 					p.shadow.hide()
 		else:
+			self.hideStates['ent_shadows'] = False
 			for p in self.levelEditor.entities:
 				if hasattr(p, 'shadow'):
 					p.shadow.show()
 			
-	def hideEntityType(self, state):
-		entType = self.sender().property('entType')
+	def hideEntityType(self, state, entType=None):
+		if(entType == None):
+			entType = self.sender().property('entType')
 		if state == QtCore.Qt.Checked:
+			self.hideStates['ent_' + entType] = True
 			for p in self.levelEditor.entities:
 				if p.type == entType:
 					p.hide()
 		else:
+			self.hideStates['ent_' + entType] = False
 			for p in self.levelEditor.entities:
 				if p.type == entType:
 					p.show()

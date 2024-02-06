@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from gui.util import FileInput
 from gui.settings.fontselector import FontSelector
 
-VERSION = '0.5.10 (21/12/23)'
+VERSION = '0.5.17 (06/02/24)'
 
 
 class ShortcutSettingsWidget(QtWidgets.QWidget):

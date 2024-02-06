@@ -482,7 +482,12 @@ class AttackBox:
 				return '\n'.join(lines)
 				
 			
-		
+	def getCompactText(self):
+		legacy = settings.get_option('misc/legacy_commands', False)
+		if legacy:
+			return self.getText()
+		else:
+			return '	{attack ...}'
 	
 	def loadLegacy(self, command, data):
 		if command == 'dropv':
@@ -635,6 +640,10 @@ class Cache:
 		self.fullID = 'cache/' + type + '_' + cacheID
 		
 		self.data = settings.get_option(self.fullID, {})
+		
+	
+	def clear(self):
+		settings.set_option(self.fullID, {})
 		
 	def save(self):
 		settings.set_option(self.fullID, self.data)

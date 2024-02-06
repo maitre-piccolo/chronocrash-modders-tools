@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from PyQt5.QtCore import QBuffer, QIODevice
-from PyQt5.QtGui import QImage, QPixmap, qRgba
+from PyQt5.QtGui import QImage, QPixmap, qRgba, QColor
 import os
 from common import settings, xdg
 import PIL.Image
@@ -202,7 +202,7 @@ def getSpriteShowingPath(path):
 	
 def loadSprite(path, transp=0, options={}):
 	
-	print('transp', transp);
+	# print('transp', transp)
 	
 	#print("load sprite", path)
 	path = getSpriteShowingPath(path)
@@ -283,3 +283,37 @@ def loadSprite(path, transp=0, options={}):
 		image.setColorTable(options['colorTable'])
 	
 	return image
+
+
+
+
+
+# act_file = "1.act"
+# act_file = "valis_base_0.ACT"
+
+def loadACTPalette(act_file):
+        from codecs import encode
+        with open(act_file, 'rb') as act:
+            raw_data = act.read()                           # Read binary data
+        hex_data = encode(raw_data, 'hex')                  # Convert it to hexadecimal values
+        total_colors_count = (int(hex_data[-7:-4], 16))     # Get last 3 digits to get number of colors total
+        misterious_count = (int(hex_data[-4:-3], 16))       # I have no idea what does it do
+        colors_count = (int(hex_data[-3:], 16))             # Get last 3 digits to get number of nontransparent colors
+
+        if(total_colors_count == 0):
+                total_colors_count = 255
+        # Decode colors from hex to string and split it by 6 (because colors are #1c1c1c)               
+        colors = [hex_data[i:i+6].decode() for i in range(0, total_colors_count*6, 6)]
+
+        # Add # to each item and filter empty items if there is a corrupted total_colors_count bit        
+        colors = ['#'+i for i in colors if len(i)]
+        
+        true_colors = []
+        for c in colors:
+                qColor = QtGui.QColor(c)
+                true_colors.append(qColor.rgb())
+                
+        true_colors[0] = QtGui.qRgba(255, 255, 255, 0)
+
+        # return colors, total_colors_count
+        return true_colors

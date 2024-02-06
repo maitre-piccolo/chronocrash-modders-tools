@@ -3,7 +3,8 @@ import os, re, logging
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 from common import settings
-from gui.util import FileInput, loadSprite
+from common.util import parseInt, parseFloat
+from gui.util import FileInput, loadSprite, loadACTPalette
 
 from data import ParsedLine, FileWrapper
 
@@ -55,6 +56,16 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		self.at = None
 		self.groupNumber = 0
 		
+		self.dropItem = ''
+		self.dropItem2 = ''
+		self.dropItem3 = ''
+		self.dropItem4 = ''
+		
+		
+		self.mapColor = 0
+		
+		self.forceFacing = None
+		
 		self.type = 'Unknown'
 		
 		self.reference = None
@@ -85,6 +96,8 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 			self.modelPath = reference.modelPath
 			self.type = reference.type
 			self.entityModelFound = True
+			
+			self.forceFacing = reference.forceFacing
 			
 			self.palettes = reference.palettes
 			
@@ -226,16 +239,40 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		
 		self.timer = 0
 		
-		self.facingRight = True
+		# self.forceFacing = 2
+		
+		if self.forceFacing != None:
+			if self.forceFacing == 1:
+				self.facingRight = True
+				self.setDirection(True)
+			elif self.forceFacing == 2:
+				self.facingRight = False
+				self.setDirection(False)
+		else:
+			self.facingRight = True
 		
 	
+	
+	def copy(self, x, z):
+		e = Entity(self.name)
+		e.parentWidget = self.parentWidget
+		e.x = x
+		e.z = z
+		e.setAt(0)
+		
+		
+		return e
 	
 	def setPalette(self, paletteRelativePath):
 		
-		paletteImage = loadSprite(os.path.join(Entity.ROOT_PATH, paletteRelativePath))
+		if(paletteRelativePath.lower().endswith('.act')):
+			self.currentPalette = {'ID':paletteRelativePath, 'colorTable': loadACTPalette(os.path.join(Entity.ROOT_PATH, paletteRelativePath))}
+		else:
+		
+			paletteImage = loadSprite(os.path.join(Entity.ROOT_PATH, paletteRelativePath))
 		
 		
-		self.currentPalette = {'ID':paletteRelativePath, 'colorTable': paletteImage.colorTable()}
+			self.currentPalette = {'ID':paletteRelativePath, 'colorTable': paletteImage.colorTable()}
 		
 
 		
@@ -278,6 +315,17 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 			elif(part == 'palette' or part == 'alternatepal'):
 				print("adding palette")
 				self.palettes.append(pLine2.next())
+				
+			if(part == 'facing'):
+				val = parseInt(pLine2.next().lower())
+				if val == 1:
+					self.forceFacing = 1
+					# self.facingRight = True
+					# self.setDirection(True)
+				elif val == 2:
+					self.forceFacing = 2
+					# self.facingRight = False
+					# self.setDirection(False)
 			
 			elif part == 'anim':
 				skipAnim = False
@@ -594,6 +642,8 @@ class Bar(QtWidgets.QGraphicsItemGroup):
 	
 	def at(self, pos):
 		
+		self.pos = pos
+		
 		pen = QtGui.QPen()
 		if(hasattr(self, 'overWriteColor')):
 			color = self.overWriteColor
@@ -760,6 +810,9 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 		self.dot5 = DraggingDot(self, 'depth', False)
 		self.dot6 = DraggingDot(self, 'alt', False)
 		
+		
+		
+		
 		self.type = type
 		
 		# print("Wall create with type", type)
@@ -775,6 +828,9 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 		self.normalPen = pen
 		
 		self.setPen(pen)
+		
+		
+		
 		
 				
 		brush = QtGui.QBrush(QtGui.QColor(255,0,255))
@@ -1311,15 +1367,19 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 			line.setPen(pen)
 		
 	def updatePolygon(self):
-		x1 = self.xOffset
-		x2 = self.xOffset
-		x3 = self.xOffset+self.coords['xSize']
-		x4 = self.xOffset+self.coords['xSize']
-		aMin = self.coords['aMin']
-		aMax = self.coords['aMax']
 		
-		z1 = self.zOffset-self.coords['zSize']
-		z2 = self.zOffset
+		
+		
+		
+		x1 = int(self.xOffset)
+		x2 = int(self.xOffset)
+		x3 = int(self.xOffset+self.coords['xSize'])
+		x4 = int(self.xOffset+self.coords['xSize'])
+		aMin = int(self.coords['aMin'])
+		aMax = int(self.coords['aMax'])
+		
+		z1 = int(self.zOffset-self.coords['zSize'])
+		z2 = int(self.zOffset)
 		self.mainItem.setPolygon(QtGui.QPolygonF([
 				QtCore.QPoint(x1, z1), 
 				QtCore.QPoint(x2, z2),
@@ -1461,7 +1521,7 @@ class FontObject(QtWidgets.QGraphicsItemGroup):
 			
 			letter_pos = self.letters.find(letter)
 			
-			#print("letter is", letter, letter_pos)
+			print("letter is", letter, letter_pos)
 			
 			if(letter_pos != -1):
 				
@@ -1507,7 +1567,7 @@ class FontObject(QtWidgets.QGraphicsItemGroup):
 		# letters = '0 1 2 3 4 5 6 7 8 9 A B C D E F 0 1 2 3 4 5 6 7 8 9 A B C D E F ! " # $ % & Â´ ( )  * + , - . / 0 1 2 3 4 5 6 7 8 9 : ; { = } ? @ A B C D E F G H I J K L M N O P Q R S T U V W X Y Z [ \ ] ^ ` a b c d e f g h i j k l m n o p q r s t u v w x y z'
 		# letters = letters.replace(' ', '')
 		
-		letters = '0123456789ABCDEF0123456789ABCDEF!"#$%&Â´()*+,-./0123456789:;{=}?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^ `abcdefghijklmnopqrstuvwxyz'
+		letters = '0123456789ABCDEF0123456789ABCDEF !"#$%&´()*+,-./0123456789:;{=}?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^ `abcdefghijklmnopqrstuvwxyz'
 		self.letters = letters
 		
 		charsPX = []
@@ -1549,7 +1609,7 @@ class FontObject(QtWidgets.QGraphicsItemGroup):
 				px = charsPX[letter_pos]
 		
 				item = QtWidgets.QGraphicsPixmapItem(px)
-				item.setPos(i*(charWidth+5), yOffset)
+				item.setPos(i*(charWidth), yOffset)
 				self.scene.addItem(item)
 			i+=1
 		
@@ -1565,6 +1625,6 @@ class FontObject(QtWidgets.QGraphicsItemGroup):
 				px = charsPX[letter_pos]
 		
 				item = QtWidgets.QGraphicsPixmapItem(px)
-				item.setPos(i*(charWidth+5), yOffset+charHeight+5)
+				item.setPos(i*(charWidth), yOffset+charHeight+5)
 				self.scene.addItem(item)
 			i+=1

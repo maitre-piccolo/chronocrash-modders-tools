@@ -109,7 +109,13 @@ class MainEditorWidget(QtWidgets.QWidget):
 		self.levelEditor.looping = False
 		self.backupUnsaved()
 		return self.fileSelector.close(all)
-		
+	
+	
+	def clearCache(self):
+		self.entityEditor.pixmapCache.clear()
+		LevelEditorWidget.PIXMAP_CACHE.clear()
+		Entity.PIXMAP_CACHE.clear()
+		Entity.LOADED_MODELS_REFERENCE.clear()
 		
 	def editNew(self):
 		fd = self.fileSelector.addFile('New')
