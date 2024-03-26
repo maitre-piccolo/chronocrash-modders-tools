@@ -519,6 +519,7 @@ class EntityEditorWidget(QtWidgets.QWidget):
 		self.currentFrame = 0
 		self.frameEditor.loadFrame()
 		self.loadingAnim = False
+		self.frameEditor.graphicView.centerOn(0,0)
 		
 		
 	def deleteAnim(self, ID):
@@ -709,7 +710,8 @@ class EntityEditorWidget(QtWidgets.QWidget):
 			part = pLine.next()
 			
 			if(part == '@script'):
-				inLineScript = True
+				if('@end_script' not in line):
+					inLineScript = True
 			elif(part == '@end_script'):
 				inLineScript = False
 			elif(not inLineScript and part == 'frame'):
@@ -737,7 +739,8 @@ class EntityEditorWidget(QtWidgets.QWidget):
 			part = pLine.next()
 				
 			if(part == '@script'):
-				inLineScript = True
+				if('@end_script' not in line):
+					inLineScript = True
 			elif(part == '@end_script'):
 				inLineScript = False
 			elif(part == 'frame'):
@@ -947,7 +950,8 @@ class EntityEditorWidget(QtWidgets.QWidget):
 					self.editor.cursorPosition = c
 			
 			elif(part == '@script'):
-				isInScript = True
+				if('@end_script' not in line):
+					isInScript = True
 			elif(part == '@end_script'):
 				isInScript = False
 				
@@ -1281,7 +1285,8 @@ class EntityEditorWidget(QtWidgets.QWidget):
 			elif part in (IGNORE_LIST):
 				pass
 			elif(part == '@script'):
-				inLineScript = True
+				if('@end_script' not in line):
+					inLineScript = True
 			elif(part == '@end_script'):
 				inLineScript = False
 				
@@ -1499,11 +1504,17 @@ class FrameEditor(QtWidgets.QWidget):
 		layout.setContentsMargins(0, 0, 0, 0)
 		self.setLayout(layout)
 		
-		view = ImageWidget()
+		
+		self.showRulers = settings.get_option('entity/show_rulers', False )
+		self.showGuidelines = settings.get_option('entity/show_guidelines', False )
+		
+		view = ImageWidget(self)
 		scene = FrameScene(self)
+		scene.setSceneRect(-1000, -1000, 2000.0, 2000.0)
 		self.scene = scene
 		view.setScene(scene)
 		self.graphicView = view
+		
 		
 		
 		rightPanel = QtWidgets.QTabWidget()
@@ -1632,6 +1643,19 @@ class FrameEditor(QtWidgets.QWidget):
 		self.previewSoundAction.setChecked(settings.get_option('entity/preview_sound', False ))
 		
 		
+		
+		
+		
+		self.toggleRulersAction = self.buttonBar.addAction('Show rulers', self.toggleRulers)
+		self.toggleRulersAction.setCheckable(True)
+		self.toggleRulersAction.setChecked(settings.get_option('entity/show_rulers', False ))
+		
+		
+		self.toggleGuidelinesAction = self.buttonBar.addAction('Show guidelines', self.toggleGuidelines)
+		self.toggleGuidelinesAction.setCheckable(True)
+		self.toggleGuidelinesAction.setChecked(settings.get_option('entity/show_guidelines', False ))
+		
+		
 		QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.reloadSprites)
 		#QtWidgets.QShortcut(QtGui.QKeySequence(self.tr("F5", "Refresh")), self, self.parent.tmp)
 		
@@ -1678,6 +1702,29 @@ class FrameEditor(QtWidgets.QWidget):
 		self.drawOpponent()
 		
 		self.endDrag.connect(self.endDragEvent)
+		
+		self.guideLineX = 0
+		self.guideLineY = 0
+		
+		
+		
+	def toggleRulers(self):
+		self.showRulers = self.toggleRulersAction.isChecked()
+		settings.set_option('entity/show_rulers', self.showRulers)
+		
+		self.graphicView.toggleRulers(self.showRulers)
+		
+		
+	def toggleGuidelines(self):
+		self.showGuidelines = self.toggleGuidelinesAction.isChecked()
+		settings.set_option('entity/show_guidelines', self.showGuidelines)
+		
+		if self.showGuidelines:
+			self.guideLineV.show()
+			self.guideLineH.show()
+		else:
+			self.guideLineV.hide()
+			self.guideLineH.hide()
 		
 		
 		
@@ -2140,6 +2187,14 @@ class FrameEditor(QtWidgets.QWidget):
 
 		anim = self.parent.anim
 		if len(anim) == 0: return
+	
+	
+		if hasattr(self, 'guideLineH'):
+			try:
+				self.guideLineX = self.guideLineH.x()
+				self.guideLineY = self.guideLineV.y()
+			except:
+				pass
 		
 		self.scene.removeItem(self.onionSkinEnt)
 		self.scene.removeItem(self.opponent)
@@ -2150,6 +2205,40 @@ class FrameEditor(QtWidgets.QWidget):
 		#self.scene.setBackgroundBrush(QtGui.QBrush(gradient));
 		self.scene.addItem(self.grid)
 		self.grid.setZValue(-9999)
+		
+		
+		pen = QtGui.QPen()
+		brush = QtGui.QBrush(QtGui.QColor(255, 255, 0))
+		pen.setWidth(2)
+		pen.setBrush(brush)
+		
+		
+		
+		self.guideLineH = QtWidgets.QGraphicsLineItem(0, -1000, 0, 1000)
+		
+		self.guideLineH.setPen(pen)
+		self.scene.addItem(self.guideLineH)
+		self.guideLineH.setPos(self.guideLineX, 0)
+		self.guideLineV = QtWidgets.QGraphicsLineItem(-1000, 0, 1000, 0)
+		
+		self.guideLineV.setPen(pen)
+		self.scene.addItem(self.guideLineV)
+		self.guideLineV.setPos(0, self.guideLineY)
+		
+		self.guideLineV.setCursor(QtCore.Qt.SizeVerCursor)
+		self.guideLineH.setCursor(QtCore.Qt.SizeHorCursor)
+		
+		self.guideLineH.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True);
+		self.guideLineH.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True);
+		self.guideLineV.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True);
+		self.guideLineV.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True);
+		
+		self.guideLineV.setZValue(999999)
+		self.guideLineH.setZValue(999999)
+		
+		if(not self.showGuidelines):
+			self.guideLineH.hide()
+			self.guideLineV.hide()
 		
 		
 		frameJump = 1
@@ -2305,6 +2394,7 @@ class FrameEditor(QtWidgets.QWidget):
 		self.scene.addRect(-1,-1,2,2) #offset precise
 		self.propEditor.loadData(frame, anim)
 		self.bindingEditor.loadData(frame)
+		
 		
 		
 		return
@@ -2471,9 +2561,10 @@ class FrameEditor(QtWidgets.QWidget):
 		
 		
 	def endDragEvent(self):
-		print('opponent mouse release', self.opponent.pos().x(), self.opponent.pos().y())
-		self.bindingEditor.refreshEntPos()
-		self.opponent.update()
+		if(self.opponent != None):
+			print('opponent mouse release', self.opponent.pos().x(), self.opponent.pos().y())
+			self.bindingEditor.refreshEntPos()
+			self.opponent.update()
 		
 	def setOnionSkin1(self):
 		self.onionSkinMode = 1
@@ -2578,7 +2669,30 @@ class FrameScene(QtWidgets.QGraphicsScene):
 		
 	def setMode(self, mode):
 		self.mode = mode
-
+		
+		
+	def contextMenuEvent(self, e):
+		item = self.itemAt(e.scenePos(), QtGui.QTransform())
+		if item is not None:
+			group = item.group()
+			if group is not None:
+				item = group
+				
+		popMenu = QtWidgets.QMenu()
+		if(item in ( self.mainEditor.guideLineH, self.mainEditor.guideLineV)):
+			setOnTop = popMenu.addAction( _("Set on top"))
+			setBehind = popMenu.addAction( _("Set behind"))
+			
+		action = popMenu.exec_(e.screenPos())
+		
+		if action == None:
+			return
+		
+		if action == setOnTop:
+			item.setZValue(999999)
+		elif action == setBehind:
+			item.setZValue(0)
+			
 	
 	def mousePressEvent(self, e):
 		QtWidgets.QGraphicsScene.mousePressEvent(self, e)
@@ -2653,8 +2767,20 @@ class FrameScene(QtWidgets.QGraphicsScene):
 		
         
 class ImageWidget(QtWidgets.QGraphicsView):
-	def __init__(self):
-		QtWidgets.QGraphicsView.__init__(self)
+	def __init__(self, parent):
+		QtWidgets.QGraphicsView.__init__(self, parent)
+		
+		self.parent = parent
+		
+		
+		self.ruler = Ruler(self)
+		self.ruler.sizeChanged.connect(self.rulerSizeChanged)
+		
+		
+		self.rulerH = Ruler(self, False)
+		# self.rulerH.sizeChanged.connect(self.rulerSizeChanged)
+
+		
 		
 		self.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
 		#self.setInteractive(False)
@@ -2687,7 +2813,26 @@ class ImageWidget(QtWidgets.QGraphicsView):
 		self.dragRect = None
 		
 		self.setMouseTracking(True)
+		
+		
+		if(not self.parent.showRulers):
+			self.toggleRulers(False)
+		
+	def toggleRulers(self, show=False):
+		if show:
+			self.setViewportMargins(40-2, 30, 0, 0)
+			self.ruler.show()
+			self.rulerH.show()
+		else:
+			self.setViewportMargins(0, 0, 0, 0)
+			self.ruler.hide()
+			self.rulerH.hide()
+		
+		
 
+
+	def rulerSizeChanged(self, size):
+		self.setViewportMargins(size.width()-2, 30, 0, 0)
 		
 	def loadFile(self, elt):
 		path = elt.path
@@ -2709,6 +2854,14 @@ class ImageWidget(QtWidgets.QGraphicsView):
 		print(self.zoom)
 		#print(e.delta())
 		print ('')
+	
+	
+	def setScene(self, scene):
+		QtWidgets.QGraphicsView.setScene(self, scene);
+		if (scene):
+			print("scene height", scene.height())
+			self.ruler.setFixedHeight(int(scene.height()));
+			self.rulerH.setFixedWidth(int(scene.width()));
 	
 	def scaleImage(self, factor):
 		self.scaleFactor *= factor
@@ -2778,5 +2931,168 @@ class GridItem(QtWidgets.QGraphicsItemGroup):
 			
 			
 		
+
+class Ruler(QtWidgets.QWidget):
+	
+	sizeChanged = QtCore.pyqtSignal(object)
+	
+	def __init__(self, parent, vertical=True):
+		self.vertical = vertical
+		self.parent = parent
+		self.offset = 0
+		QtWidgets.QWidget.__init__(self, parent)
 		
 		
+		
+		if(vertical):
+			parent.verticalScrollBar().valueChanged.connect(self.setOffset)
+			self.setFixedSize(40, parent.height())
+			self.move(0, 40)
+			
+		else:
+			parent.horizontalScrollBar().valueChanged.connect(self.setOffset)
+			self.setFixedSize(parent.width(), 40)
+			self.move(40, 0)
+
+# {
+#     Q_OBJECT
+# public:
+#     Ruler(QAbstractScrollArea* parent=nullptr): QWidget(parent),
+#         offset(0)
+#     {
+#         setFixedSize(40, parent->height());
+#         move(0, 40);
+#         connect(parent->verticalScrollBar(), &QScrollBar::valueChanged, this, &Ruler::setOffset);
+#     }
+#     virtual void paintEvent(QPaintEvent* event)
+	def paintEvent(self, event):
+		
+		
+		
+		if self.vertical:
+			painter = QtGui.QPainter(self)
+			
+	#     {
+	#         QPainter painter(this);
+			painter.translate(0, int(-self.offset));
+			
+			heightMM = self.height() * self.toMM();
+			
+			painter.setFont(self.font());
+			
+			fm = QtGui.QFontMetrics(self.font())
+			for position in range(heightMM):
+
+				positionInPix = int(position / self.toMM());
+				if (position % 10 == 0):
+					size = 15
+					if (position != 0 and position % 30 == 0):
+						
+						size = 22
+	#               
+						txt = str(int(position / self.parent.scaleFactor))
+						# txt = str(int(position))
+						txtRect = fm.boundingRect(txt).translated(0, positionInPix);
+						txtRect.translate(2, int(txtRect.height()/2));
+						painter.drawText(txtRect, 0, txt);
+						
+						txtRect = fm.boundingRect(txt).translated(0, -positionInPix);
+						txtRect.translate(2, int(txtRect.height()/2));
+						painter.drawText(txtRect, 0, txt);
+					painter.drawLine(self.width() - size, positionInPix, self.width(), positionInPix);
+					painter.drawLine(self.width() - size, -positionInPix, self.width(), -positionInPix);
+					
+					
+					
+				else:
+					painter.drawLine(self.width() - 10, positionInPix, self.width(), positionInPix);
+					painter.drawLine(self.width() - 10, -positionInPix, self.width(), -positionInPix);
+			
+		else:
+			painterH = QtGui.QPainter(self)
+			painterH.translate(int(-self.offset), 0);
+			
+			widthMM = self.width() * self.toMM()
+			
+			painterH.setFont(self.font());
+			
+			fm = QtGui.QFontMetrics(self.font())
+			
+			
+			offset = 12
+			
+			for position in range(widthMM):
+				positionInPix = int(position / self.toMM());
+				if (position % 10 == 0):
+				
+					size = 15
+
+					if (position != 0 and position % 50 == 0):
+						
+						size = 22
+						
+						txt = str(int(position / self.parent.scaleFactor))
+						txtRect = fm.boundingRect(txt).translated(positionInPix, 0+offset);
+						txtRect.translate(int(txtRect.height()/2), 0);
+						painterH.drawText(txtRect, 0, txt);
+						
+						txtRect = fm.boundingRect(txt).translated(-positionInPix, 0+offset);
+						txtRect.translate(int(txtRect.height()/2), 0);
+						painterH.drawText(txtRect, 0, txt);
+						
+					painterH.drawLine(positionInPix, self.height()-size, positionInPix, self.height());
+					painterH.drawLine(-positionInPix, self.height()-size, -positionInPix, self.height());
+				else:
+				
+					painterH.drawLine(positionInPix, self.height()-10, positionInPix, self.height());
+					painterH.drawLine(-positionInPix, self.height()-10, -positionInPix, self.height());
+
+	def toMM(self):
+		return 1
+
+	def resizeEvent(self, event):
+		
+		if(self.vertical):
+		
+			maximumMM = event.size().height() * self.toMM();
+			fm = QtGui.QFontMetrics(self.font())
+	
+			w = fm.width(str(maximumMM)) + 20;
+			if (w != event.size().width()):
+	
+				newSize = QtCore.QSize(w, event.size().height());
+				self.sizeChanged.emit(newSize);
+				return self.setFixedSize(newSize);
+				
+		else:
+			maximumMM = event.size().width() * self.toMM();
+			fm = QtGui.QFontMetrics(self.font())
+			# h = fm.height(str(maximumMM)) + 20;
+			h = fm.height() + 20;
+			if (h != event.size().height()):
+				newSize = QtCore.QSize(event.size().width(), h);
+				self.sizeChanged.emit(newSize);
+				return self.setFixedSize(newSize);
+        
+		return QtWidgets.QWidget.resizeEvent(self, event);
+    
+
+	def setOffset(self, value):
+  
+		self.offset = value-10;
+		self.update();
+		
+
+
+# signals:
+#     void sizeChanged(QSize const&);
+# private:
+#     int offset;
+# 
+#     static qreal toMM()
+#     {
+#         return 25.4 / qApp->desktop()->logicalDpiY();
+#     }
+# };		
+	
+

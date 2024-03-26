@@ -65,6 +65,7 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		self.mapColor = 0
 		
 		self.forceFacing = None
+		self.flip = None
 		
 		self.type = 'Unknown'
 		
@@ -143,6 +144,15 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 			self.xOffset = 0
 			self.yOffset = 0
 			logging.debug('Level Editor : entity model not found for : ' + entName + ' (watch for case sensitivity)')
+			self.log('Level Editor : entity model not found for : ' + entName + ' (watch for case sensitivity)')
+			fPath = 'data/chars/misc/placeholder.gif'
+			self.fPath = fPath
+			
+			image = loadSprite(os.path.join(Entity.ROOT_PATH, fPath), 0, {})
+			px = QtGui.QPixmap.fromImage(image)
+			# px = Entity.PIXMAP_CACHE[self.fPath]
+			self.frameItem = QtWidgets.QGraphicsPixmapItem(px)
+			self.addToGroup(self.frameItem)
 			return
 			
 		
@@ -223,6 +233,12 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		
 		self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
 		self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
+		# self.setFlag(QtWidgets.QGraphicsItem.ItemClipsToShape, True)
+		
+		
+		# self.frameItem.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
+		# self.frameItem.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
+		# self.frameItem.setFlag(QtWidgets.QGraphicsItem.ItemClipsToShape, True)
 		
 		
 		
@@ -250,8 +266,33 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 				self.setDirection(False)
 		else:
 			self.facingRight = True
-		
 	
+
+		
+    
+	
+	def shape(self):
+		return self.frameItem.shape()
+	
+	# def mousePressEvent(self, event):
+	# 	return self.frameItem.mousePressEvent(event)
+# 		# QtWidgets.QGraphicsItemGroup.mousePressEvent(self, event)
+# 		pass
+# 		
+	# def mouseReleaseEvent(self, event):
+	# 	return self.frameItem.mouseReleaseEvent(event)
+# 		# QtWidgets.QGraphicsItemGroup.mouseReleaseEvent(self, event)
+# 		pass
+	
+	
+# 	def boundingRect(self):
+# 		return self.frameItem.boundingRect()
+# 	
+# 	def opaqueArea(self):
+# 		return self.frameItem.opaqueArea()
+# 	
+# 	def isObscuredBy(self, item):
+# 		return self.frameItem.isObscuredBy(item)
 	
 	def copy(self, x, z):
 		e = Entity(self.name)
@@ -468,8 +509,42 @@ class Entity(QtWidgets.QGraphicsItemGroup):
 		
 	def paint(self, painter, option, a):
 		# disable border select
+		
+		prevState = option.state
+		
+		
+		
+		# option.state = prevState
+		# def paint(self):
+		# pass
+		# void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *){
+		painter.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, (self.frameItem.transformationMode() == QtCore.Qt.SmoothTransformation));
+		
+		transform = QtGui.QTransform()
+		
+		painter.translate(self.xOffset, self.yOffset)
+		if(self.facingRight):
+			painter.scale(1, 1)
+		else:
+			painter.scale(-1, 1)
+		# painter.setTransform(transform)
+		
+		painter.translate(-self.xOffset, -self.yOffset)
+		
+		# print('comparaison', option.state, QtWidgets.QStyle.State_Selected)
+		# painter.drawPixmap(self.frameItem.offset(), self.frameItem.pixmap());
+		if (option.state  & QtWidgets.QStyle.State_Selected):
+			pen = QtGui.QPen(option.palette.windowText(), 0, QtCore.Qt.DashLine)
+			pen.setWidth(6)
+			pen.setBrush(QtGui.QColor(255,0,0))
+			painter.setPen(pen);
+			painter.setBrush(QtCore.Qt.NoBrush);
+			painter.drawPath(self.frameItem.shape());
+			
 		option.state = QtWidgets.QStyle.State_None
-		return super(Entity, self).paint(painter, option)
+		res = super(Entity, self).paint(painter, option)
+		
+		return res
 		
 	
 	def setDirection(self, right):
@@ -784,6 +859,13 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 
 	BASE_ONLY = False
 	COLOR = (186,85,211)
+	# FRONT_COLOR = (255,200,0)
+	FRONT_COLOR = settings.get_option('level/wall_TOP_FRONT_COLOR',  (170,0,220))
+	
+	
+	BASE_BRUSH_COLOR = settings.get_option('level/wall_BASE_BRUSH_COLOR',  (0,0,255))
+	TOP_BRUSH_COLOR = settings.get_option('level/wall_TOP_BRUSH_COLOR',  (0,255,255))
+	# FRONT_COLOR = (34, 212, 212)
 	LINE_WIDTH = settings.get_option('level/line_weight', 2)
 	DOT_SIZE = settings.get_option('level/dot_size', 10)
 	updated = QtCore.pyqtSignal()
@@ -791,6 +873,10 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 	def __init__(self, levelEditor, xOffset, zOffset, upperLeft, lowerLeft, upperRight, lowerRight, depth, alt=100, type=None):
 		self.updating = False
 		self.movingDot = None
+		
+		self.com = ''
+		
+		self.zoomFactor = 1
 	
 		QtWidgets.QGraphicsPolygonItem.__init__(self)
 		
@@ -803,12 +889,19 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 		self.line3 = QtWidgets.QGraphicsLineItem()
 		self.line4 = QtWidgets.QGraphicsLineItem()
 		
+		self.lines = []
+		for i in range(8):
+			self.lines.append( QtWidgets.QGraphicsLineItem() )
+		
 		self.dot1 = DraggingDot(self, 'upperLeft')
 		self.dot2 = DraggingDot(self, 'lowerLeft')
 		self.dot3 = DraggingDot(self, 'lowerRight')
 		self.dot4 = DraggingDot(self, 'upperRight')
 		self.dot5 = DraggingDot(self, 'depth', False)
 		self.dot6 = DraggingDot(self, 'alt', False)
+		
+		
+		
 		
 		
 		
@@ -841,6 +934,8 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 			dot.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True);
 			dot.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True);
 			
+			# dot.setFlag(  QtWidgets.QGraphicsItem.ItemIgnoresTransformations, True)
+			
 		self.dot5.setBrush(QtGui.QColor(0,255,0))
 		self.dot6.setBrush(QtGui.QColor(0,0,255))
 		
@@ -867,9 +962,22 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 		self.addToGroup(self.mainItem)
 		self.addToGroup(self.second)
 		self.addToGroup(self.line1)
+		self.addToGroup(self.line4)
+		
+		
+		
+		pen = QtGui.QPen()
+		pen.setWidth(5)
+		brush = QtGui.QBrush(QtGui.QColor(*self.FRONT_COLOR))
+		pen.setBrush(brush)
+		
+		for line in self.lines:
+			self.addToGroup(line)
+			# line.setPen(pen)
+			
+			
 		self.addToGroup(self.line2)
 		self.addToGroup(self.line3)
-		self.addToGroup(self.line4)
 		
 		self.setParts()
 		#self.addToGroup(self.dot1)
@@ -878,6 +986,51 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 		#self.addToGroup(self.dot4)
 		
 		
+		self.line2.setPen(pen)
+		self.line3.setPen(pen)
+		
+		brush = QtGui.QBrush(QtGui.QColor(*self.BASE_BRUSH_COLOR, 100))
+		
+		self.mainItem.setBrush(brush)
+		
+		brush = QtGui.QBrush(QtGui.QColor(*self.TOP_BRUSH_COLOR, 100))
+		
+		self.second.setBrush(brush)
+		
+		
+	def adjustToZoom(self, zoomFactor):
+		
+		
+		
+# 		x1 = int(self.xOffset+self.coords['upperLeft'])
+# 		x2 = int(self.xOffset+self.coords['lowerLeft'])
+# 		x3 = int(self.xOffset+self.coords['lowerRight'])
+# 		x4 = int(self.xOffset+self.coords['upperRight'])
+# 		alt = int(self.coords['alt'])
+# 		
+# 		z1 = int(self.zOffset-self.coords['depth'])
+# 		z2 = int(self.zOffset)
+		
+		
+		self.zoomFactor = zoomFactor
+		
+		size = self.DOT_SIZE / self.zoomFactor
+		
+		for dot in self.dots:
+			rect = dot.rect()
+			rect.setWidth(size)
+			rect.setHeight(size)
+			dot.setRect(rect)
+		
+		# self.dot1.setRect(x1-size/2, z1-size/2, size, size)
+		# self.dot2.setRect(x2-size/2, z2-size/2, size, size)
+		# #self.dot2.setY(z2-size/2)
+		# self.dot3.setRect(x3-size/2, z2-size/2, size, size)
+		# self.dot4.setRect(x4-size/2, z1-size/2, size, size)
+		# self.dot5.setRect((x1+x4)/2-size/2, z1-size/2, size, size)
+		# #self.dot5.setOffset((x1+x4)/2-size/2, z1-size/2)
+		# self.dot6.setRect((x1+x4)/2-size/2, z1-size/2-alt, size, size)
+			
 
 	def hide(self):
 		for dot in self.dots:
@@ -894,7 +1047,7 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 		
 	def setParts(self):
 		if self.BASE_ONLY:
-			for item in (self.second, self.line1, self.line2, self.line3, self.line4, self.dot5, self.dot6):
+			for item in (self.second, self.line1, self.line2, self.line3, self.line4, self.dot5, self.dot6, *self.lines):
 				item.setVisible(False)
 				item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, False)
 				item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, False)
@@ -907,7 +1060,7 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 
 			
 		else:
-			for item in (self.second, self.line1, self.line2, self.line3, self.line4, self.dot5, self.dot6):
+			for item in (self.second, self.line1, self.line2, self.line3, self.line4, self.dot5, self.dot6, *self.lines):
 				item.setVisible(True)
 				item.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
 				item.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
@@ -957,8 +1110,15 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 	def setPen(self, pen):
 		self.mainItem.setPen(pen)
 		self.second.setPen(pen)
-		for line in (self.line1, self.line2, self.line3, self.line4):
+		# for line in (self.line1, self.line2, self.line3, self.line4):
+		for line in (self.line1, self.line4):
 			line.setPen(pen)
+			
+		for line in self.lines:
+			if line in [self.lines[1], self.lines[5]]: continue
+			line.setPen(pen)
+		
+		
 		
 	def updatePolygon(self):
 		x1 = int(self.xOffset+self.coords['upperLeft'])
@@ -976,6 +1136,45 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 				QtCore.QPoint(x4, z1)
 				]));
 		
+		# self.mainItem.setVisible(False)
+		# self.second.setVisible(False)
+		
+		
+		brush = QtGui.QBrush(QtGui.QColor(*self.BASE_BRUSH_COLOR, 100))
+		
+		self.mainItem.setBrush(brush)
+		
+		brush = QtGui.QBrush(QtGui.QColor(*self.TOP_BRUSH_COLOR, 100))
+		
+		self.second.setBrush(brush)
+		
+		
+		self.lines[0].setLine(x1, z1, x2, z2)
+		
+		pen = QtGui.QPen()
+		brush = QtGui.QBrush(QtGui.QColor(*self.FRONT_COLOR))
+		pen.setWidth(5)
+		pen.setBrush(brush)
+		
+		
+		
+		self.lines[1].setLine(x2, z2, x3, z2)
+		
+		self.lines[2].setLine(x3, z2, x4, z1)
+		
+		self.lines[3].setLine(x4, z1, x1, z1)
+		# self.lines[1].setLine(x1, z1, x2, z2)
+		# self.lines[2].setLine(x1, z1, x2, z2)
+		# self.lines[3].setLine(x1, z1, x2, z2)
+		
+		self.lines[1].setPen(pen)
+		self.lines[5].setPen(pen)
+		
+		
+		self.line2.setPen(pen)
+		self.line3.setPen(pen)
+		
+		# self.lines[3].setPen(pen)
 		
 		self.second.setPolygon(QtGui.QPolygonF([
 				QtCore.QPoint(x1, z1-alt), 
@@ -985,12 +1184,18 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 				]));
 		#self.setPolygon(QtGui.QPolygon([QtCore.QPoint(self.upperLeft, -self.coords['depth']), QtCore.QPoint(self.lowerLeft, 0), QtCore.QPoint(self.lowerRight, self.zOffset), QtCore.QPoint(self.upperRight,-self.coords['depth'])]));
 			
+			
+		self.lines[4].setLine(x1, z1-alt, x2, z2-alt)
+		self.lines[5].setLine(x2, z2-alt, x3, z2-alt)
+		self.lines[6].setLine(x3, z2-alt, x4, z1-alt)
+		self.lines[7].setLine(x4, z1-alt, x1, z1-alt)
+			
 		self.line1.setLine(x1, z1, x1, z1-alt)
 		self.line2.setLine(x2, z2, x2, z2-alt)
 		self.line3.setLine(x3, z2, x3, z2-alt)
 		self.line4.setLine(x4, z1, x4, z1-alt)
 		
-		size = self.DOT_SIZE
+		size = self.DOT_SIZE / self.zoomFactor
 		if self.movingDot in (self.dot1, self.dot2, self.dot3, self.dot4): # x moving
 			rect = self.dot5.rect()
 			rect.setX((x1+x4)/2-size/2)
@@ -1092,6 +1297,9 @@ class Wall(QtWidgets.QGraphicsItemGroup,): # TODO qgraphicsitemgroup
 		txt = str(self.xOffset + int(self.x())) + ' ' + str(self.zOffset + int(self.y())) + ' ' + str(int(self.coords['upperLeft'])) + ' ' + str(int(self.coords['lowerLeft'])) + ' ' + str(int(self.coords['upperRight'])) +  ' ' + str(int(self.coords['lowerRight'])) + ' ' + str(int(self.coords['depth'])) + ' ' + str(int(self.coords['alt']))
 		if(self.type != None):
 			txt += ' ' + str(self.type)
+			
+		if(self.com != ''):
+			txt += ' # ' + self.com.strip()
 			
 		return txt
 	
@@ -1216,10 +1424,16 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 	COLOR = (186,85,211)
 	LINE_WIDTH = settings.get_option('level/line_weight', 2)
 	DOT_SIZE = settings.get_option('level/dot_size', 10)
+	
+	FRONT_COLOR = settings.get_option('level/wall_TOP_FRONT_COLOR',  (170,0,220))
+	BASE_BRUSH_COLOR = settings.get_option('level/wall_BASE_BRUSH_COLOR',  (0,0,255))
+	TOP_BRUSH_COLOR = settings.get_option('level/wall_TOP_BRUSH_COLOR',  (0,255,255))
 
 	def __init__(self, levelEditor, xOffset, zOffset, xSize, zSize, aMin, aMax):
 		self.updating = False
 		self.movingDot = None
+		
+		self.zoomFactor = 1
 		QtWidgets.QGraphicsPolygonItem.__init__(self)
 		self.setFlag(QtWidgets.QGraphicsItem.ItemSendsGeometryChanges)
 		
@@ -1234,6 +1448,11 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 		self.dot2 = DraggingDot(self, 'zSize', False)
 		self.dot3 = DraggingDot(self, 'aMin', False)
 		self.dot4 = DraggingDot(self, 'aMax', False)
+		
+		self.lines = []
+		
+		for i in range(4):
+			self.lines.append(QtWidgets.QGraphicsLineItem())
 
 		
 		#self.dot5.setPixmap(QtGui.QPixmap('icons/arrow3.png'))
@@ -1285,9 +1504,16 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 		self.addToGroup(self.mainItem)
 		self.addToGroup(self.second)
 		self.addToGroup(self.line1)
+		
+		self.addToGroup(self.line4)
+		
+		
+		
+		for line in self.lines:
+			self.addToGroup(line)
+			
 		self.addToGroup(self.line2)
 		self.addToGroup(self.line3)
-		self.addToGroup(self.line4)
 		
 		self.setParts()
 		#self.addToGroup(self.dot1)
@@ -1296,6 +1522,42 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 		#self.addToGroup(self.dot4)
 		
 		
+		pen = QtGui.QPen()
+		pen.setWidth(5)
+		brush = QtGui.QBrush(QtGui.QColor(*self.FRONT_COLOR))
+		pen.setBrush(brush)
+		
+		
+		
+		
+		self.line2.setPen(pen)
+		self.line3.setPen(pen)
+		
+		
+		
+		brush = QtGui.QBrush(QtGui.QColor(*self.BASE_BRUSH_COLOR, 100))
+		
+		self.mainItem.setBrush(brush)
+		
+		brush = QtGui.QBrush(QtGui.QColor(*self.TOP_BRUSH_COLOR, 100))
+		
+		self.second.setBrush(brush)
+		
+		
+	def adjustToZoom(self, zoomFactor):
+		
+		
+		self.zoomFactor = zoomFactor
+		
+		# self.updatePolygon()
+		
+		size = self.DOT_SIZE / self.zoomFactor
+		
+		for dot in self.dots:
+			rect = dot.rect()
+			rect.setWidth(size)
+			rect.setHeight(size)
+			dot.setRect(rect)
 
 		
 	def setParts(self):
@@ -1325,7 +1587,8 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 		
 		
 	def copy(self, x, z):
-		return Wall(self.levelEditor, int(x), int(z), self.coords['upperLeft'], self.coords['lowerLeft'], self.coords['upperRight'], self.coords['lowerRight'], self.coords['depth'], self.coords['alt'])
+		# xOffset, zOffset, xSize, zSize, aMin, aMax):
+		return Basemap(self.levelEditor, int(x), int(z), self.coords['xSize'], self.coords['zSize'], self.coords['aMin'], self.coords['aMax'])
 		
 	def itemChange(self, change, value):
 		if (change == QtWidgets.QGraphicsItem.ItemPositionChange and self.scene()):
@@ -1343,6 +1606,7 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 			#self.dot4.setPos(newPos)
 			self.updating = False
 		elif(change == QtWidgets.QGraphicsItem.ItemSelectedHasChanged):
+			return
 			if value == 1:
 				self.setPen(self.selectedPen)
 			else:
@@ -1365,6 +1629,8 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 		self.second.setPen(pen)
 		for line in (self.line1, self.line2, self.line3, self.line4):
 			line.setPen(pen)
+			
+		
 		
 	def updatePolygon(self):
 		
@@ -1380,6 +1646,16 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 		
 		z1 = int(self.zOffset-self.coords['zSize'])
 		z2 = int(self.zOffset)
+		
+		brush = QtGui.QBrush(QtGui.QColor(*self.BASE_BRUSH_COLOR, 100))
+		
+		self.mainItem.setBrush(brush)
+		
+		brush = QtGui.QBrush(QtGui.QColor(*self.TOP_BRUSH_COLOR, 100))
+		
+		self.second.setBrush(brush)
+		
+		
 		self.mainItem.setPolygon(QtGui.QPolygonF([
 				QtCore.QPoint(x1, z1), 
 				QtCore.QPoint(x2, z2),
@@ -1395,13 +1671,31 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 				QtCore.QPoint(x4, z1-aMax)
 				]));
 		#self.setPolygon(QtGui.QPolygon([QtCore.QPoint(self.upperLeft, -self.coords['depth']), QtCore.QPoint(self.lowerLeft, 0), QtCore.QPoint(self.lowerRight, self.zOffset), QtCore.QPoint(self.upperRight,-self.coords['depth'])]));
-			
+		
+		self.lines[1].setLine(x2, z2, x3, z2)
+		
+		pen = QtGui.QPen()
+		pen.setWidth(5)
+		
+	
+		brush = QtGui.QBrush(QtGui.QColor(*self.FRONT_COLOR))
+		pen.setBrush(brush)
+		
+		self.lines[1].setPen(pen)
+		
+		
+		self.lines[0].setLine(x2, z2-aMin, x3, z2-aMax)
+		self.lines[0].setPen(pen)
+		
+		self.line2.setPen(pen)
+		self.line3.setPen(pen)
+		
 		self.line1.setLine(x1, z1, x1, z1-aMin)
 		self.line2.setLine(x2, z2, x2, z2-aMin)
 		self.line3.setLine(x3, z2, x3, z2-aMax)
 		self.line4.setLine(x4, z1, x4, z1-aMax)
 		
-		size = self.DOT_SIZE
+		size = self.DOT_SIZE / self.zoomFactor
 		if self.movingDot in (self.dot1,): # x moving
 			rect = self.dot2.rect()
 			rect.setX((x1+x4)/2-size/2)
@@ -1435,9 +1729,11 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 			
 		
 		if self.movingDot is self.dot2: # depth
+			
 			rect = self.dot1.rect()
 			rect.setY(z1-size/2)
 			rect.setHeight(size)
+			rect.setWidth(size)
 			self.dot1.setRect(rect)
 			
 			#rect = self.dot2.rect()
@@ -1452,14 +1748,22 @@ class Basemap(QtWidgets.QGraphicsItemGroup): # TODO qgraphicsitemgroup
 			
 			
 			rect = self.dot3.rect()
-			rect.setY(z1-aMin-size/2)
+			# rect.setY(z1-aMin-size/2)
+			rect.setY(z1-size/2-aMin)
+			
 			rect.setHeight(size)
+			rect.setWidth(size)
 			self.dot3.setRect(rect)
+			
+			self.dot3.setPos(self.pos())
+			
 			
 			rect = self.dot4.rect()
 			rect.setY(z1-aMax-size/2)
 			rect.setHeight(size)
+			rect.setWidth(size)
 			self.dot4.setRect(rect)
+			self.dot4.setPos(self.pos())
 		
 	
 	#def contextMenuEvent(self, e):

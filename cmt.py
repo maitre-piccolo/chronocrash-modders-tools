@@ -262,8 +262,8 @@ class Frame(QtWidgets.QMainWindow):
 			for url in data.urls():
 				path = url.toLocalFile()
 				p, extension = os.path.splitext(path)
-				#if extension.lower() in ('.gif', '.png', '.pcx'):
-					#continue
+				if extension.lower() in ('.gif', '.png', '.pcx'):
+					continue
 				#path = url.toString()
 				self.mainWidget.openFile(path)
 		

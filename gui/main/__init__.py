@@ -331,6 +331,7 @@ class MainEditorWidget(QtWidgets.QWidget):
 				
 			self.entityEditor.show()
 			self.entityEditor.reloadSplitterPos()
+			self.entityEditor.frameEditor.graphicView.centerOn(0,0)
 			
 			
 		elif view == 'level':
